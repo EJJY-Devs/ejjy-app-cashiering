@@ -1,0 +1,18 @@
+@import '../../assets/styles/main';
+
+.ColoredText {
+	@include font(1rem, 600);
+	color: $color-dark-gray;
+
+	&.primary {
+		color: $color-primary;
+	}
+
+	&.error {
+		color: $color-red;
+	}
+
+	&.small {
+		@include font(0.8rem, 600);
+	}
+}
