@@ -67,7 +67,7 @@ export const LoginForm = ({ loading, errors, onSubmit }: ILoginForm) => {
 						<Button
 							type="submit"
 							text="Start Session"
-							variant="primary"
+							variant="secondary"
 							loading={loading || isSubmitting}
 							block
 						/>
