@@ -1,8 +1,12 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { actions, selectors, types } from '../ducks/cash-breakdowns';
-import { request } from '../global/types';
+import { cashBreakdownTypes, request } from '../global/types';
+import { modifiedCallback } from '../utils/function';
 import { useActionDispatch } from './useActionDispatch';
+
+const CREATE_SUCCESS_MESSAGE = 'Cash breakdown was submitted successfully';
+const CREATE_ERROR_MESSAGE = 'An error occurred while submitting the cash breakdown';
 
 export const useCashBreakdown = () => {
 	const [status, setStatus] = useState<any>(request.NONE);
@@ -29,7 +33,13 @@ export const useCashBreakdown = () => {
 
 	const createCashBreakdownRequest = (data) => {
 		setRecentRequest(types.CREATE_CASH_BREAKDOWN);
-		createCashBreakdown({ ...data, callback });
+		createCashBreakdown({
+			...data,
+			callback:
+				data?.type === cashBreakdownTypes.MID_SESSION
+					? modifiedCallback(callback, CREATE_SUCCESS_MESSAGE, CREATE_ERROR_MESSAGE)
+					: callback,
+		});
 	};
 
 	const callback = ({ status, errors = [] }) => {

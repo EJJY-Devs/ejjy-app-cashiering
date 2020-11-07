@@ -1,9 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import { CancelButtonIcon, TableNormal } from '../../../../../components';
 import { useCurrentTransaction } from '../../../../../hooks/useCurrentTransaction';
 
 const columns = [
-	{ name: '', width: '100px' },
+	{ name: '', width: '1px' },
 	{ name: 'Item', width: '40%' },
 	{ name: 'Qty', center: true },
 	{ name: 'Rate', center: true },

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect, useState } from 'react';
 import { Container } from '../../../components';
 import { types as cashBreakdownsRequestTypes } from '../../../ducks/cash-breakdowns';
@@ -6,12 +7,14 @@ import { useBranchProducts } from '../../../hooks/useBranchProducts';
 import { useCashBreakdown } from '../../../hooks/useCashBreakdown';
 import { useSession } from '../../../hooks/useSession';
 import { CashBreakdownModal } from './components/CashBreakdown/CashBreakdownModal';
+import { MainButtons } from './components/MainButtons/MainButtons';
+import { Payment } from './components/Payment/Payment';
 import { ProductSearch } from './components/ProductSearch/ProductSearch';
 import { ProductTable } from './components/ProductTable/ProductTable';
 import './style.scss';
 
 const Main = () => {
-	const { session } = useSession();
+	const { session, endSession, status: sessionStatus } = useSession();
 	const {
 		cashBreakdowns,
 		listCashBreakdown,
@@ -45,23 +48,51 @@ const Main = () => {
 		}
 	}, [cashBreakdowns, cashBreakdownStatus, cashBreakdownRecentRequest]);
 
-	const isFetching = useCallback(
+	const isLoading = useCallback(
 		() =>
 			(cashBreakdownStatus === request.REQUESTING &&
 				cashBreakdownRecentRequest === cashBreakdownsRequestTypes.LIST_CASH_BREAKDOWNS) ||
-			branchProductsStatus === request.REQUESTING,
-		[cashBreakdownStatus, cashBreakdownRecentRequest, branchProductsStatus],
+			branchProductsStatus === request.REQUESTING ||
+			sessionStatus === request.REQUESTING,
+		[cashBreakdownStatus, cashBreakdownRecentRequest, branchProductsStatus, sessionStatus],
 	);
 
+	const getLoadingText = useCallback(
+		() => (sessionStatus === request.REQUESTING ? 'Ending session...' : 'Fetching data...'),
+		[sessionStatus],
+	);
+
+	const onMidSession = () => {
+		setCashBreakdownModalVisible(true);
+		setCashBreakdownType(cashBreakdownTypes.MID_SESSION);
+	};
+
+	const onEndSession = () => {
+		setCashBreakdownModalVisible(true);
+		setCashBreakdownType(cashBreakdownTypes.END_SESSION);
+	};
+
+	const onSuccessCashBreakdown = () => {
+		setCashBreakdownModalVisible(false);
+		setRequiredCashBreakdown(false);
+
+		if (cashBreakdownType === cashBreakdownTypes.END_SESSION) {
+			endSession();
+		}
+	};
+
 	return (
-		<Container loading={isFetching()} loadingText="Fetching data...">
+		<Container loading={isLoading()} loadingText={getLoadingText()}>
 			<section className="Main">
 				<div className="main-content">
 					<div className="left">
 						<ProductSearch />
 						<ProductTable />
 					</div>
-					<div className="right"></div>
+					<div className="right">
+						<Payment />
+						<MainButtons onEndSession={onEndSession} onMidSession={onMidSession} />
+					</div>
 				</div>
 
 				<CashBreakdownModal
@@ -70,10 +101,7 @@ const Main = () => {
 					visible={cashBreakdownModalVisible}
 					required={requiredCashBreakdown}
 					onClose={() => setCashBreakdownModalVisible(false)}
-					onSuccess={() => {
-						setCashBreakdownModalVisible(false);
-						setRequiredCashBreakdown(false);
-					}}
+					onSuccess={onSuccessCashBreakdown}
 				/>
 			</section>
 		</Container>

@@ -64,11 +64,13 @@ export const CashBreakdownForm = ({ onSubmit, onClose, loading }: Props) => {
 		<Formik
 			initialValues={getFormDetails().DefaultValues}
 			validationSchema={getFormDetails().Schema}
-			onSubmit={async (values) => {
+			onSubmit={async (values, { resetForm }) => {
 				setSubmitting(true);
 				await sleep(500);
 				setSubmitting(false);
+
 				onSubmit(values);
+				resetForm();
 			}}
 			enableReinitialize
 		>

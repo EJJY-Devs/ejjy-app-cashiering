@@ -17,7 +17,7 @@ const Login = () => {
 					onSubmit={(data: ILoginValues) => {
 						startSession({
 							...data,
-							branch_machine_mac_address: 'test1',
+							branch_machine_mac_address: '14:7d:da:18:06:61',
 						});
 					}}
 					loading={status === request.REQUESTING}

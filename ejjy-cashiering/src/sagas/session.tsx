@@ -24,8 +24,6 @@ function* endSession({ payload }: any) {
 
 	try {
 		const response = yield call(service.endSession, sessionId);
-
-		yield put(actions.save({ type: types.END_SESSION, session: response.data }));
 		callback({ status: request.SUCCESS, response: response.data });
 	} catch (e) {
 		callback({ status: request.ERROR, errors: e.errors });

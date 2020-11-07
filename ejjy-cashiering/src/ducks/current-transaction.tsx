@@ -19,7 +19,6 @@ const reducer = handleActions(
 		},
 
 		[types.REMOVE_PRODUCT]: (state, { payload }: any) => {
-			console.log([payload]);
 			return { ...state, products: state.products.filter(({ id }) => id !== payload.id) };
 		},
 	},

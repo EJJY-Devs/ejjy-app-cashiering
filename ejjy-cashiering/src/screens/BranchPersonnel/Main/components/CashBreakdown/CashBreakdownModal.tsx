@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { message, Modal } from 'antd';
 import React, { useEffect } from 'react';
 import { FieldError } from '../../../../../components/elements';
@@ -52,7 +53,7 @@ export const CashBreakdownModal = ({
 				cashiering_session_id: sessionId,
 			});
 		} else {
-			message.error('An error occured upon submitting.');
+			message.error('An error occured before submitting the cash breakdown.');
 		}
 	};
 

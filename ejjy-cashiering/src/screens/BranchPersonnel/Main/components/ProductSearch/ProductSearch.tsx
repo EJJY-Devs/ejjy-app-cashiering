@@ -3,7 +3,6 @@ import cn from 'classnames';
 import { debounce } from 'lodash';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import KeyboardEventHandler from 'react-keyboard-event-handler';
-import { AvailableBadgePill } from '../../../../../components';
 import { ControlledInput } from '../../../../../components/elements';
 import { useBranchProducts } from '../../../../../hooks/useBranchProducts';
 import { useCurrentTransaction } from '../../../../../hooks/useCurrentTransaction';

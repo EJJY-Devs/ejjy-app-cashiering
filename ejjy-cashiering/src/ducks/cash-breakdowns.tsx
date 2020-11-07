@@ -15,10 +15,23 @@ const initialState = {
 
 const reducer = handleActions(
 	{
-		[types.SAVE]: (state, { payload }) => ({
-			...state,
-			...payload,
-		}),
+		[types.SAVE]: (state, { payload }: any) => {
+			const { type } = payload;
+			let newData = {};
+
+			switch (type) {
+				case types.LIST_CASH_BREAKDOWNS: {
+					newData = { cashBreakdowns: payload.cashBreakdowns };
+					break;
+				}
+				case types.CREATE_CASH_BREAKDOWN: {
+					newData = { cashBreakdowns: [payload.cashBreakdown, ...state.cashBreakdowns] };
+					break;
+				}
+			}
+
+			return { ...state, ...newData };
+		},
 	},
 	initialState,
 );

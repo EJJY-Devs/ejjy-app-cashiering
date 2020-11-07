@@ -1,12 +1,14 @@
 @import '../../../assets/styles/main';
 
+$spacing: 25px;
+
 .Main {
 	.main-content {
 		display: flex;
 
 		.left {
 			flex-basis: 70%;
-			padding-right: 15px;
+			padding-right: $spacing;
 		}
 
 		.right {
@@ -40,6 +42,7 @@
 				padding: 20px;
 				@include flex(stretch, center);
 				outline: 1;
+				cursor: pointer;
 
 				&:not(:last-child) {
 					border-bottom: 1px solid $color-gray;
@@ -95,10 +98,117 @@
 	}
 
 	.ProductTable {
-		margin-top: 25px;
+		margin-top: $spacing;
 
 		.TableNormal {
 			border-radius: 10px;
+		}
+	}
+
+	.Payment {
+		.payment-content {
+			border-radius: 10px;
+			overflow: hidden;
+
+			.text-wrapper {
+				padding: 15px;
+				background-color: $color-main-background;
+				border: 1px solid $color-gray;
+
+				.label {
+					@include font(16px, bold);
+					color: $color-dark-gray;
+					margin-bottom: 5px;
+				}
+
+				.value {
+					@include font(40px, bold);
+					color: $color-dark;
+					text-align: right;
+					margin: 0;
+				}
+			}
+
+			.btn-pay {
+				width: 100%;
+				border-radius: 10px;
+				border-top-left-radius: 0;
+				border-top-right-radius: 0;
+			}
+		}
+
+		.pending-balance-wrapper {
+			@include flex(space-between, flex-start);
+			margin-top: 10px;
+			opacity: 0;
+
+			.active {
+				opacity: 1;
+			}
+
+			.label {
+				@include font(16px, bold);
+				color: $color-secondary;
+				margin: 0;
+			}
+
+			.value {
+				@include font(25px, bold);
+				color: $color-secondary;
+				text-align: right;
+				margin: 0;
+			}
+		}
+	}
+
+	.MainButtons {
+		margin-top: 50px;
+
+		.store-info-wrapper {
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			column-gap: $spacing;
+
+			.label {
+				@include font(16px, bold);
+				color: $color-dark-gray;
+				margin-bottom: 5px;
+			}
+
+			.value {
+				@include font(25px, bold);
+				color: $color-dark;
+				margin: 0;
+			}
+		}
+
+		.buttons-wrapper {
+			margin-top: $spacing;
+			display: grid;
+			column-gap: $spacing;
+			row-gap: $spacing;
+			grid-template-columns: repeat(2, 1fr);
+
+			button {
+				background: $color-gray;
+				box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
+				border: 0;
+				border-radius: 10px;
+				@include font(30px, bold);
+				color: #858585;
+				padding: 35px 10px;
+				cursor: pointer;
+				outline: 0;
+
+				&:hover {
+					opacity: 0.7;
+				}
+
+				&.btn-others {
+					grid-column-start: 1;
+					grid-column-end: 3;
+				}
+			}
 		}
 	}
 }
@@ -158,6 +268,39 @@
 			.btn-cancel {
 				margin-right: 20px;
 			}
+		}
+	}
+}
+
+.OthersModal {
+	.other-button {
+		display: block;
+		width: 100%;
+		background: $color-gray;
+		box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
+		border: 0;
+		border-radius: 10px;
+		@include font(20px, bold);
+		color: #858585;
+		padding: 15px 10px;
+		cursor: pointer;
+		outline: 0;
+
+		&.disabled {
+			opacity: 0.7;
+			pointer-events: none;
+			box-shadow: none;
+		}
+
+		&:hover {
+			opacity: 0.7;
+		}
+
+		&.btn-end-session {
+			margin-top: 25px;
+			background-color: $color-red;
+			color: white;
+			box-shadow: 0px 4px 0px #ab363d !important;
 		}
 	}
 }
