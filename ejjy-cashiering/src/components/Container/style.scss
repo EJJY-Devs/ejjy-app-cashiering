@@ -1,0 +1,16 @@
+@import '../../assets/styles/main';
+
+.ant-layout {
+	background: transparent !important;
+}
+
+.Main {
+	& > .ant-spin-nested-loading,
+	.container-spinner {
+		width: 100%;
+	}
+
+	.page-content {
+		padding: 15px;
+	}
+}

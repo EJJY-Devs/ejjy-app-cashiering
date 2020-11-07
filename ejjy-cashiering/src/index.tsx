@@ -1,17 +1,44 @@
+import { ConnectedRouter } from 'connected-react-router';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import { Provider } from 'react-redux';
+import { persistStore } from 'redux-persist';
+import { PersistGate } from 'redux-persist/integration/react';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
+import configureAxios from './configureAxios';
+import configureStore from './configureStore';
+import './index.scss';
+import * as serviceWorker from './serviceWorker';
+import history from './utils/history';
+
+// Configure timezone
+dayjs.extend(customParseFormat);
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault('Asia/Manila');
+
+// Start Interceptor
+const store = configureStore({}, history);
+configureAxios();
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+	<React.StrictMode>
+		<Provider store={store}>
+			<PersistGate loading={null} persistor={persistStore(store)}>
+				<ConnectedRouter history={history}>
+					<App />
+				</ConnectedRouter>
+			</PersistGate>
+		</Provider>
+	</React.StrictMode>,
+	document.getElementById('root'),
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: https://bit.ly/CRA-PWA
+serviceWorker.unregister();

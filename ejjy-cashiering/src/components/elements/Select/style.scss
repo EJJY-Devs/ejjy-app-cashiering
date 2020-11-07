@@ -1,0 +1,17 @@
+@import '../../../assets/styles/main';
+
+.Select {
+	width: 100%;
+	max-width: 160px;
+	padding: 8px 12px;
+	color: $color-dark;
+	@include font(0.875rem, 600);
+	border: 1px solid $color-gray;
+	border-radius: $border-radius;
+
+	display: block;
+
+	&.disabled {
+		background-color: $color-main-background;
+	}
+}
