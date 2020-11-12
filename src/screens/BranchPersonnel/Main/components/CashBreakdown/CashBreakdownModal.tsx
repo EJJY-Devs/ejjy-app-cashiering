@@ -6,6 +6,7 @@ import { types as cashBreakdownsRequestTypes } from '../../../../../ducks/cash-b
 import { request } from '../../../../../global/types';
 import { useCashBreakdown } from '../../../../../hooks/useCashBreakdown';
 import { CashBreakdownForm } from './CashBreakdownForm';
+import './style.scss';
 
 interface Props {
 	type: string;

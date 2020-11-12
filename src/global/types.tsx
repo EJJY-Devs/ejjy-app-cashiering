@@ -22,3 +22,8 @@ export const branchProductStatus = {
 	REORDER: 'reorder',
 	OUT_OF_STOCK: 'out_of_stock',
 };
+
+export const navigationTypes = {
+	PREVIOUS: -1,
+	NEXT: 1,
+};

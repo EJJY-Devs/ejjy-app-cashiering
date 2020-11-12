@@ -1,20 +1,39 @@
-import React, { useCallback } from 'react';
+import { message } from 'antd';
+import React, { useCallback, useState } from 'react';
 import { Button } from '../../../../../components/elements';
 import { useCurrentTransaction } from '../../../../../hooks/useCurrentTransaction';
+import { InvoiceModal } from './InvoiceModal';
+import { PaymentModal } from './PaymentModal';
+import './style.scss';
 
 export const Payment = () => {
 	const { products } = useCurrentTransaction();
+
+	const [paymentModalVisible, setPaymentModalVisible] = useState(false);
+	const [invoiceModalVisible, setInvoiceModalVisible] = useState(false);
 
 	const getTotal = useCallback(
 		() =>
 			Number(
 				Object.values(products).reduce(
-					(prev: number, { quantity, price_per_piece }) => quantity * price_per_piece + prev,
+					(prev: number, { quantity, pricePerPiece }) => quantity * pricePerPiece + prev,
 					0,
 				),
 			),
 		[products],
 	);
+
+	const onPaymentSuccess = () => {
+		setInvoiceModalVisible(true);
+	};
+
+	const onPay = () => {
+		if (getTotal() > 0) {
+			setPaymentModalVisible(true);
+		} else {
+			message.error('Please add a product first.');
+		}
+	};
 
 	return (
 		<div className="Payment">
@@ -23,12 +42,21 @@ export const Payment = () => {
 					<p className="label">Total</p>
 					<p className="value">{`₱${getTotal()?.toFixed(2)}`}</p>
 				</div>
-				<Button classNames="btn-pay" text="Pay" size="lg" variant="primary" />
+				<Button classNames="btn-pay" text="Pay" size="lg" variant="primary" onClick={onPay} />
 			</div>
 			<div className="pending-balance-wrapper">
 				<p className="label">Pending Balance</p>
 				<p className="value">{`₱100.00`}</p>
 			</div>
+
+			<PaymentModal
+				amountDue={getTotal()}
+				visible={paymentModalVisible}
+				onSuccess={onPaymentSuccess}
+				onClose={() => setPaymentModalVisible(false)}
+			/>
+
+			<InvoiceModal visible={invoiceModalVisible} onClose={() => setInvoiceModalVisible(false)} />
 		</div>
 	);
 };

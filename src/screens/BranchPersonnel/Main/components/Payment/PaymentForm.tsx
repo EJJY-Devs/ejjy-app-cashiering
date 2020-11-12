@@ -6,25 +6,26 @@ import { Button, FieldError, FormInput, Label } from '../../../../../components/
 import { sleep } from '../../../../../utils/function';
 
 interface Props {
-	maxQuantity: number;
 	inputRef?: any;
+	amountDue: number;
 	onSubmit: any;
 	onClose: any;
 }
 
-export const AddProductForm = ({ maxQuantity, inputRef, onSubmit, onClose }: Props) => {
+export const PaymentForm = ({ inputRef, amountDue, onSubmit, onClose }: Props) => {
 	const [isSubmitting, setSubmitting] = useState(false);
 
 	const getFormDetails = useCallback(
 		() => ({
 			DefaultValues: {
-				quantity: '',
+				amountTendered: '',
+				amountDue,
 			},
 			Schema: Yup.object().shape({
-				quantity: Yup.number().required().min(1).max(maxQuantity).label('Quantity'),
+				amountTendered: Yup.number().required().min(amountDue).label('Amount Tendered'),
 			}),
 		}),
-		[maxQuantity],
+		[amountDue],
 	);
 
 	return (
@@ -41,17 +42,47 @@ export const AddProductForm = ({ maxQuantity, inputRef, onSubmit, onClose }: Pro
 			}}
 			enableReinitialize
 		>
-			{({ errors, touched }) => (
+			{({ values, errors, touched }) => (
 				<Form className="form">
-					<Label classNames="quantity-label" id="quantity" label="Quantity" spacing />
+					<Label
+						classNames="quantity-label"
+						id="amountTendered"
+						label="Amount Tendered (₱)"
+						spacing
+					/>
 					<FormInput
 						inputRef={inputRef}
 						type="number"
 						classNames="quantity-input"
-						id="quantity"
+						id="amountTendered"
 						autoFocus
 					/>
-					{errors.quantity && touched.quantity ? <FieldError error={errors.quantity} /> : null}
+					{errors.amountTendered && touched.amountTendered ? (
+						<FieldError error={errors.amountTendered} />
+					) : null}
+
+					<Label
+						classNames="quantity-label space-top"
+						id="amountDue"
+						label="Amount Due (₱)"
+						spacing
+					/>
+					<FormInput type="number" classNames="quantity-input" id="amountDue" disabled />
+
+					{Number(values?.amountTendered) - amountDue >= 0 && (
+						<Label
+							classNames="quantity-label space-top"
+							label={
+								<>
+									<span>Change: </span>
+									<span className="change-value">
+										₱{(Number(values?.amountTendered) - amountDue).toFixed(2)}
+									</span>
+								</>
+							}
+							spacing
+						/>
+					)}
 
 					<Divider />
 

@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { CancelButtonIcon, TableNormal } from '../../../../../components';
 import { useCurrentTransaction } from '../../../../../hooks/useCurrentTransaction';
+import './style.scss';
 
 const columns = [
 	{ name: '', width: '1px' },
@@ -20,10 +21,10 @@ export const ProductTable = () => {
 	useEffect(() => {
 		const formattedProducts = products.map((item) => [
 			<CancelButtonIcon tooltip="Remove" onClick={() => removeProduct({ id: item.id })} />,
-			item.product.name,
+			item.productName,
 			item.quantity.toFixed(3),
-			`₱${item.price_per_piece.toFixed(2)}`,
-			`₱${(item.quantity * item.price_per_piece).toFixed(2)}`,
+			`₱${item.pricePerPiece.toFixed(2)}`,
+			`₱${(item.quantity * item.pricePerPiece).toFixed(2)}`,
 		]);
 
 		setData(formattedProducts);

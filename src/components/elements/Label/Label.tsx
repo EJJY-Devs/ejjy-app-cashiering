@@ -4,7 +4,7 @@ import './style.scss';
 
 interface Props {
 	id?: string;
-	label: string;
+	label: string | React.ReactNode;
 	spacing?: boolean;
 	classNames?: string;
 }

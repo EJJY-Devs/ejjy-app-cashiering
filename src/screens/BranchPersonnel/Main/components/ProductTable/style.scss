@@ -1,0 +1,11 @@
+@import '../../../../../assets/styles/main';
+@import '../../style.scss';
+
+.ProductTable {
+	margin-top: $spacing;
+
+	.TableNormal {
+		border-radius: 10px;
+		min-height: 428px;
+	}
+}

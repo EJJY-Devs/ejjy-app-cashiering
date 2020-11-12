@@ -8,6 +8,7 @@ import { useBranchProducts } from '../../../../../hooks/useBranchProducts';
 import { useCurrentTransaction } from '../../../../../hooks/useCurrentTransaction';
 import { getBranchProductStatus, searchProductInfo } from '../../../../../utils/function';
 import { AddProductModal } from './AddProductModal';
+import './style.scss';
 
 const SEARCH_DEBOUNCE_TIME = 300;
 const INACTIVE_INDEX = -1;

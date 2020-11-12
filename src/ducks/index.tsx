@@ -8,6 +8,7 @@ import cashBreakdownsReducer, { key as CASH_BREAKDOWN_KEY } from './cash-breakdo
 import currentTransactionReducer, { key as CURRENT_TRANSACTION_KEY } from './current-transaction';
 import requestReducer, { REQUEST_KEY } from './request';
 import sessionsReducer, { key as SESSION_KEY, types } from './sessions';
+import transactionsReducer, { key as TRANSACTIONS_KEY } from './transactions';
 import uiReducer, { key as UI_KEY } from './ui';
 
 const appReducer = combineReducers({
@@ -17,11 +18,13 @@ const appReducer = combineReducers({
 	[REQUEST_KEY]: requestReducer,
 	[BRANCH_PRODUCTS_KEY]: branchProductsReducer,
 	[CURRENT_TRANSACTION_KEY]: currentTransactionReducer,
+	[TRANSACTIONS_KEY]: transactionsReducer,
 	[UI_KEY]: uiReducer,
 });
 
+const RESET_TYPES = [types.INVALID_SESSION, types.END_SESSION];
 export default (state, action) => {
-	if (action.type === types.END_SESSION) {
+	if (RESET_TYPES.includes(action.type)) {
 		storage.removeItem(STORAGE_KEY);
 		state = undefined;
 	}

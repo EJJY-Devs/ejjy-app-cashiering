@@ -47,7 +47,7 @@ export const confirmPassword = ({ title = 'Input Password', onSuccess }: Confirm
 				onSuccess();
 				close();
 			} else {
-				message.error('Incorrect password');
+				message.error('Incorrect password.');
 			}
 		},
 	});
