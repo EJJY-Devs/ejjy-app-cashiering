@@ -15,6 +15,7 @@ export const useCurrentTransaction = () => {
 
 	const addProduct = useActionDispatch(actions.addProduct);
 	const removeProduct = useActionDispatch(actions.removeProduct);
+	const editProduct = useActionDispatch(actions.editProduct);
 	const setCurrentTransaction = useActionDispatch(actions.setCurrentTransaction);
 	const resetTransaction = useActionDispatch(actions.resetTransaction);
 
@@ -49,6 +50,7 @@ export const useCurrentTransaction = () => {
 		transactionId,
 		addProduct,
 		removeProduct,
+		editProduct,
 		resetTransaction,
 		setCurrentTransaction,
 		createCurrentTransaction,

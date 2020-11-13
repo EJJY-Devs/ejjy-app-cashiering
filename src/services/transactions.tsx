@@ -31,5 +31,5 @@ export const service = {
 	list: async (params: IListTransactions) => axios.get('/transactions/', { params }),
 	pay: async (body: IPayTransaction) => axios.post('/payments/', body),
 	create: async (body: ICreateTransaction) => axios.post('/transactions/', body),
-	update: async (id: number, body: IUpdateTransaction) => axios.post(`/transactions/${id}`, body),
+	update: async (id: number, body: IUpdateTransaction) => axios.patch(`/transactions/${id}/`, body),
 };

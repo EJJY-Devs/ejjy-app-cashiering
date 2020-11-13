@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash';
 import { createAction, handleActions } from 'redux-actions';
 import { createSelector } from 'reselect';
 
@@ -33,6 +34,18 @@ const reducer = handleActions(
 
 				case types.CREATE_TRANSACTION: {
 					newData = { transactions: [...state.transactions, payload.transaction] };
+					break;
+				}
+
+				case types.UPDATE_TRANSACTION: {
+					const transactions = cloneDeep(state.transactions);
+					const index = transactions.findIndex(({ id }) => id === payload.transaction.id);
+
+					if (index >= 0) {
+						transactions[index] = payload.transaction;
+					}
+
+					newData = { transactions };
 					break;
 				}
 			}

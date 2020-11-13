@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { message, Modal } from 'antd';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { FieldError } from '../../../../../components/elements';
 import { types as cashBreakdownsRequestTypes } from '../../../../../ducks/cash-breakdowns';
 import { request } from '../../../../../global/types';
@@ -26,6 +26,17 @@ export const CashBreakdownModal = ({
 	onClose,
 }: Props) => {
 	const { createCashBreakdown, status, recentRequest, errors, reset } = useCashBreakdown();
+
+	const inputRef = useRef(null);
+
+	useEffect(() => {
+		if (inputRef && inputRef.current) {
+			setTimeout(() => {
+				const input = inputRef.current;
+				input.focus();
+			}, 500);
+		}
+	}, [visible, inputRef]);
 
 	// Effect: Close modal if recent requests are Create or Edit
 	useEffect(() => {
@@ -73,6 +84,7 @@ export const CashBreakdownModal = ({
 			))}
 
 			<CashBreakdownForm
+				inputRef={(el) => (inputRef.current = el)}
 				onSubmit={onSubmit}
 				onClose={close}
 				loading={status === request.REQUESTING}

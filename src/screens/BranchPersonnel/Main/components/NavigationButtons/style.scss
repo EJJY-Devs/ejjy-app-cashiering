@@ -3,6 +3,7 @@
 
 .NavigationButtons {
 	@include flex(space-between, flex-end);
+	margin-top: auto;
 
 	.details {
 		.item {

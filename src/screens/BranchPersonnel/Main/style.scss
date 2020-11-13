@@ -9,6 +9,8 @@ $spacing: 25px;
 		.left {
 			flex-basis: 70%;
 			padding-right: $spacing;
+			display: flex;
+			flex-direction: column;
 		}
 
 		.right {

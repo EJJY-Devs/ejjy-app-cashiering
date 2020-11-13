@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash';
 import { createAction, handleActions } from 'redux-actions';
 import { createSelector } from 'reselect';
 
@@ -6,6 +7,8 @@ export const key = 'CURRENT_TRANSACTION';
 export const types = {
 	ADD_PRODUCT: `${key}/ADD_PRODUCT`,
 	REMOVE_PRODUCT: `${key}/REMOVE_PRODUCT`,
+	EDIT_PRODUCT: `${key}/EDIT_PRODUCT`,
+
 	SET_CURRENT_TRANSACTION: `${key}/SET_CURRENT_TRANSACTION`,
 	UPDATE_TRANSACTION: `${key}/UPDATE_TRANSACTION`,
 	RESET_TRANSACTION: `${key}/RESET_TRANSACTION`,
@@ -28,6 +31,20 @@ const reducer = handleActions(
 
 		[types.REMOVE_PRODUCT]: (state, { payload }: any) => {
 			return { ...state, products: state.products.filter(({ id }) => id !== payload.id) };
+		},
+
+		[types.EDIT_PRODUCT]: (state, { payload }: any) => {
+			const products = cloneDeep(state.products);
+			const index = products.findIndex(({ id }) => id === payload.id);
+
+			if (index >= 0) {
+				products[index] = {
+					...products[index],
+					...payload,
+				};
+			}
+
+			return { ...state, products };
 		},
 
 		[types.UPDATE_TRANSACTION]: (state, { payload }: any) => {
@@ -97,6 +114,7 @@ const reducer = handleActions(
 export const actions = {
 	addProduct: createAction(types.ADD_PRODUCT),
 	removeProduct: createAction(types.REMOVE_PRODUCT),
+	editProduct: createAction(types.EDIT_PRODUCT),
 
 	setCurrentTransaction: createAction(types.SET_CURRENT_TRANSACTION),
 	updateTransaction: createAction(types.UPDATE_TRANSACTION),

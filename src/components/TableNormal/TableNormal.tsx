@@ -44,30 +44,18 @@ export const TableNormal = ({
 						</tr>
 					</thead>
 					<tbody>
-						{data?.map((row, index) => {
-							if (row?.isCustom) {
-								return (
-									<tr key={`tr-${index}`} style={{ height: `${row?.height || ROW_HEIGHT}px` }}>
-										<td colSpan={row.span} key={`td-${index}`}>
-											{row.content}
-										</td>
-									</tr>
-								);
-							} else {
-								return (
-									<tr key={`tr-${index}`} style={{ height: `${ROW_HEIGHT}px` }}>
-										{row.map((item, index) => (
-											<td
-												key={`td-${index}`}
-												style={{ textAlign: columns?.[index].center ? 'center' : 'left' }}
-											>
-												{item}
-											</td>
-										))}
-									</tr>
-								);
-							}
-						})}
+						{data?.map((row, index) => (
+							<tr key={`tr-${index}`} style={{ height: `${ROW_HEIGHT}px` }}>
+								{row.map((item, index) => (
+									<td
+										key={`td-${index}`}
+										style={{ textAlign: columns?.[index].center ? 'center' : 'left' }}
+									>
+										{item}
+									</td>
+								))}
+							</tr>
+						))}
 					</tbody>
 				</table>
 			</div>

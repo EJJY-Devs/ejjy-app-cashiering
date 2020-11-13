@@ -13,6 +13,7 @@ export const useTransactions = () => {
 
 	const listTransactions = useActionDispatch(actions.listTransactions);
 	const createTransaction = useActionDispatch(actions.createTransaction);
+	const updateTransaction = useActionDispatch(actions.updateTransaction);
 	const firstTimePayment = useActionDispatch(actions.firstTimePayment);
 
 	const reset = () => {
@@ -42,6 +43,15 @@ export const useTransactions = () => {
 		});
 	};
 
+	const updateTransactionRequest = (data, extraCallback = null) => {
+		setRecentRequest(types.UPDATE_TRANSACTION);
+
+		updateTransaction({
+			...data,
+			callback: modifiedExtraCallback(callback, extraCallback),
+		});
+	};
+
 	const firstTimePaymentRequest = (data, extraCallback = null) => {
 		setRecentRequest(types.FIRST_TIME_PAYMENT);
 
@@ -60,6 +70,7 @@ export const useTransactions = () => {
 		transactions,
 		listTransactions: listTransactionsRequest,
 		createTransaction: createTransactionRequest,
+		updateTransaction: updateTransactionRequest,
 		firstTimePayment: firstTimePaymentRequest,
 		status,
 		errors,

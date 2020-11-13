@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { CaretLeftOutlined, CaretRightOutlined } from '@ant-design/icons';
 import cn from 'classnames';
 import React, { useEffect, useState } from 'react';
@@ -26,7 +27,7 @@ export const NavigationButtons = () => {
 		if (currentIndex !== NO_TRANSACTION_SELECTED && transactions?.[currentIndex]) {
 			setCurrentTransaction({ transaction: transactions[currentIndex], branchProducts });
 		}
-	}, [currentIndex, transactions]);
+	}, [currentIndex, transactions, branchProducts]);
 
 	const checkCurrentTransaction = (type) => {
 		if (!transactionId && products?.length > 0) {
