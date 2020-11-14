@@ -1,11 +1,11 @@
 import { LoadingOutlined } from '@ant-design/icons';
 import { Spin } from 'antd';
 import cn from 'classnames';
-import React from 'react';
+import React, { ReactNode } from 'react';
 import './style.scss';
 
 interface Props {
-	title: string;
+	icon: ReactNode;
 	onClick: any;
 	classNames?: string;
 	disabled?: boolean;
@@ -16,11 +16,11 @@ const loadingIcon = (
 	<LoadingOutlined style={{ fontSize: 17, color: 'rgba(35, 37, 46, 0.85)' }} spin />
 );
 
-export const MainButton = ({ title, onClick, classNames, disabled, loading }: Props) => (
+export const NavigationButton = ({ icon, onClick, disabled, classNames, loading }: Props) => (
 	<button
-		className={cn('MainButton', classNames, { disabled: disabled || loading })}
+		className={cn('NavigationButton', classNames, { disabled: disabled || loading })}
 		onClick={onClick}
 	>
-		{loading ? <Spin indicator={loadingIcon} className="spinner" /> : title}
+		{loading ? <Spin indicator={loadingIcon} className="spinner" /> : icon}
 	</button>
 );

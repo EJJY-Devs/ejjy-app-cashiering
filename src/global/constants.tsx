@@ -7,3 +7,5 @@ export const RETRY_INTERVAL_MS = 1000;
 export const NOT_FOUND_INDEX = -1;
 
 export const EMPTY_CELL = '—';
+
+export const NO_INDEX_SELECTED = -1;

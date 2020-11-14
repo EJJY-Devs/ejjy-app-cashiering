@@ -2,12 +2,14 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Container } from '../../../components';
 import { types as cashBreakdownsRequestTypes } from '../../../ducks/cash-breakdowns';
+import { types as sessionTypes } from '../../../ducks/sessions';
 import { cashBreakdownTypes, request } from '../../../global/types';
 import { useBranchProducts } from '../../../hooks/useBranchProducts';
 import { useCashBreakdown } from '../../../hooks/useCashBreakdown';
 import { useCurrentTransaction } from '../../../hooks/useCurrentTransaction';
 import { useSession } from '../../../hooks/useSession';
 import { useTransactions } from '../../../hooks/useTransactions';
+import { useUI } from '../../../hooks/useUI';
 import { CashBreakdownModal } from './components/CashBreakdown/CashBreakdownModal';
 import { MainButtons } from './components/MainButtons/MainButtons';
 import { NavigationButtons } from './components/NavigationButtons/NavigationButtons';
@@ -23,6 +25,7 @@ const Main = () => {
 		endSession,
 		invalidSession,
 		status: sessionStatus,
+		recentRequest: sessionRecentRequest,
 	} = useSession();
 	const { transactionId, resetTransaction } = useCurrentTransaction();
 	const {
@@ -33,6 +36,7 @@ const Main = () => {
 	} = useCashBreakdown();
 	const { listBranchProducts, status: branchProductsStatus } = useBranchProducts();
 	const { listTransactions, status: transactionsStatus } = useTransactions();
+	const { mainLoading, mainLoadingText } = useUI();
 
 	// States
 	const [requiredCashBreakdown, setRequiredCashBreakdown] = useState(false);
@@ -77,22 +81,52 @@ const Main = () => {
 
 	const isLoading = useCallback(
 		() =>
-			(cashBreakdownStatus === request.REQUESTING &&
-				cashBreakdownRecentRequest === cashBreakdownsRequestTypes.LIST_CASH_BREAKDOWNS) ||
-			[branchProductsStatus, sessionStatus, transactionsStatus].includes(request.REQUESTING),
+			mainLoading ||
+			[cashBreakdownStatus, branchProductsStatus, sessionStatus, transactionsStatus].includes(
+				request.REQUESTING,
+			),
 		[
 			cashBreakdownStatus,
 			cashBreakdownRecentRequest,
 			branchProductsStatus,
 			sessionStatus,
 			transactionsStatus,
+			mainLoading,
 		],
 	);
 
-	const getLoadingText = useCallback(
-		() => (sessionStatus === request.REQUESTING ? 'Ending session...' : 'Fetching data...'),
-		[sessionStatus],
-	);
+	const getLoadingText = useCallback(() => {
+		if (sessionStatus === request.REQUESTING) {
+			if (sessionRecentRequest === sessionTypes.VALIDATE_SESSION) {
+				return 'Validating session...';
+			}
+
+			if (sessionRecentRequest === sessionTypes.END_SESSION) {
+				return 'Ending session...';
+			}
+		}
+
+		if (
+			[cashBreakdownStatus, branchProductsStatus, transactionsStatus].includes(request.REQUESTING)
+		) {
+			return 'Fetching data...';
+		}
+
+		if (mainLoading) {
+			return mainLoadingText;
+		}
+	}, [
+		branchProductsStatus,
+		transactionsStatus,
+		cashBreakdownStatus,
+		cashBreakdownRecentRequest,
+
+		sessionStatus,
+		sessionRecentRequest,
+
+		mainLoading,
+		mainLoadingText,
+	]);
 
 	const onMidSession = () => {
 		setCashBreakdownModalVisible(true);

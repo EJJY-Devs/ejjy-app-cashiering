@@ -3,6 +3,7 @@ import {
 	actions as branchProductActions,
 	types as branchProductTypes,
 } from '../ducks/branch-products';
+import { actions } from '../ducks/transactions';
 import { actions as currentTransactionActions } from '../ducks/current-transaction';
 import { types } from '../ducks/transactions';
 import { MAX_PAGE_SIZE, MAX_RETRY, RETRY_INTERVAL_MS } from '../global/constants';
@@ -32,6 +33,7 @@ function* firstTimePayment({ payload }: any) {
 		});
 
 		yield put(currentTransactionActions.updateTransaction({ transaction: response.data }));
+		yield put(actions.save({ type: types.CREATE_TRANSACTION, transaction: response.data }));
 
 		if (shouldUpdateBranchProducts && branchId) {
 			const response = yield retry(

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { NO_INDEX_SELECTED } from '../../../../../global/constants';
 import { request } from '../../../../../global/types';
 import { useCurrentTransaction } from '../../../../../hooks/useCurrentTransaction';
+import { useUI } from '../../../../../hooks/useUI';
 import { MainButton } from './MainButton';
 import { OthersModal } from './OthersModal';
 import './style.scss';
@@ -18,6 +20,7 @@ export const MainButtons = ({ onMidSession, onEndSession }: Props) => {
 		resetTransaction,
 		status: currentTransactionStatus,
 	} = useCurrentTransaction();
+	const { setTransactionIndex } = useUI();
 
 	const [othersModalVisible, setOthersModalVisible] = useState(false);
 
@@ -29,6 +32,11 @@ export const MainButtons = ({ onMidSession, onEndSession }: Props) => {
 	const onEndSessionModified = () => {
 		onEndSession();
 		setOthersModalVisible(false);
+	};
+
+	const onReset = () => {
+		setTransactionIndex(NO_INDEX_SELECTED);
+		resetTransaction();
 	};
 
 	return (
@@ -56,7 +64,7 @@ export const MainButtons = ({ onMidSession, onEndSession }: Props) => {
 
 				<MainButton title="Discount" onClick={() => null} />
 
-				<MainButton title="Reset" onClick={resetTransaction} />
+				<MainButton title="Reset" onClick={onReset} />
 
 				<MainButton title="Void" onClick={() => null} />
 
