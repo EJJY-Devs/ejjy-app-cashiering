@@ -53,7 +53,7 @@ export const PaymentForm = ({ inputRef, amountDue, onSubmit, onClose }: Props) =
 					<FormInput
 						inputRef={inputRef}
 						type="number"
-						classNames="quantity-input"
+						classNames="amount-tendered-input"
 						id="amountTendered"
 						autoFocus
 					/>
@@ -67,7 +67,7 @@ export const PaymentForm = ({ inputRef, amountDue, onSubmit, onClose }: Props) =
 						label="Amount Due (₱)"
 						spacing
 					/>
-					<FormInput type="number" classNames="quantity-input" id="amountDue" disabled />
+					<FormInput type="number" classNames="amount-due-input" id="amountDue" disabled />
 
 					{Number(values?.amountTendered) - amountDue >= 0 && (
 						<Label

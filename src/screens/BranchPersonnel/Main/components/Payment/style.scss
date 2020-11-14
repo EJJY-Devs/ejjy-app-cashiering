@@ -66,14 +66,20 @@
 			}
 
 			.change-value {
-				font-size: 30px;
+				font-size: 20px;
 			}
 		}
 
-		.quantity-input {
-			font-weight: bold;
-			font-size: 30px;
+		input {
 			text-align: center;
+
+			&.amount-tendered-input {
+				font-size: 25px;
+			}
+
+			&.amount-due-input {
+				@include font(40px, bold);
+			}
 		}
 
 		.custom-footer {
