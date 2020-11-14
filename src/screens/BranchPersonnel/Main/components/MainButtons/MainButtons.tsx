@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
+import { NO_INDEX_SELECTED } from '../../../../../global/constants';
+import { request } from '../../../../../global/types';
+import { useCurrentTransaction } from '../../../../../hooks/useCurrentTransaction';
+import { useUI } from '../../../../../hooks/useUI';
+import { MainButton } from './MainButton';
 import { OthersModal } from './OthersModal';
+import './style.scss';
 
 interface Props {
 	onMidSession: any;
@@ -7,6 +13,15 @@ interface Props {
 }
 
 export const MainButtons = ({ onMidSession, onEndSession }: Props) => {
+	const {
+		transactionId,
+		products: transactionProducts,
+		createCurrentTransaction,
+		resetTransaction,
+		status: currentTransactionStatus,
+	} = useCurrentTransaction();
+	const { setTransactionIndex } = useUI();
+
 	const [othersModalVisible, setOthersModalVisible] = useState(false);
 
 	const onMidSessionModified = () => {
@@ -17,6 +32,11 @@ export const MainButtons = ({ onMidSession, onEndSession }: Props) => {
 	const onEndSessionModified = () => {
 		onEndSession();
 		setOthersModalVisible(false);
+	};
+
+	const onReset = () => {
+		setTransactionIndex(NO_INDEX_SELECTED);
+		resetTransaction();
 	};
 
 	return (
@@ -34,13 +54,25 @@ export const MainButtons = ({ onMidSession, onEndSession }: Props) => {
 			</div>
 
 			<div className="buttons-wrapper">
-				<button className="btn-hold">Hold</button>
-				<button className="btn-discount">Discount</button>
-				<button className="btn-reset">Reset</button>
-				<button className="btn-void">Void</button>
-				<button className="btn-others" onClick={() => setOthersModalVisible(true)}>
-					Others
-				</button>
+				<MainButton
+					title="Hold"
+					classNames="btn-hold"
+					disabled={transactionId || !transactionProducts.length}
+					onClick={createCurrentTransaction}
+					loading={currentTransactionStatus === request.REQUESTING}
+				/>
+
+				<MainButton title="Discount" onClick={() => null} />
+
+				<MainButton title="Reset" onClick={onReset} />
+
+				<MainButton title="Void" onClick={() => null} />
+
+				<MainButton
+					title="Others"
+					classNames="btn-others"
+					onClick={() => setOthersModalVisible(true)}
+				/>
 			</div>
 
 			<OthersModal

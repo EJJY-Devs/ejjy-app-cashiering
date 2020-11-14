@@ -4,13 +4,14 @@ import { debounce } from 'lodash';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import KeyboardEventHandler from 'react-keyboard-event-handler';
 import { ControlledInput } from '../../../../../components/elements';
+import { NO_INDEX_SELECTED } from '../../../../../global/constants';
 import { useBranchProducts } from '../../../../../hooks/useBranchProducts';
 import { useCurrentTransaction } from '../../../../../hooks/useCurrentTransaction';
 import { getBranchProductStatus, searchProductInfo } from '../../../../../utils/function';
 import { AddProductModal } from './AddProductModal';
+import './style.scss';
 
 const SEARCH_DEBOUNCE_TIME = 300;
-const INACTIVE_INDEX = -1;
 
 export const ProductSearch = () => {
 	const { products: transactionProducts } = useCurrentTransaction();
@@ -18,7 +19,7 @@ export const ProductSearch = () => {
 
 	const itemRefs = useRef([]);
 	const [searchableProducts, setSearchableProducts] = useState([]);
-	const [activeIndex, setActiveIndex] = useState(INACTIVE_INDEX);
+	const [activeIndex, setActiveIndex] = useState(NO_INDEX_SELECTED);
 	const [products, setProducts] = useState([]);
 	const [searchedKey, setSearchedKey] = useState('');
 	const [searchedSpin, setSearchedSpin] = useState(false);
@@ -32,7 +33,7 @@ export const ProductSearch = () => {
 
 	// Effect: Focus active item
 	useEffect(() => {
-		if (activeIndex !== INACTIVE_INDEX) {
+		if (activeIndex !== NO_INDEX_SELECTED) {
 			itemRefs.current?.[activeIndex]?.focus();
 		}
 	}, [activeIndex]);
@@ -47,7 +48,7 @@ export const ProductSearch = () => {
 		}
 
 		setProducts(filteredProducts);
-		setActiveIndex(INACTIVE_INDEX);
+		setActiveIndex(NO_INDEX_SELECTED);
 		setSearchedSpin(false);
 	};
 
@@ -65,7 +66,7 @@ export const ProductSearch = () => {
 	};
 
 	const handleKeyPress = (key) => {
-		if ((key === 'up' || key === 'down') && activeIndex === INACTIVE_INDEX) {
+		if ((key === 'up' || key === 'down') && activeIndex === NO_INDEX_SELECTED) {
 			setActiveIndex(0);
 			return;
 		}
@@ -83,7 +84,7 @@ export const ProductSearch = () => {
 			});
 		}
 
-		if (key === 'enter' && activeIndex !== INACTIVE_INDEX) {
+		if (key === 'enter' && activeIndex !== NO_INDEX_SELECTED) {
 			setAddProductModalVisible(true);
 		}
 

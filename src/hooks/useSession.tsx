@@ -14,6 +14,7 @@ export const useSession = () => {
 	const startSession = useActionDispatch(actions.startSession);
 	const endSession = useActionDispatch(actions.endSession);
 	const validateSession = useActionDispatch(actions.validateSession);
+	const invalidSession = useActionDispatch(actions.invalidSession);
 
 	const reset = () => {
 		resetError();
@@ -61,6 +62,7 @@ export const useSession = () => {
 		startSession: startSessionRequest,
 		endSession: endSessionRequest,
 		validateSession: validateSessionRequest,
+		invalidSession,
 		status,
 		errors,
 		recentRequest,

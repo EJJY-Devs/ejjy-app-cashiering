@@ -1,0 +1,96 @@
+@import '../../../../../assets/styles/main';
+@import '../../style.scss';
+
+.MainButtons {
+	margin-top: 50px;
+
+	.store-info-wrapper {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		column-gap: $spacing;
+
+		.label {
+			@include font(16px, bold);
+			color: $color-dark-gray;
+			margin-bottom: 5px;
+		}
+
+		.value {
+			@include font(25px, bold);
+			color: $color-dark;
+			margin: 0;
+		}
+	}
+
+	.buttons-wrapper {
+		margin-top: $spacing;
+		display: grid;
+		column-gap: $spacing;
+		row-gap: $spacing;
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+.MainButton {
+	background: $color-gray;
+	box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
+	border: 0;
+	border-radius: 10px;
+	@include font(30px, bold);
+	color: #858585;
+	padding: 35px 10px;
+	cursor: pointer;
+	outline: 0;
+
+	&:hover {
+		opacity: 0.7;
+	}
+
+	&.btn-others {
+		grid-column-start: 1;
+		grid-column-end: 3;
+	}
+
+	&.disabled {
+		opacity: 0.7;
+		pointer-events: none;
+		box-shadow: none;
+	}
+
+	.spinner {
+		line-height: 100%;
+	}
+}
+
+.OthersModal {
+	.other-button {
+		display: block;
+		width: 100%;
+		background: $color-gray;
+		box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
+		border: 0;
+		border-radius: 10px;
+		@include font(20px, bold);
+		color: #858585;
+		padding: 15px 10px;
+		cursor: pointer;
+		outline: 0;
+
+		&.disabled {
+			opacity: 0.7;
+			pointer-events: none;
+			box-shadow: none;
+		}
+
+		&:hover {
+			opacity: 0.7;
+		}
+
+		&.btn-end-session {
+			margin-top: 25px;
+			background-color: $color-red;
+			color: white;
+			box-shadow: 0px 4px 0px #ab363d !important;
+		}
+	}
+}

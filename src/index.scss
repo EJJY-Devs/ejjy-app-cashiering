@@ -22,6 +22,12 @@ body {
 }
 
 .ant-modal-root {
+	.ant-modal-header {
+		.ant-modal-title {
+			@include font(25px, bold);
+		}
+	}
+
 	.ant-modal.modal-large {
 		width: 100% !important;
 		min-width: 350px !important;

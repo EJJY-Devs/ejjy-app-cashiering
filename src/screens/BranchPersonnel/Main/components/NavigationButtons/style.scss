@@ -1,0 +1,65 @@
+@import '../../../../../assets/styles/main';
+@import '../../style.scss';
+
+.NavigationButtons {
+	@include flex(space-between, flex-end);
+	margin-top: auto;
+
+	.details {
+		.item {
+			@include flex;
+
+			&:not(:last-child) {
+				margin-bottom: 15px;
+			}
+
+			&.previous-sukli {
+				opacity: 0.5;
+			}
+
+			@include font(20px, bold);
+			color: $color-dark-gray;
+
+			.label {
+				min-width: 210px;
+				margin-bottom: 0;
+			}
+
+			.value {
+				margin: 0;
+			}
+		}
+	}
+
+	.buttons {
+		.NavigationButton {
+			background: $color-gray;
+			box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
+			border: 0;
+			border-radius: 10px;
+			@include font(30px, bold);
+			color: #858585;
+			padding: 33px 40px;
+			cursor: pointer;
+			outline: 0;
+
+			&:hover {
+				opacity: 0.7;
+			}
+
+			&.disabled {
+				opacity: 0.7;
+				pointer-events: none;
+				box-shadow: none;
+			}
+
+			.spinner {
+				line-height: 100%;
+			}
+
+			&.btn-prev {
+				margin-right: $spacing;
+			}
+		}
+	}
+}

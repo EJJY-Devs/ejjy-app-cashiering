@@ -13,3 +13,4 @@ export * from './Table/TableActions/TableActions';
 export * from './Table/TableHeaders/TableHeader';
 export * from './Table/TableHeaders/TableHeaderOrderSlip';
 export * from './TableNormal/TableNormal';
+export * from './TableNormalProducts/TableNormalProducts';

@@ -6,12 +6,13 @@ import { Button, FieldError, FormInput, Label } from '../../../../../components/
 import { sleep } from '../../../../../utils/function';
 
 interface Props {
+	inputRef?: any;
 	onSubmit: any;
 	onClose: any;
 	loading: boolean;
 }
 
-export const CashBreakdownForm = ({ onSubmit, onClose, loading }: Props) => {
+export const CashBreakdownForm = ({ inputRef, onSubmit, onClose, loading }: Props) => {
 	const [isSubmitting, setSubmitting] = useState(false);
 
 	const getFormDetails = useCallback(
@@ -77,7 +78,23 @@ export const CashBreakdownForm = ({ onSubmit, onClose, loading }: Props) => {
 			{({ errors, touched }) => (
 				<Form className="form">
 					<p className="title">Coins</p>
-					{getFieldInput('coins_25', '₱0.25', errors, touched)}
+					<div className="breakdown-field">
+						<Row gutter={[15, 0]} align="middle">
+							<Col md={14} xs={12}>
+								<Label classNames="breakdown-label" id="coins_25" label="₱0.25" spacing />
+							</Col>
+							<Col md={10} xs={12}>
+								<FormInput
+									inputRef={inputRef}
+									type="number"
+									classNames="breakdown-input"
+									id="coins_25"
+								/>
+							</Col>
+						</Row>
+						{errors?.coins_25 && touched?.coins_25 ? <FieldError error={errors?.coins_25} /> : null}
+					</div>
+
 					{getFieldInput('coins_50', '₱0.50', errors, touched)}
 					{getFieldInput('coins_1', '₱1.00', errors, touched)}
 					{getFieldInput('coins_5', '₱5.00', errors, touched)}

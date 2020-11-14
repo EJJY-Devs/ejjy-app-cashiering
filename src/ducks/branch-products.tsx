@@ -14,10 +14,19 @@ const initialState = {
 
 const reducer = handleActions(
 	{
-		[types.SAVE]: (state, { payload }) => ({
-			...state,
-			...payload,
-		}),
+		[types.SAVE]: (state, { payload }: any) => {
+			const { type } = payload;
+			let newData = {};
+
+			switch (type) {
+				case types.LIST_BRANCH_PRODUCTS: {
+					newData = { branchProducts: payload.branchProducts };
+					break;
+				}
+			}
+
+			return { ...state, ...newData };
+		},
 	},
 	initialState,
 );

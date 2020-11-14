@@ -1,7 +1,7 @@
+import cn from 'classnames';
 import { Field } from 'formik';
 import * as React from 'react';
 import './style.scss';
-import cn from 'classnames';
 
 export interface IInputProps {
 	id?: string;
@@ -12,6 +12,7 @@ export interface IInputProps {
 	min?: number;
 	classNames?: string;
 	autoFocus?: boolean;
+	inputRef?: any;
 }
 
 const FormInput = ({
@@ -23,8 +24,10 @@ const FormInput = ({
 	disabled,
 	autoFocus,
 	classNames,
+	inputRef,
 }: IInputProps) => (
 	<Field
+		innerRef={inputRef}
 		type={type}
 		id={id}
 		name={id}

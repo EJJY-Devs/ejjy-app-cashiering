@@ -1,32 +1,49 @@
 import { createAction, handleActions } from 'redux-actions';
 import { createSelector } from 'reselect';
+import { NO_INDEX_SELECTED } from '../global/constants';
 
 export const key = 'USER_INTEFACE';
 
 export const types = {
-	ON_COLLAPSE_SIDEBAR: `${key}/ON_COLLAPSE_SIDEBAR`,
+	SET_TRANSACTION_INDEX: `${key}/SET_TRANSACTION_INDEX`,
+	SET_MAIN_LOADING: `${key}/SET_MAIN_LOADING`,
+	SET_MAIN_LOADING_TEXT: `${key}/SET_MAIN_LOADING_TEXT`,
 };
 
 const initialState = {
-	isSidebarCollapsed: false,
+	transactionIndex: NO_INDEX_SELECTED,
+	mainLoading: false,
+	mainLoadingText: null,
 };
 
 const reducer = handleActions(
 	{
-		[types.ON_COLLAPSE_SIDEBAR]: (state, { payload }: any) => {
-			return { ...state, isSidebarCollapsed: payload };
+		[types.SET_TRANSACTION_INDEX]: (state, { payload }: any) => {
+			return { ...state, transactionIndex: payload };
+		},
+
+		[types.SET_MAIN_LOADING]: (state, { payload }: any) => {
+			return { ...state, mainLoading: payload };
+		},
+
+		[types.SET_MAIN_LOADING_TEXT]: (state, { payload }: any) => {
+			return { ...state, mainLoadingText: payload };
 		},
 	},
 	initialState,
 );
 
 export const actions = {
-	onCollapseSidebar: createAction(types.ON_COLLAPSE_SIDEBAR),
+	setTransactionIndex: createAction(types.SET_TRANSACTION_INDEX),
+	setMainLoading: createAction(types.SET_MAIN_LOADING),
+	setMainLoadingText: createAction(types.SET_MAIN_LOADING_TEXT),
 };
 
 const selectState = (state: any) => state[key] || initialState;
 export const selectors = {
-	selectIsSidebarCollapsed: () => createSelector(selectState, (state) => state.isSidebarCollapsed),
+	selectTransactionIndex: () => createSelector(selectState, (state) => state.transactionIndex),
+	selectMainLoading: () => createSelector(selectState, (state) => state.mainLoading),
+	selectMainLoadingText: () => createSelector(selectState, (state) => state.mainLoadingText),
 };
 
 export default reducer;

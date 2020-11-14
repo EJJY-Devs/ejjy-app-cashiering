@@ -6,13 +6,20 @@ import { Button, FieldError, FormInput, Label } from '../../../../../components/
 import { sleep } from '../../../../../utils/function';
 
 interface Props {
+	fieldLabel: string;
 	maxQuantity: number;
 	inputRef?: any;
 	onSubmit: any;
 	onClose: any;
 }
 
-export const AddProductForm = ({ maxQuantity, inputRef, onSubmit, onClose }: Props) => {
+export const EditProductForm = ({
+	fieldLabel,
+	maxQuantity,
+	inputRef,
+	onSubmit,
+	onClose,
+}: Props) => {
 	const [isSubmitting, setSubmitting] = useState(false);
 
 	const getFormDetails = useCallback(
@@ -43,7 +50,7 @@ export const AddProductForm = ({ maxQuantity, inputRef, onSubmit, onClose }: Pro
 		>
 			{({ errors, touched }) => (
 				<Form className="form">
-					<Label classNames="quantity-label" id="quantity" label="Quantity" spacing />
+					<Label classNames="quantity-label" id="quantity" label={fieldLabel} spacing />
 					<FormInput
 						inputRef={inputRef}
 						type="number"
