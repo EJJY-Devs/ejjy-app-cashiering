@@ -1,7 +1,8 @@
 import { message } from 'antd';
 import React, { useCallback, useState } from 'react';
-import { Button } from '../../../../../components/elements';
-import { useCurrentTransaction } from '../../../../../hooks/useCurrentTransaction';
+import { Button } from '../../../../components/elements';
+import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
+import { numberWithCommas } from '../../../../utils/function';
 import { InvoiceModal } from './InvoiceModal';
 import { PaymentModal } from './PaymentModal';
 import './style.scss';
@@ -46,7 +47,7 @@ export const Payment = () => {
 			<div className="payment-content">
 				<div className="text-wrapper">
 					<p className="label">Total</p>
-					<p className="value">{`₱${getTotal()?.toFixed(2)}`}</p>
+					<p className="value">{`₱${numberWithCommas(getTotal()?.toFixed(2))}`}</p>
 				</div>
 				<Button
 					classNames="btn-pay"

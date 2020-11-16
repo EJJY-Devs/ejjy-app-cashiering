@@ -2,8 +2,10 @@ import { Divider } from 'antd';
 import { Form, Formik } from 'formik';
 import React, { useCallback, useState } from 'react';
 import * as Yup from 'yup';
-import { Button, FieldError, FormInput, Label } from '../../../../../components/elements';
-import { sleep } from '../../../../../utils/function';
+import { Button, ControlledInput, FieldError, Label } from '../../../../components/elements';
+import { numberWithCommas, removeCommas, sleep } from '../../../../utils/function';
+import AmountTendered from './AmountTendered';
+import validator from 'validator';
 
 interface Props {
 	inputRef?: any;
@@ -19,10 +21,21 @@ export const PaymentForm = ({ inputRef, amountDue, onSubmit, onClose }: Props) =
 		() => ({
 			DefaultValues: {
 				amountTendered: '',
-				amountDue,
 			},
 			Schema: Yup.object().shape({
-				amountTendered: Yup.number().required().min(amountDue).label('Amount Tendered'),
+				amountTendered: Yup.string()
+					.test('valid-amount', 'Please input a valid amount.', function (value) {
+						return validator.isCurrency(removeCommas(value));
+					})
+					.test(
+						'below-amount-due',
+						`Amount must be greater than or equals to ₱${numberWithCommas(amountDue)}.`,
+						function (value) {
+							return removeCommas(value) > amountDue;
+						},
+					)
+					.required()
+					.label('Amount Tendered'),
 			}),
 		}),
 		[amountDue],
@@ -50,39 +63,31 @@ export const PaymentForm = ({ inputRef, amountDue, onSubmit, onClose }: Props) =
 						label="Amount Tendered (₱)"
 						spacing
 					/>
-					<FormInput
-						inputRef={inputRef}
-						type="number"
-						classNames="amount-tendered-input"
-						id="amountTendered"
-						autoFocus
-					/>
+					<AmountTendered inputRef={inputRef} id="amountTendered" autoFocus />
 					{errors.amountTendered && touched.amountTendered ? (
 						<FieldError error={errors.amountTendered} />
 					) : null}
 
-					<Label
-						classNames="quantity-label space-top"
-						id="amountDue"
-						label="Amount Due (₱)"
-						spacing
+					<Label classNames="quantity-label space-top" label="Amount Due (₱)" spacing />
+					<ControlledInput
+						classNames="amount-due-input"
+						value={numberWithCommas(amountDue)}
+						onChange={() => null}
+						disabled
 					/>
-					<FormInput type="number" classNames="amount-due-input" id="amountDue" disabled />
 
-					{Number(values?.amountTendered) - amountDue >= 0 && (
-						<Label
-							classNames="quantity-label space-top"
-							label={
-								<>
-									<span>Change: </span>
-									<span className="change-value">
-										₱{(Number(values?.amountTendered) - amountDue).toFixed(2)}
-									</span>
-								</>
-							}
-							spacing
-						/>
-					)}
+					<Label classNames="quantity-label space-top" label="Change" spacing />
+					<ControlledInput
+						value={
+							removeCommas(values?.amountTendered) - amountDue < 0
+								? 0
+								: `₱${numberWithCommas(
+										(removeCommas(values?.amountTendered) - amountDue).toFixed(2),
+								  )}`
+						}
+						onChange={() => null}
+						disabled
+					/>
 
 					<Divider />
 

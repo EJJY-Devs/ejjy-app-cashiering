@@ -1,10 +1,10 @@
 import { Divider, message, Modal, Spin } from 'antd';
 import React, { useCallback, useEffect, useRef } from 'react';
-import { DetailsRow, DetailsSingle } from '../../../../../components';
-import { request } from '../../../../../global/types';
-import { useBranchProducts } from '../../../../../hooks/useBranchProducts';
-import { useCurrentTransaction } from '../../../../../hooks/useCurrentTransaction';
-import { useTransactions } from '../../../../../hooks/useTransactions';
+import { DetailsRow, DetailsSingle } from '../../../../components';
+import { request } from '../../../../global/types';
+import { useBranchProducts } from '../../../../hooks/useBranchProducts';
+import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
+import { useTransactions } from '../../../../hooks/useTransactions';
 import { EditProductForm } from './EditProductForm';
 import { editTypes } from './ProductTable';
 import './style.scss';

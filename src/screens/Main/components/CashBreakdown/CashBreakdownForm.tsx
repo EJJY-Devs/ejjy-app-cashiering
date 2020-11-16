@@ -2,8 +2,8 @@ import { Col, Divider, Row } from 'antd';
 import { Form, Formik } from 'formik';
 import React, { useCallback, useState } from 'react';
 import * as Yup from 'yup';
-import { Button, FieldError, FormInput, Label } from '../../../../../components/elements';
-import { sleep } from '../../../../../utils/function';
+import { Button, FieldError, FormInput, Label } from '../../../../components/elements';
+import { sleep } from '../../../../utils/function';
 
 interface Props {
 	inputRef?: any;

@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { message, Modal } from 'antd';
 import React, { useEffect, useRef } from 'react';
-import { FieldError } from '../../../../../components/elements';
-import { types as cashBreakdownsRequestTypes } from '../../../../../ducks/cash-breakdowns';
-import { request } from '../../../../../global/types';
-import { useCashBreakdown } from '../../../../../hooks/useCashBreakdown';
+import { FieldError } from '../../../../components/elements';
+import { types as cashBreakdownsRequestTypes } from '../../../../ducks/cash-breakdowns';
+import { request } from '../../../../global/types';
+import { useCashBreakdown } from '../../../../hooks/useCashBreakdown';
 import { CashBreakdownForm } from './CashBreakdownForm';
 import './style.scss';
 

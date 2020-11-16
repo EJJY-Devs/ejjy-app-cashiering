@@ -1,4 +1,4 @@
-@import '../../../../../assets/styles/main';
+@import '../../../../assets/styles/main';
 
 .Payment {
 	.payment-content {
@@ -72,13 +72,11 @@
 
 		input {
 			text-align: center;
-
-			&.amount-tendered-input {
-				font-size: 25px;
-			}
+			font-size: 25px;
 
 			&.amount-due-input {
-				@include font(40px, bold);
+				@include font(100px, bold);
+				color: red;
 			}
 		}
 

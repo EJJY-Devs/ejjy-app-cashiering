@@ -1,9 +1,9 @@
 import { Modal, Spin } from 'antd';
 import React, { useEffect, useRef } from 'react';
-import { request } from '../../../../../global/types';
-import { useCurrentTransaction } from '../../../../../hooks/useCurrentTransaction';
-import { useSession } from '../../../../../hooks/useSession';
-import { useTransactions } from '../../../../../hooks/useTransactions';
+import { request } from '../../../../global/types';
+import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
+import { useSession } from '../../../../hooks/useSession';
+import { useTransactions } from '../../../../hooks/useTransactions';
 import { PaymentForm } from './PaymentForm';
 import './style.scss';
 

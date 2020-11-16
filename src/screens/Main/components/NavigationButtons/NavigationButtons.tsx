@@ -2,12 +2,12 @@
 import { CaretLeftOutlined, CaretRightOutlined } from '@ant-design/icons';
 import cn from 'classnames';
 import React, { useEffect } from 'react';
-import { NO_INDEX_SELECTED } from '../../../../../global/constants';
-import { navigationTypes } from '../../../../../global/types';
-import { useBranchProducts } from '../../../../../hooks/useBranchProducts';
-import { useCurrentTransaction } from '../../../../../hooks/useCurrentTransaction';
-import { useTransactions } from '../../../../../hooks/useTransactions';
-import { useUI } from '../../../../../hooks/useUI';
+import { NO_INDEX_SELECTED } from '../../../../global/constants';
+import { navigationTypes } from '../../../../global/types';
+import { useBranchProducts } from '../../../../hooks/useBranchProducts';
+import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
+import { useTransactions } from '../../../../hooks/useTransactions';
+import { useUI } from '../../../../hooks/useUI';
 import './style.scss';
 
 export const NavigationButtons = () => {

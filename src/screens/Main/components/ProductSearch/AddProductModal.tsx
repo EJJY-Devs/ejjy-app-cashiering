@@ -1,6 +1,6 @@
 import { message, Modal } from 'antd';
 import React, { useEffect, useRef } from 'react';
-import { useCurrentTransaction } from '../../../../../hooks/useCurrentTransaction';
+import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import { AddProductForm } from './AddProductForm';
 import './style.scss';
 

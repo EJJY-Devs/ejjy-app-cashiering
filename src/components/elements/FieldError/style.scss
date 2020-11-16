@@ -14,6 +14,6 @@
 	.text {
 		margin-left: 5px;
 		color: $color-red;
-		@include font(0.75rem);
+		@include font(1rem);
 	}
 }

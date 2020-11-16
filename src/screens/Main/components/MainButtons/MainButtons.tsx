@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { NO_INDEX_SELECTED } from '../../../../../global/constants';
-import { request } from '../../../../../global/types';
-import { useCurrentTransaction } from '../../../../../hooks/useCurrentTransaction';
-import { useUI } from '../../../../../hooks/useUI';
+import { NO_INDEX_SELECTED } from '../../../../global/constants';
+import { request } from '../../../../global/types';
+import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
+import { useUI } from '../../../../hooks/useUI';
 import { MainButton } from './MainButton';
 import { OthersModal } from './OthersModal';
 import './style.scss';

@@ -2,18 +2,19 @@
 import { message } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
 import KeyboardEventHandler from 'react-keyboard-event-handler';
-import { CancelButtonIcon, TableNormalProducts } from '../../../../../components';
-import { useBranchProducts } from '../../../../../hooks/useBranchProducts';
-import { useCurrentTransaction } from '../../../../../hooks/useCurrentTransaction';
+import { CancelButtonIcon, TableNormalProducts } from '../../../../components';
+import { useBranchProducts } from '../../../../hooks/useBranchProducts';
+import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
+import { numberWithCommas } from '../../../../utils/function';
 import { EditProductModal } from './EditProductModal';
 import './style.scss';
 
 const columns = [
 	{ name: '', width: '1px' },
 	{ name: 'Item', width: '40%' },
-	{ name: 'Qty', center: true },
-	{ name: 'Rate', center: true },
-	{ name: 'Amount', center: true },
+	{ name: 'Qty' },
+	{ name: 'Rate' },
+	{ name: 'Amount' },
 ];
 
 const NO_INDEX_SELECTED = -1;
@@ -38,8 +39,8 @@ export const ProductTable = () => {
 			<CancelButtonIcon tooltip="Remove" onClick={() => removeProduct({ id: item.id })} />,
 			item.productName,
 			item.quantity.toFixed(3),
-			`₱${item.pricePerPiece.toFixed(2)}`,
-			`₱${(item.quantity * item.pricePerPiece).toFixed(2)}`,
+			`₱${numberWithCommas(item.pricePerPiece.toFixed(2))}`,
+			`₱${numberWithCommas((item.quantity * item.pricePerPiece).toFixed(2))}`,
 		]);
 
 		setData(formattedProducts);

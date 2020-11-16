@@ -3,11 +3,11 @@ import cn from 'classnames';
 import { debounce } from 'lodash';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import KeyboardEventHandler from 'react-keyboard-event-handler';
-import { ControlledInput } from '../../../../../components/elements';
-import { NO_INDEX_SELECTED } from '../../../../../global/constants';
-import { useBranchProducts } from '../../../../../hooks/useBranchProducts';
-import { useCurrentTransaction } from '../../../../../hooks/useCurrentTransaction';
-import { getBranchProductStatus, searchProductInfo } from '../../../../../utils/function';
+import { ControlledInput } from '../../../../components/elements';
+import { NO_INDEX_SELECTED } from '../../../../global/constants';
+import { useBranchProducts } from '../../../../hooks/useBranchProducts';
+import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
+import { getBranchProductStatus, searchProductInfo } from '../../../../utils/function';
 import { AddProductModal } from './AddProductModal';
 import './style.scss';
 

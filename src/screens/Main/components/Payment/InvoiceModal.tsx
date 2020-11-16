@@ -1,7 +1,7 @@
 import { Modal } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { DetailsRow, DetailsSingle, TableNormal } from '../../../../../components';
-import { useCurrentTransaction } from '../../../../../hooks/useCurrentTransaction';
+import { DetailsRow, DetailsSingle, TableNormal } from '../../../../components';
+import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import './style.scss';
 
 interface Props {
