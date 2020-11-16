@@ -113,11 +113,13 @@ export const searchProductInfo = (value, product) => {
 	const name = product?.name?.toLowerCase() ?? '';
 	const barcode = product?.barcode?.toLowerCase() ?? '';
 	const textcode = product?.textcode?.toLowerCase() ?? '';
+	const description = product?.description?.toLowerCase() ?? '';
 
 	return (
 		name.includes(searchedValue) ||
 		barcode.includes(searchedValue) ||
-		textcode.includes(searchedValue)
+		textcode.includes(searchedValue) ||
+		description.includes(searchedValue)
 	);
 };
 

@@ -31,6 +31,7 @@ export const AddProductModal = ({ product, visible, onClose, onSuccess }: Props)
 				id: product.id,
 				productId: product.product.id,
 				productName: product.product.name,
+				productDescription: product.product.description,
 				pricePerPiece: product.price_per_piece,
 				quantity: data.quantity,
 			},

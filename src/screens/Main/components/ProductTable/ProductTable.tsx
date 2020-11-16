@@ -1,10 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { message } from 'antd';
-import React, { useCallback, useEffect, useState } from 'react';
+import { message, Tooltip } from 'antd';
+import React, { useEffect, useState } from 'react';
 import KeyboardEventHandler from 'react-keyboard-event-handler';
 import { CancelButtonIcon, TableNormalProducts } from '../../../../components';
+import { request } from '../../../../global/types';
 import { useBranchProducts } from '../../../../hooks/useBranchProducts';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
+import { useTransactions } from '../../../../hooks/useTransactions';
 import { numberWithCommas } from '../../../../utils/function';
 import { EditProductModal } from './EditProductModal';
 import './style.scss';
@@ -25,19 +27,22 @@ export const editTypes = {
 };
 
 export const ProductTable = () => {
+	const { transactionId, products, removeProduct, setCurrentTransaction } = useCurrentTransaction();
 	const { branchProducts } = useBranchProducts();
-	const { products, removeProduct } = useCurrentTransaction();
+	const { updateTransaction, status } = useTransactions();
 
 	const [selectedProductIndex, setSelectedProductIndex] = useState(NO_INDEX_SELECTED);
 	const [editProductModalVisible, setEditProductModalVisible] = useState(false);
-	const [editType, setEditType] = useState(null);
+
 	const [data, setData] = useState([]);
 
 	// Effect: Format product data
 	useEffect(() => {
 		const formattedProducts = products.map((item) => [
-			<CancelButtonIcon tooltip="Remove" onClick={() => removeProduct({ id: item.id })} />,
-			item.productName,
+			<CancelButtonIcon tooltip="Remove" onClick={() => onRemoveProduct(item.id)} />,
+			<Tooltip placement="top" title={item.productDescription}>
+				{item.productName}
+			</Tooltip>,
 			item.quantity.toFixed(3),
 			`₱${numberWithCommas(item.pricePerPiece.toFixed(2))}`,
 			`₱${numberWithCommas((item.quantity * item.pricePerPiece).toFixed(2))}`,
@@ -46,27 +51,29 @@ export const ProductTable = () => {
 		setData(formattedProducts);
 	}, [products]);
 
-	const canAddQuantity = useCallback(() => {
-		const product = products?.[selectedProductIndex];
-		if (selectedProductIndex !== NO_INDEX_SELECTED && product) {
-			const branchProduct = branchProducts.find(
-				(bProduct) => bProduct.product?.id === product.productId,
+	const onRemoveProduct = (id) => {
+		if (transactionId) {
+			updateTransaction(
+				{
+					transactionId,
+					products: products
+						.filter((item) => item.id !== id)
+						.map((item) => ({
+							transaction_product_id: item.transactionProductId,
+							product_id: item.productId,
+							quantity: item.quantity,
+						})),
+				},
+				({ status, transaction }) => {
+					if (status === request.SUCCESS) {
+						setCurrentTransaction({ transaction, branchProducts });
+					}
+				},
 			);
-
-			return product.quantity < branchProduct.current_balance;
+		} else {
+			removeProduct({ id });
 		}
-
-		return false;
-	}, [selectedProductIndex, products, branchProducts]);
-
-	const canDeductQuantity = useCallback(() => {
-		const product = products?.[selectedProductIndex];
-		if (selectedProductIndex !== NO_INDEX_SELECTED && product) {
-			return product.quantity > 1;
-		}
-
-		return false;
-	}, [selectedProductIndex, products]);
+	};
 
 	const onHover = (index) => {
 		setSelectedProductIndex(index);
@@ -79,50 +86,36 @@ export const ProductTable = () => {
 	};
 
 	const handleKeyPress = (key) => {
-		if (['f1', 'f2'].includes(key) && selectedProductIndex === NO_INDEX_SELECTED) {
+		if (key === 'f1' && selectedProductIndex === NO_INDEX_SELECTED) {
 			message.error('Please select a product from the table first.');
 			return;
-		}
-
-		if (key === 'f1' && !canAddQuantity()) {
-			message.error('Product quantity already reached maximum remaining stocks.');
-			return;
-		}
-
-		if (key === 'f2' && !canDeductQuantity()) {
-			message.error('Product must have at least one (1) quantity.');
-			return;
-		}
-
-		if (key === 'f1') {
-			setEditType(editTypes.ADD);
-		}
-
-		if (key === 'f2') {
-			setEditType(editTypes.DEDUCT);
 		}
 
 		setEditProductModalVisible(true);
 	};
 
 	const onEditProductSuccess = () => {
-		setEditType(null);
 		setSelectedProductIndex(NO_INDEX_SELECTED);
 	};
 
 	return (
 		<div className="ProductTable">
 			<KeyboardEventHandler
-				handleKeys={['f1', 'f2']}
+				handleKeys={['f1']}
 				onKeyEvent={(key, e) => handleKeyPress(key)}
 				isDisabled={!products.length}
 			/>
 
-			<TableNormalProducts columns={columns} data={data} onHover={onHover} onExit={onExit} />
+			<TableNormalProducts
+				columns={columns}
+				data={data}
+				onHover={onHover}
+				onExit={onExit}
+				loading={status === request.REQUESTING}
+			/>
 
 			<EditProductModal
 				product={products?.[selectedProductIndex]}
-				editType={editType}
 				visible={editProductModalVisible}
 				onSuccess={onEditProductSuccess}
 				onClose={() => setEditProductModalVisible(false)}

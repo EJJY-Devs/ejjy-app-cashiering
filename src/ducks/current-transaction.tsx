@@ -87,6 +87,7 @@ const reducer = handleActions(
 					id: branchProduct?.id,
 					productId: item.product.id,
 					productName: item.product.name,
+					productDescription: item.product.description,
 					pricePerPiece: branchProduct?.price_per_piece,
 					quantity: item.quantity,
 				};

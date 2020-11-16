@@ -6,18 +6,16 @@ import { useBranchProducts } from '../../../../hooks/useBranchProducts';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import { useTransactions } from '../../../../hooks/useTransactions';
 import { EditProductForm } from './EditProductForm';
-import { editTypes } from './ProductTable';
 import './style.scss';
 
 interface Props {
 	product: any;
-	editType: any;
 	visible: boolean;
 	onSuccess: any;
 	onClose: any;
 }
 
-export const EditProductModal = ({ product, editType, visible, onClose, onSuccess }: Props) => {
+export const EditProductModal = ({ product, visible, onClose, onSuccess }: Props) => {
 	const { branchProducts } = useBranchProducts();
 	const { updateTransaction, status } = useTransactions();
 	const { products, transactionId, editProduct, setCurrentTransaction } = useCurrentTransaction();
@@ -33,11 +31,12 @@ export const EditProductModal = ({ product, editType, visible, onClose, onSucces
 		}
 	}, [visible, inputRef]);
 
-	const getBalance = useCallback(() => {
+	const getMaxQuantity = useCallback(() => {
 		if (branchProducts.length && product) {
 			const branchProduct = branchProducts.find(
 				(bProduct) => bProduct.product?.id === product.productId,
 			);
+
 			if (branchProduct) {
 				return branchProduct.current_balance;
 			}
@@ -46,27 +45,8 @@ export const EditProductModal = ({ product, editType, visible, onClose, onSucces
 		return 0;
 	}, [branchProducts, product]);
 
-	const getMaxQuantity = useCallback(() => {
-		if (branchProducts.length && product) {
-			const branchProduct = branchProducts.find(
-				(bProduct) => bProduct.product?.id === product.productId,
-			);
-
-			if (branchProduct) {
-				return editType === editTypes.ADD
-					? branchProduct.current_balance - product.quantity
-					: product.quantity - 1;
-			}
-		}
-
-		return 0;
-	}, [branchProducts, editType, product]);
-
 	const onSubmit = (data) => {
-		const quantity =
-			editType === editTypes.ADD
-				? product.quantity + data.quantity
-				: product.quantity - data.quantity;
+		const quantity = data.quantity;
 
 		const callback = () => {
 			message.success('Product sucessfully edited.');
@@ -126,24 +106,11 @@ export const EditProductModal = ({ product, editType, visible, onClose, onSucces
 						label="Product Name:"
 						value={product?.productName}
 					/>
-					<DetailsSingle
-						classNamesLabel="label"
-						classNamesValue="value"
-						label="Balance:"
-						value={getBalance()}
-					/>
-					<DetailsSingle
-						classNamesLabel="label"
-						classNamesValue="value"
-						label="Curr Quantity:"
-						value={product?.quantity}
-					/>
 				</DetailsRow>
 
 				<Divider dashed />
 
 				<EditProductForm
-					fieldLabel={editType === editTypes.ADD ? 'Add Quantity' : 'Deduct Quantity'}
 					inputRef={(el) => (inputRef.current = el)}
 					maxQuantity={getMaxQuantity()}
 					onSubmit={onSubmit}

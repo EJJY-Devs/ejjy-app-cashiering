@@ -1,10 +1,11 @@
-import { Spin } from 'antd';
+import { message, Spin } from 'antd';
 import cn from 'classnames';
 import { debounce } from 'lodash';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import KeyboardEventHandler from 'react-keyboard-event-handler';
 import { ControlledInput } from '../../../../components/elements';
 import { NO_INDEX_SELECTED } from '../../../../global/constants';
+import { branchProductStatus } from '../../../../global/types';
 import { useBranchProducts } from '../../../../hooks/useBranchProducts';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import { getBranchProductStatus, searchProductInfo } from '../../../../utils/function';
@@ -85,12 +86,28 @@ export const ProductSearch = () => {
 		}
 
 		if (key === 'enter' && activeIndex !== NO_INDEX_SELECTED) {
-			setAddProductModalVisible(true);
+			onSelectProduct();
 		}
 
 		if (key === 'esc') {
 			setSearchedKey('');
 		}
+	};
+
+	const onSelectProduct = () => {
+		const product = products?.[activeIndex];
+
+		if (!product) {
+			message.error('Please select a product first.');
+			return;
+		}
+
+		if (product?.product_status === branchProductStatus.OUT_OF_STOCK) {
+			message.error('Product is already out of stock.');
+			return;
+		}
+
+		setAddProductModalVisible(true);
 	};
 
 	const onAddProductSuccess = () => {
@@ -113,7 +130,7 @@ export const ProductSearch = () => {
 						setSearchedKey(value);
 						debounceSearchedChange(value);
 					}}
-					placeholder="Search product by name, barcode or textcode"
+					placeholder="Search by name, barcode, textcode or description"
 				/>
 
 				{!!searchedKey.length && (
@@ -126,7 +143,7 @@ export const ProductSearch = () => {
 									key={index}
 									className={cn('item', { active: activeIndex === index })}
 									onMouseEnter={() => handleHover(index)}
-									onClick={() => setAddProductModalVisible(true)}
+									onClick={onSelectProduct}
 								>
 									<div className="name-wrapper">
 										<p className="product-name">{item?.product?.name}</p>

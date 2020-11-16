@@ -6,20 +6,13 @@ import { Button, FieldError, FormInput, Label } from '../../../../components/ele
 import { sleep } from '../../../../utils/function';
 
 interface Props {
-	fieldLabel: string;
 	maxQuantity: number;
 	inputRef?: any;
 	onSubmit: any;
 	onClose: any;
 }
 
-export const EditProductForm = ({
-	fieldLabel,
-	maxQuantity,
-	inputRef,
-	onSubmit,
-	onClose,
-}: Props) => {
+export const EditProductForm = ({ maxQuantity, inputRef, onSubmit, onClose }: Props) => {
 	const [isSubmitting, setSubmitting] = useState(false);
 
 	const getFormDetails = useCallback(
@@ -28,7 +21,11 @@ export const EditProductForm = ({
 				quantity: '',
 			},
 			Schema: Yup.object().shape({
-				quantity: Yup.number().required().min(1).max(maxQuantity).label('Quantity'),
+				quantity: Yup.number()
+					.required()
+					.min(1)
+					.max(maxQuantity, 'Cannot proceed with that quantity.')
+					.label('Quantity'),
 			}),
 		}),
 		[maxQuantity],
@@ -50,7 +47,7 @@ export const EditProductForm = ({
 		>
 			{({ errors, touched }) => (
 				<Form className="form">
-					<Label classNames="quantity-label" id="quantity" label={fieldLabel} spacing />
+					<Label classNames="quantity-label" id="quantity" label="New Quantity" spacing />
 					<FormInput
 						inputRef={inputRef}
 						type="number"

@@ -154,7 +154,6 @@ const Main = () => {
 					<div className="left">
 						<ProductSearch />
 						<ProductTable />
-						<NavigationButtons />
 					</div>
 					<div className="right">
 						<Payment />
