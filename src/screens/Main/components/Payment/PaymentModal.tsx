@@ -17,7 +17,7 @@ interface Props {
 export const PaymentModal = ({ amountDue, visible, onClose, onSuccess }: Props) => {
 	const { session } = useSession();
 	const { transactionId, products: transactionProducts } = useCurrentTransaction();
-	const { firstTimePayment, status } = useTransactions();
+	const { payTransaction, firstTimePayment, status } = useTransactions();
 
 	const inputRef = useRef(null);
 
@@ -47,7 +47,12 @@ export const PaymentModal = ({ amountDue, visible, onClose, onSuccess }: Props) 
 		};
 
 		if (transactionId) {
-			// TODO: Implement on next sprint
+			payTransaction(data, ({ status }) => {
+				if (status === request.SUCCESS) {
+					onSuccess();
+					onClose();
+				}
+			});
 		} else {
 			firstTimePayment(data, ({ status, response }) => {
 				if (status === request.SUCCESS) {

@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { NO_INDEX_SELECTED } from '../../../../global/constants';
-import { request } from '../../../../global/types';
+import { request, transactionStatus } from '../../../../global/types';
+import { useBranchProducts } from '../../../../hooks/useBranchProducts';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
+import { useSession } from '../../../../hooks/useSession';
+import { useTransactions } from '../../../../hooks/useTransactions';
 import { useUI } from '../../../../hooks/useUI';
 import { MainButton } from './MainButton';
 import { OthersModal } from './OthersModal';
@@ -13,14 +15,20 @@ interface Props {
 }
 
 export const MainButtons = ({ onMidSession, onEndSession }: Props) => {
+	const { session } = useSession();
 	const {
 		transactionId,
+		isFullyPaid,
+		transactionStatus: transStatus,
 		products: transactionProducts,
 		createCurrentTransaction,
+		setCurrentTransaction,
 		resetTransaction,
 		status: currentTransactionStatus,
 	} = useCurrentTransaction();
-	const { setTransactionIndex } = useUI();
+	const { voidTransaction } = useTransactions();
+	const { branchProducts } = useBranchProducts();
+	const { setMainLoading, setMainLoadingText } = useUI();
 
 	const [othersModalVisible, setOthersModalVisible] = useState(false);
 
@@ -35,8 +43,34 @@ export const MainButtons = ({ onMidSession, onEndSession }: Props) => {
 	};
 
 	const onReset = () => {
-		setTransactionIndex(NO_INDEX_SELECTED);
 		resetTransaction();
+	};
+
+	const onVoid = () => {
+		setMainLoading(true);
+		setMainLoadingText('Setting transaction to void...');
+
+		const products = transactionProducts.map((product) => ({
+			product_id: product.productId,
+			quantity: product.quantity,
+		}));
+
+		const data = {
+			branchId: session?.branch_machine?.branch_id,
+			branchMachineId: session.branch_machine.id,
+			tellerId: session.user_id,
+			dummyClientId: 1, // TODO: Update on next sprint
+			products,
+			transactionId,
+		};
+
+		voidTransaction(data, ({ status, transaction }) => {
+			if (status === request.SUCCESS) {
+				setMainLoading(false);
+				setMainLoadingText(null);
+				setCurrentTransaction({ transaction, branchProducts });
+			}
+		});
 	};
 
 	return (
@@ -66,7 +100,11 @@ export const MainButtons = ({ onMidSession, onEndSession }: Props) => {
 
 				<MainButton title="Reset" onClick={onReset} />
 
-				<MainButton title="Void" onClick={() => null} />
+				<MainButton
+					title="Void"
+					onClick={onVoid}
+					disabled={!isFullyPaid || transStatus === transactionStatus.VOID}
+				/>
 
 				<MainButton
 					title="Others"

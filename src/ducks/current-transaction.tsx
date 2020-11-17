@@ -21,6 +21,7 @@ const initialState = {
 	clientId: null,
 	totalPaidAmount: 0,
 	invoiceId: null,
+	status: null,
 };
 
 const reducer = handleActions(
@@ -70,6 +71,7 @@ const reducer = handleActions(
 				clientId: transaction.client_id,
 				isFullyPaid: transaction.is_fully_paid,
 				totalPaidAmount: transaction.total_paid_amount,
+				status: transaction.status,
 				products,
 			};
 
@@ -99,6 +101,7 @@ const reducer = handleActions(
 				clientId: transaction.client_id,
 				isFullyPaid: transaction.is_fully_paid,
 				totalPaidAmount: transaction.total_paid_amount,
+				status: transaction.status,
 				products,
 			};
 
@@ -130,6 +133,7 @@ export const selectors = {
 	selectTotalPaidAmount: () => createSelector(selectState, (state) => state.totalPaidAmount),
 	selectInvoiceId: () => createSelector(selectState, (state) => state.invoiceId),
 	selectTransactionId: () => createSelector(selectState, (state) => state.transactionId),
+	selectTransactionStatus: () => createSelector(selectState, (state) => state.status),
 };
 
 export default reducer;

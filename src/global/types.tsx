@@ -27,3 +27,9 @@ export const navigationTypes = {
 	PREVIOUS: -1,
 	NEXT: 1,
 };
+
+export const transactionStatus = {
+	FULLY_PAID: 'fully_paid',
+	HOLD: 'hold',
+	VOID: 'void',
+};

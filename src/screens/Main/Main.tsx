@@ -8,7 +8,6 @@ import { useBranchProducts } from '../../hooks/useBranchProducts';
 import { useCashBreakdown } from '../../hooks/useCashBreakdown';
 import { useCurrentTransaction } from '../../hooks/useCurrentTransaction';
 import { useSession } from '../../hooks/useSession';
-import { useTransactions } from '../../hooks/useTransactions';
 import { useUI } from '../../hooks/useUI';
 import { CashBreakdownModal } from './components/CashBreakdown/CashBreakdownModal';
 import { MainButtons } from './components/MainButtons/MainButtons';
@@ -35,7 +34,6 @@ const Main = () => {
 		recentRequest: cashBreakdownRecentRequest,
 	} = useCashBreakdown();
 	const { listBranchProducts, status: branchProductsStatus } = useBranchProducts();
-	const { listTransactions, status: transactionsStatus } = useTransactions();
 	const { mainLoading, mainLoadingText } = useUI();
 
 	// States
@@ -57,7 +55,6 @@ const Main = () => {
 				if (response) {
 					listCashBreakdown(session?.id);
 					listBranchProducts(session?.branch_machine?.branch_id);
-					listTransactions(session?.branch_machine?.id);
 				} else {
 					invalidSession();
 				}
@@ -82,15 +79,13 @@ const Main = () => {
 	const isLoading = useCallback(
 		() =>
 			mainLoading ||
-			[cashBreakdownStatus, branchProductsStatus, sessionStatus, transactionsStatus].includes(
-				request.REQUESTING,
-			),
+			[cashBreakdownStatus, branchProductsStatus, sessionStatus].includes(request.REQUESTING),
 		[
 			cashBreakdownStatus,
 			cashBreakdownRecentRequest,
 			branchProductsStatus,
 			sessionStatus,
-			transactionsStatus,
+
 			mainLoading,
 		],
 	);
@@ -106,9 +101,7 @@ const Main = () => {
 			}
 		}
 
-		if (
-			[cashBreakdownStatus, branchProductsStatus, transactionsStatus].includes(request.REQUESTING)
-		) {
+		if ([cashBreakdownStatus, branchProductsStatus].includes(request.REQUESTING)) {
 			return 'Fetching data...';
 		}
 
@@ -117,7 +110,6 @@ const Main = () => {
 		}
 	}, [
 		branchProductsStatus,
-		transactionsStatus,
 		cashBreakdownStatus,
 		cashBreakdownRecentRequest,
 
@@ -154,6 +146,7 @@ const Main = () => {
 					<div className="left">
 						<ProductSearch />
 						<ProductTable />
+						<NavigationButtons />
 					</div>
 					<div className="right">
 						<Payment />

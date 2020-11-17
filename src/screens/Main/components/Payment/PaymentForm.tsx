@@ -31,7 +31,7 @@ export const PaymentForm = ({ inputRef, amountDue, onSubmit, onClose }: Props) =
 						'below-amount-due',
 						`Amount must be greater than or equals to ₱${numberWithCommas(amountDue)}.`,
 						function (value) {
-							return removeCommas(value) > amountDue;
+							return removeCommas(value) >= amountDue;
 						},
 					)
 					.required()
