@@ -12,9 +12,12 @@ export const useTransactions = () => {
 	const transactions = useSelector(selectors.selectTransactions());
 
 	const listTransactions = useActionDispatch(actions.listTransactions);
+	const getTransaction = useActionDispatch(actions.getTransaction);
 	const createTransaction = useActionDispatch(actions.createTransaction);
 	const updateTransaction = useActionDispatch(actions.updateTransaction);
+	const payTransaction = useActionDispatch(actions.payTransaction);
 	const firstTimePayment = useActionDispatch(actions.firstTimePayment);
+	const voidTransaction = useActionDispatch(actions.voidTransaction);
 
 	const reset = () => {
 		resetError();
@@ -25,11 +28,20 @@ export const useTransactions = () => {
 
 	const resetStatus = () => setStatus(request.NONE);
 
-	const listTransactionsRequest = (branchId, extraCallback = null) => {
+	const listTransactionsRequest = (data, extraCallback = null) => {
 		setRecentRequest(types.LIST_TRANSACTIONS);
 
 		listTransactions({
-			branchId,
+			...data,
+			callback: modifiedExtraCallback(callback, extraCallback),
+		});
+	};
+
+	const getTransactionRequest = (transactionId, extraCallback = null) => {
+		setRecentRequest(types.GET_TRANSACTION);
+
+		getTransaction({
+			transactionId,
 			callback: modifiedExtraCallback(callback, extraCallback),
 		});
 	};
@@ -52,10 +64,28 @@ export const useTransactions = () => {
 		});
 	};
 
+	const payTransactionRequest = (data, extraCallback = null) => {
+		setRecentRequest(types.PAY_TRANSACTION);
+
+		payTransaction({
+			...data,
+			callback: modifiedExtraCallback(callback, extraCallback),
+		});
+	};
+
 	const firstTimePaymentRequest = (data, extraCallback = null) => {
 		setRecentRequest(types.FIRST_TIME_PAYMENT);
 
 		firstTimePayment({
+			...data,
+			callback: modifiedExtraCallback(callback, extraCallback),
+		});
+	};
+
+	const voidTransactionRequest = (data, extraCallback = null) => {
+		setRecentRequest(types.VOID_TRANSACTION);
+
+		voidTransaction({
 			...data,
 			callback: modifiedExtraCallback(callback, extraCallback),
 		});
@@ -69,9 +99,12 @@ export const useTransactions = () => {
 	return {
 		transactions,
 		listTransactions: listTransactionsRequest,
+		getTransaction: getTransactionRequest,
 		createTransaction: createTransactionRequest,
 		updateTransaction: updateTransactionRequest,
+		payTransaction: payTransactionRequest,
 		firstTimePayment: firstTimePaymentRequest,
+		voidTransaction: voidTransactionRequest,
 		status,
 		errors,
 		recentRequest,

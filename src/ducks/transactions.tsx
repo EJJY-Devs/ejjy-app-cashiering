@@ -7,6 +7,7 @@ export const key = 'TRANSACTIONS';
 export const types = {
 	SAVE: `${key}/SAVE`,
 	LIST_TRANSACTIONS: `${key}/LIST_TRANSACTIONS`,
+	GET_TRANSACTION: `${key}/GET_TRANSACTION`,
 	HOLD_TRANSACTION: `${key}/HOLD_TRANSACTION`,
 	PAY_TRANSACTION: `${key}/PAY_TRANSACTION`,
 	UPDATE_TRANSACTION: `${key}/UPDATE_TRANSACTION`,
@@ -14,6 +15,7 @@ export const types = {
 
 	// Combined
 	FIRST_TIME_PAYMENT: `${key}/FIRST_TIME_PAYMENT`,
+	VOID_TRANSACTION: `${key}/VOID_TRANSACTION`,
 };
 
 const initialState = {
@@ -59,12 +61,14 @@ const reducer = handleActions(
 export const actions = {
 	save: createAction(types.SAVE),
 	listTransactions: createAction(types.LIST_TRANSACTIONS),
+	getTransaction: createAction(types.GET_TRANSACTION),
 	holdTransaction: createAction(types.HOLD_TRANSACTION),
 	payTransaction: createAction(types.PAY_TRANSACTION),
 	updateTransaction: createAction(types.UPDATE_TRANSACTION),
 	createTransaction: createAction(types.CREATE_TRANSACTION),
 
 	firstTimePayment: createAction(types.FIRST_TIME_PAYMENT),
+	voidTransaction: createAction(types.VOID_TRANSACTION),
 };
 
 const selectState = (state: any) => state[key] || initialState;

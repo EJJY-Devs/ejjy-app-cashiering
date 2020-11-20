@@ -20,6 +20,14 @@ export const calculateTableHeight = (listLength) => {
 	return ROW_HEIGHT * (listLength <= MAX_ROW_COUNT ? listLength : MAX_ROW_COUNT);
 };
 
+export const numberWithCommas = (x) => {
+	return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',');
+};
+
+export const removeCommas = (x) => {
+	return x?.toString()?.replace(/,/g, '') || '';
+};
+
 export const showMessage = (status, successMessage, errorMessage) => {
 	if (status === request.SUCCESS) {
 		message.success(successMessage);
@@ -105,11 +113,13 @@ export const searchProductInfo = (value, product) => {
 	const name = product?.name?.toLowerCase() ?? '';
 	const barcode = product?.barcode?.toLowerCase() ?? '';
 	const textcode = product?.textcode?.toLowerCase() ?? '';
+	const description = product?.description?.toLowerCase() ?? '';
 
 	return (
 		name.includes(searchedValue) ||
 		barcode.includes(searchedValue) ||
-		textcode.includes(searchedValue)
+		textcode.includes(searchedValue) ||
+		description.includes(searchedValue)
 	);
 };
 

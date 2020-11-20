@@ -1,4 +1,4 @@
-import { Tooltip } from 'antd';
+import { Spin, Tooltip } from 'antd';
 import React, { ReactNode } from 'react';
 import { calculateTableHeight } from '../../utils/function';
 import { ROW_HEIGHT } from '../Table/Table';
@@ -9,6 +9,7 @@ interface Column {
 	width?: string;
 	center?: boolean;
 	tooltip?: string;
+	loading?: boolean;
 }
 
 interface Props {
@@ -16,48 +17,51 @@ interface Props {
 	data: any;
 	onHover: any;
 	onExit: any;
+	loading;
 }
 
-export const TableNormalProducts = ({ columns, data, onHover, onExit }: Props) => {
+export const TableNormalProducts = ({ columns, data, onHover, onExit, loading }: Props) => {
 	return (
-		<div
-			className="TableNormalProducts"
-			style={{ height: calculateTableHeight(data?.length + 1) + 25 }}
-		>
-			{!data.length && (
-				<img src={require('../../assets/images/logo.jpg')} alt="logo" className="placeholder" />
-			)}
+		<Spin size="large" spinning={loading}>
+			<div
+				className="TableNormalProducts"
+				style={{ height: calculateTableHeight(data?.length + 1) + 25 }}
+			>
+				{!data.length && (
+					<img src={require('../../assets/images/logo.jpg')} alt="logo" className="placeholder" />
+				)}
 
-			<table>
-				<thead>
-					<tr>
-						{columns.map(({ name, width, center = false, tooltip = null }, index) => (
-							<th key={`th-${index}`} style={{ width, textAlign: center ? 'center' : 'left' }}>
-								{tooltip ? <Tooltip title={tooltip}>{name}</Tooltip> : name}
-							</th>
-						))}
-					</tr>
-				</thead>
-				<tbody>
-					{data?.map((row, index) => (
-						<tr
-							key={`tr-${index}`}
-							style={{ height: `${ROW_HEIGHT}px` }}
-							onMouseEnter={() => onHover(index)}
-							onMouseLeave={() => onExit()}
-						>
-							{row.map((item, index) => (
-								<td
-									key={`td-${index}`}
-									style={{ textAlign: columns?.[index].center ? 'center' : 'left' }}
-								>
-									{item}
-								</td>
+				<table>
+					<thead>
+						<tr>
+							{columns.map(({ name, width, center = false, tooltip = null }, index) => (
+								<th key={`th-${index}`} style={{ width, textAlign: center ? 'center' : 'left' }}>
+									{tooltip ? <Tooltip title={tooltip}>{name}</Tooltip> : name}
+								</th>
 							))}
 						</tr>
-					))}
-				</tbody>
-			</table>
-		</div>
+					</thead>
+					<tbody>
+						{data?.map((row, index) => (
+							<tr
+								key={`tr-${index}`}
+								style={{ height: `${ROW_HEIGHT}px` }}
+								onMouseEnter={() => onHover(index)}
+								onMouseLeave={() => onExit()}
+							>
+								{row.map((item, index) => (
+									<td
+										key={`td-${index}`}
+										style={{ textAlign: columns?.[index].center ? 'center' : 'left' }}
+									>
+										{item}
+									</td>
+								))}
+							</tr>
+						))}
+					</tbody>
+				</table>
+			</div>
+		</Spin>
 	);
 };

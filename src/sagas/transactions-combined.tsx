@@ -3,7 +3,6 @@ import {
 	actions as branchProductActions,
 	types as branchProductTypes,
 } from '../ducks/branch-products';
-import { actions } from '../ducks/transactions';
 import { actions as currentTransactionActions } from '../ducks/current-transaction';
 import { types } from '../ducks/transactions';
 import { MAX_PAGE_SIZE, MAX_RETRY, RETRY_INTERVAL_MS } from '../global/constants';
@@ -33,7 +32,6 @@ function* firstTimePayment({ payload }: any) {
 		});
 
 		yield put(currentTransactionActions.updateTransaction({ transaction: response.data }));
-		yield put(actions.save({ type: types.CREATE_TRANSACTION, transaction: response.data }));
 
 		if (shouldUpdateBranchProducts && branchId) {
 			const response = yield retry(
@@ -62,9 +60,58 @@ function* firstTimePayment({ payload }: any) {
 	}
 }
 
+function* voidTransaction({ payload }: any) {
+	const { branchMachineId, tellerId, dummyClientId, products } = payload;
+	const { transactionId } = payload;
+	const { callback, branchId = null, shouldUpdateBranchProducts = true } = payload;
+
+	callback({ status: request.REQUESTING });
+
+	try {
+		yield call(service.void, transactionId);
+
+		const response = yield call(service.create, {
+			branch_machine_id: branchMachineId,
+			teller_id: tellerId,
+			dummy_client_id: dummyClientId,
+			products,
+			previous_voided_transaction_id: transactionId,
+		});
+
+		if (shouldUpdateBranchProducts && branchId) {
+			const response = yield retry(
+				MAX_RETRY,
+				RETRY_INTERVAL_MS,
+				branchProductService.listByBranch,
+				{
+					page: 1,
+					page_size: MAX_PAGE_SIZE,
+					branch_id: branchId,
+					fields: 'id,product,price_per_piece,product_status',
+				},
+			);
+
+			yield put(
+				branchProductActions.save({
+					type: branchProductTypes.LIST_BRANCH_PRODUCTS,
+					branchProducts: response.data,
+				}),
+			);
+		}
+
+		callback({ status: request.SUCCESS, transaction: response.data });
+	} catch (e) {
+		callback({ status: request.ERROR, errors: e.errors });
+	}
+}
+
 /* WATCHERS */
-const firstTimePaymentWatcherSaga = function* payWatcherSaga() {
+const firstTimePaymentWatcherSaga = function* firstTimePaymentWatcherSaga() {
 	yield takeLatest(types.FIRST_TIME_PAYMENT, firstTimePayment);
 };
 
-export default [firstTimePaymentWatcherSaga()];
+const voidTransactionWatcherSaga = function* voidTransactionWatcherSaga() {
+	yield takeLatest(types.VOID_TRANSACTION, voidTransaction);
+};
+
+export default [firstTimePaymentWatcherSaga(), voidTransactionWatcherSaga()];
