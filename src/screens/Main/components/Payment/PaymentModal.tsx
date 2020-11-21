@@ -4,6 +4,7 @@ import { request } from '../../../../global/types';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import { useSession } from '../../../../hooks/useSession';
 import { useTransactions } from '../../../../hooks/useTransactions';
+import { removeCommas } from '../../../../utils/function';
 import { PaymentForm } from './PaymentForm';
 import './style.scss';
 
@@ -42,7 +43,7 @@ export const PaymentModal = ({ amountDue, visible, onClose, onSuccess }: Props) 
 			tellerId: session.user_id,
 			dummyClientId: 1, // TODO: Update on next sprint
 			products,
-			amountTendered: formData.amountTendered,
+			amountTendered: removeCommas(formData.amountTendered),
 			transactionId,
 		};
 
