@@ -5,6 +5,12 @@ export const request = {
 	ERROR: 3,
 };
 
+export const productNavigation = {
+	RESET: 'reset',
+	NEXT: 'next',
+	PREV: 'prev',
+};
+
 export const userTypes = {
 	OFFICE_MANAGER: 'office_manager',
 	BRANCH_MANAGER: 'branch_manager',

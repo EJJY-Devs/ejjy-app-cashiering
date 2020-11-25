@@ -77,7 +77,7 @@ export const CashBreakdownModal = ({
 			footer={null}
 			onCancel={close}
 			centered
-			closable
+			closable={!required}
 		>
 			{errors.map((error, index) => (
 				<FieldError key={index} error={error} />
@@ -85,6 +85,7 @@ export const CashBreakdownModal = ({
 
 			<CashBreakdownForm
 				inputRef={(el) => (inputRef.current = el)}
+				required={required}
 				onSubmit={onSubmit}
 				onClose={close}
 				loading={status === request.REQUESTING}

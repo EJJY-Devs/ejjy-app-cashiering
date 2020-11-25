@@ -35,12 +35,13 @@ export const PaymentModal = ({ amountDue, visible, onClose, onSuccess }: Props) 
 		const products = transactionProducts.map((product) => ({
 			product_id: product.productId,
 			quantity: product.quantity,
+			price_per_piece: product.pricePerPiece,
 		}));
 
 		const data = {
 			branchId: session?.branch_machine?.branch_id,
 			branchMachineId: session.branch_machine.id,
-			tellerId: session.user_id,
+			tellerId: session.user.id,
 			dummyClientId: 1, // TODO: Update on next sprint
 			products,
 			amountTendered: removeCommas(formData.amountTendered),

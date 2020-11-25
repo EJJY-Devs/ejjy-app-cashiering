@@ -3,6 +3,7 @@ import { message, Tooltip } from 'antd';
 import React, { useEffect, useState } from 'react';
 import KeyboardEventHandler from 'react-keyboard-event-handler';
 import { CancelButtonIcon, TableNormalProducts } from '../../../../components';
+import { PRODUCT_LENGTH_PER_PAGE } from '../../../../global/constants';
 import { request } from '../../../../global/types';
 import { useBranchProducts } from '../../../../hooks/useBranchProducts';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
@@ -14,8 +15,8 @@ import './style.scss';
 const columns = [
 	{ name: '', width: '1px' },
 	{ name: 'Item', width: '40%' },
-	{ name: 'Qty' },
-	{ name: 'Rate' },
+	{ name: 'Qty', width: '15%' },
+	{ name: 'Rate', width: '15%' },
 	{ name: 'Amount' },
 ];
 
@@ -27,7 +28,13 @@ export const editTypes = {
 };
 
 export const ProductTable = () => {
-	const { transactionId, products, removeProduct, setCurrentTransaction } = useCurrentTransaction();
+	const {
+		transactionId,
+		products,
+		pageNumber,
+		removeProduct,
+		setCurrentTransaction,
+	} = useCurrentTransaction();
 	const { branchProducts } = useBranchProducts();
 	const { updateTransaction, status } = useTransactions();
 
@@ -38,18 +45,20 @@ export const ProductTable = () => {
 
 	// Effect: Format product data
 	useEffect(() => {
-		const formattedProducts = products.map((item) => [
-			<CancelButtonIcon tooltip="Remove" onClick={() => onRemoveProduct(item.id)} />,
-			<Tooltip placement="top" title={item.productDescription}>
-				{item.productName}
-			</Tooltip>,
-			item.quantity.toFixed(3),
-			`₱${numberWithCommas(item.pricePerPiece.toFixed(2))}`,
-			`₱${numberWithCommas((item.quantity * item.pricePerPiece).toFixed(2))}`,
-		]);
+		const formattedProducts = products
+			.slice((pageNumber - 1) * PRODUCT_LENGTH_PER_PAGE, pageNumber * PRODUCT_LENGTH_PER_PAGE)
+			.map((item) => [
+				<CancelButtonIcon tooltip="Remove" onClick={() => onRemoveProduct(item.id)} />,
+				<Tooltip placement="top" title={item.productDescription}>
+					{item.productName}
+				</Tooltip>,
+				item.quantity.toFixed(3),
+				`₱${numberWithCommas(item.pricePerPiece.toFixed(2))}`,
+				`₱${numberWithCommas((item.quantity * item.pricePerPiece).toFixed(2))}`,
+			]);
 
 		setData(formattedProducts);
-	}, [products]);
+	}, [products, pageNumber]);
 
 	const onRemoveProduct = (id) => {
 		if (transactionId) {
