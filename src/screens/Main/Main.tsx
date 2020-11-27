@@ -9,6 +9,7 @@ import { useCashBreakdown } from '../../hooks/useCashBreakdown';
 import { useCurrentTransaction } from '../../hooks/useCurrentTransaction';
 import { useSession } from '../../hooks/useSession';
 import { useUI } from '../../hooks/useUI';
+import { BarcodeScanner } from './components/BarcodeScanner/BarcodeScanner';
 import { CashBreakdownModal } from './components/CashBreakdown/CashBreakdownModal';
 import { MainButtons } from './components/MainButtons/MainButtons';
 import { NavigationButtons } from './components/NavigationButtons/NavigationButtons';
@@ -40,6 +41,7 @@ const Main = () => {
 	const [requiredCashBreakdown, setRequiredCashBreakdown] = useState(false);
 	const [cashBreakdownModalVisible, setCashBreakdownModalVisible] = useState(false);
 	const [cashBreakdownType, setCashBreakdownType] = useState(null);
+	const [barcodeScanLoading, setBarcodeScanLoading] = useState(false);
 
 	// Effect: Reset current transaction if refreshed and there is already transaction id
 	useEffect(() => {
@@ -145,7 +147,7 @@ const Main = () => {
 				<div className="main-content">
 					<div className="left">
 						<ProductSearch />
-						<ProductTable />
+						<ProductTable isLoading={barcodeScanLoading} />
 						<NavigationButtons />
 					</div>
 					<div className="right">
@@ -153,6 +155,8 @@ const Main = () => {
 						<MainButtons onEndSession={onEndSession} onMidSession={onMidSession} />
 					</div>
 				</div>
+
+				<BarcodeScanner setLoading={setBarcodeScanLoading} />
 
 				<CashBreakdownModal
 					sessionId={session?.id}

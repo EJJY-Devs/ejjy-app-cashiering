@@ -27,7 +27,11 @@ export const editTypes = {
 	DEDUCT: 2,
 };
 
-export const ProductTable = () => {
+interface Props {
+	isLoading: boolean;
+}
+
+export const ProductTable = ({ isLoading }: Props) => {
 	const {
 		transactionId,
 		products,
@@ -120,7 +124,7 @@ export const ProductTable = () => {
 				data={data}
 				onHover={onHover}
 				onExit={onExit}
-				loading={status === request.REQUESTING}
+				loading={status === request.REQUESTING || isLoading}
 			/>
 
 			<EditProductModal

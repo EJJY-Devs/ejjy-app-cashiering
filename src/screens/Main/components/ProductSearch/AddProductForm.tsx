@@ -21,7 +21,11 @@ export const AddProductForm = ({ maxQuantity, inputRef, onSubmit, onClose }: Pro
 				quantity: '',
 			},
 			Schema: Yup.object().shape({
-				quantity: Yup.number().required().min(1).max(maxQuantity).label('Quantity'),
+				quantity: Yup.number()
+					.required()
+					.min(1)
+					.max(maxQuantity, 'Insufficient balance.')
+					.label('Quantity'),
 			}),
 		}),
 		[maxQuantity],

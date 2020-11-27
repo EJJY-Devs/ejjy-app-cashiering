@@ -1,13 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { CaretLeftOutlined, CaretRightOutlined } from '@ant-design/icons';
-import React, { useCallback } from 'react';
-import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
-import './style.scss';
-import cn from 'classnames';
 import { ceil } from 'lodash';
+import React, { useCallback } from 'react';
 import { PRODUCT_LENGTH_PER_PAGE } from '../../../../global/constants';
-import { NavigationButton } from './NavigationButton';
 import { productNavigation } from '../../../../global/types';
+import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
+import { NavigationButton } from './NavigationButton';
+import './style.scss';
 
 export const NavigationButtons = () => {
 	const {

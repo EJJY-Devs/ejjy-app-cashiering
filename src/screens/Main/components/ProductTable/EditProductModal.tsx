@@ -66,11 +66,13 @@ export const EditProductModal = ({ product, visible, onClose, onSuccess }: Props
 							.map((item) => ({
 								transaction_product_id: item.transactionProductId,
 								product_id: item.productId,
+								price_per_piece: item.pricePerPiece,
 								quantity: item.quantity,
 							})),
 						{
 							transaction_product_id: product.transactionProductId,
 							product_id: product.productId,
+							price_per_piece: product.pricePerPiece,
 							quantity,
 						},
 					],

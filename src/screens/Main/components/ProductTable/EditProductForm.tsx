@@ -24,7 +24,7 @@ export const EditProductForm = ({ maxQuantity, inputRef, onSubmit, onClose }: Pr
 				quantity: Yup.number()
 					.required()
 					.min(1)
-					.max(maxQuantity, 'Cannot proceed with that quantity.')
+					.max(maxQuantity, 'Insufficient balance.')
 					.label('Quantity'),
 			}),
 		}),

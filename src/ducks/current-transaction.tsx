@@ -86,7 +86,7 @@ const reducer = handleActions(
 
 		[types.SET_CURRENT_TRANSACTION]: (state, { payload }: any) => {
 			const { transaction, branchProducts } = payload;
-
+			console.log(transaction);
 			const products = transaction.products.map((item) => {
 				const branchProduct = branchProducts.find(({ product }) => product?.id === item.product.id);
 
@@ -96,7 +96,7 @@ const reducer = handleActions(
 					productId: item.product.id,
 					productName: item.product.name,
 					productDescription: item.product.description,
-					pricePerPiece: branchProduct?.price_per_piece,
+					pricePerPiece: Number(item.price_per_piece),
 					quantity: item.quantity,
 				};
 			});
