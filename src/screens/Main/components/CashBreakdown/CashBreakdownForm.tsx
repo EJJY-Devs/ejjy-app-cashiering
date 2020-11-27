@@ -7,28 +7,29 @@ import { sleep } from '../../../../utils/function';
 
 interface Props {
 	inputRef?: any;
+	required: boolean;
 	onSubmit: any;
 	onClose: any;
 	loading: boolean;
 }
 
-export const CashBreakdownForm = ({ inputRef, onSubmit, onClose, loading }: Props) => {
+export const CashBreakdownForm = ({ inputRef, required, onSubmit, onClose, loading }: Props) => {
 	const [isSubmitting, setSubmitting] = useState(false);
 
 	const getFormDetails = useCallback(
 		() => ({
 			DefaultValues: {
-				coins_25: '',
-				coins_50: '',
-				coins_1: '',
-				coins_5: '',
-				coins_10: '',
-				bills_20: '',
-				bills_50: '',
-				bills_100: '',
-				bills_200: '',
-				bills_500: '',
-				bills_1000: '',
+				coins_25: 0,
+				coins_50: 0,
+				coins_1: 0,
+				coins_5: 0,
+				coins_10: 0,
+				bills_20: 0,
+				bills_50: 0,
+				bills_100: 0,
+				bills_200: 0,
+				bills_500: 0,
+				bills_1000: 0,
 			},
 			Schema: Yup.object().shape({
 				coins_25: Yup.number().required().min(0).max(65535).label('25 Coins'),
@@ -113,14 +114,17 @@ export const CashBreakdownForm = ({ inputRef, onSubmit, onClose, loading }: Prop
 					<Divider />
 
 					<div className="custom-footer">
-						<Button
-							type="button"
-							text="Cancel"
-							size="lg"
-							onClick={onClose}
-							classNames="btn-cancel"
-							disabled={loading || isSubmitting}
-						/>
+						{!required && (
+							<Button
+								type="button"
+								text="Cancel"
+								size="lg"
+								onClick={onClose}
+								classNames="btn-cancel"
+								disabled={loading || isSubmitting}
+							/>
+						)}
+
 						<Button
 							type="submit"
 							text="Submit"

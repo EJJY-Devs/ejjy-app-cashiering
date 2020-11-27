@@ -13,24 +13,27 @@ export const useCurrentTransaction = () => {
 	const invoiceId = useSelector(selectors.selectInvoiceId());
 	const transactionId = useSelector(selectors.selectTransactionId());
 	const transactionStatus = useSelector(selectors.selectTransactionStatus());
+	const pageNumber = useSelector(selectors.selectPageNumber());
 
 	const addProduct = useActionDispatch(actions.addProduct);
 	const removeProduct = useActionDispatch(actions.removeProduct);
 	const editProduct = useActionDispatch(actions.editProduct);
 	const setCurrentTransaction = useActionDispatch(actions.setCurrentTransaction);
 	const resetTransaction = useActionDispatch(actions.resetTransaction);
+	const navigateProduct = useActionDispatch(actions.navigateProduct);
 
 	const { session } = useSession();
 	const { createTransaction, status: transactionsStatus } = useTransactions();
 	const createCurrentTransaction = (callback = null) => {
 		const data = {
-			branchId: session?.branch_machine?.branch_id,
+			branchId: session.branch_machine?.branch_id,
 			branchMachineId: session.branch_machine.id,
-			tellerId: session.user_id,
+			tellerId: session.user.id,
 			dummyClientId: 1, // TODO: Update on next sprint
 			products: products.map((product) => ({
 				product_id: product.productId,
 				quantity: product.quantity,
+				price_per_piece: product.pricePerPiece,
 			})),
 		};
 
@@ -50,12 +53,14 @@ export const useCurrentTransaction = () => {
 		invoiceId,
 		transactionId,
 		transactionStatus,
+		pageNumber,
 		addProduct,
 		removeProduct,
 		editProduct,
 		resetTransaction,
 		setCurrentTransaction,
 		createCurrentTransaction,
+		navigateProduct,
 		status: transactionsStatus,
 	};
 };

@@ -1,6 +1,9 @@
-import { message, Modal } from 'antd';
+import { message, Modal, Spin } from 'antd';
 import React, { useEffect, useRef } from 'react';
+import { request } from '../../../../global/types';
+import { useBranchProducts } from '../../../../hooks/useBranchProducts';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
+import { useTransactions } from '../../../../hooks/useTransactions';
 import { AddProductForm } from './AddProductForm';
 import './style.scss';
 
@@ -12,7 +15,9 @@ interface Props {
 }
 
 export const AddProductModal = ({ product, visible, onClose, onSuccess }: Props) => {
-	const { addProduct } = useCurrentTransaction();
+	const { branchProducts } = useBranchProducts();
+	const { products, transactionId, addProduct, setCurrentTransaction } = useCurrentTransaction();
+	const { updateTransaction, status } = useTransactions();
 
 	const inputRef = useRef(null);
 
@@ -26,20 +31,50 @@ export const AddProductModal = ({ product, visible, onClose, onSuccess }: Props)
 	}, [visible, inputRef]);
 
 	const onSubmit = (data) => {
-		addProduct({
-			product: {
-				id: product.id,
-				productId: product.product.id,
-				productName: product.product.name,
-				productDescription: product.product.description,
-				pricePerPiece: product.price_per_piece,
-				quantity: data.quantity,
-			},
-		});
-		message.success('Product sucessfully added.');
+		const callback = () => {
+			message.success('Product sucessfully added.');
+			onSuccess();
+			onClose();
+		};
 
-		onSuccess();
-		onClose();
+		if (transactionId) {
+			updateTransaction(
+				{
+					transactionId,
+					products: [
+						...products.map((item) => ({
+							transaction_product_id: item.transactionProductId,
+							product_id: item.productId,
+							quantity: item.quantity,
+							price_per_piece: item.pricePerPiece,
+						})),
+						{
+							product_id: product.product.id,
+							price_per_piece: product.price_per_piece,
+							quantity: data.quantity,
+						},
+					],
+				},
+				({ status, transaction }) => {
+					if (status === request.SUCCESS) {
+						setCurrentTransaction({ transaction, branchProducts });
+						callback();
+					}
+				},
+			);
+		} else {
+			addProduct({
+				product: {
+					id: product.id,
+					productId: product.product.id,
+					productName: product.product.name,
+					productDescription: product.product.description,
+					pricePerPiece: product.price_per_piece,
+					quantity: data.quantity,
+				},
+			});
+			callback();
+		}
 	};
 
 	return (
@@ -52,12 +87,14 @@ export const AddProductModal = ({ product, visible, onClose, onSuccess }: Props)
 			centered
 			closable
 		>
-			<AddProductForm
-				inputRef={(el) => (inputRef.current = el)}
-				maxQuantity={product?.current_balance}
-				onSubmit={onSubmit}
-				onClose={onClose}
-			/>
+			<Spin size="large" spinning={status === request.REQUESTING}>
+				<AddProductForm
+					inputRef={(el) => (inputRef.current = el)}
+					maxQuantity={product?.current_balance}
+					onSubmit={onSubmit}
+					onClose={onClose}
+				/>
+			</Spin>
 		</Modal>
 	);
 };

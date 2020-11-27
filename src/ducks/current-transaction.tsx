@@ -1,6 +1,8 @@
-import { cloneDeep } from 'lodash';
+import { ceil, cloneDeep } from 'lodash';
 import { createAction, handleActions } from 'redux-actions';
 import { createSelector } from 'reselect';
+import { PRODUCT_LENGTH_PER_PAGE } from '../global/constants';
+import { productNavigation } from '../global/types';
 
 export const key = 'CURRENT_TRANSACTION';
 
@@ -12,6 +14,8 @@ export const types = {
 	SET_CURRENT_TRANSACTION: `${key}/SET_CURRENT_TRANSACTION`,
 	UPDATE_TRANSACTION: `${key}/UPDATE_TRANSACTION`,
 	RESET_TRANSACTION: `${key}/RESET_TRANSACTION`,
+
+	NAVIGATE_PRODUCT: `${key}/NAVIGATE_PRODUCT`,
 };
 
 const initialState = {
@@ -22,6 +26,8 @@ const initialState = {
 	totalPaidAmount: 0,
 	invoiceId: null,
 	status: null,
+
+	pageNumber: 1,
 };
 
 const reducer = handleActions(
@@ -80,7 +86,7 @@ const reducer = handleActions(
 
 		[types.SET_CURRENT_TRANSACTION]: (state, { payload }: any) => {
 			const { transaction, branchProducts } = payload;
-
+			console.log(transaction);
 			const products = transaction.products.map((item) => {
 				const branchProduct = branchProducts.find(({ product }) => product?.id === item.product.id);
 
@@ -90,7 +96,7 @@ const reducer = handleActions(
 					productId: item.product.id,
 					productName: item.product.name,
 					productDescription: item.product.description,
-					pricePerPiece: branchProduct?.price_per_piece,
+					pricePerPiece: Number(item.price_per_piece),
 					quantity: item.quantity,
 				};
 			});
@@ -103,6 +109,7 @@ const reducer = handleActions(
 				totalPaidAmount: transaction.total_paid_amount,
 				status: transaction.status,
 				products,
+				pageNumber: 1,
 			};
 
 			return { ...state, ...newData };
@@ -110,6 +117,28 @@ const reducer = handleActions(
 
 		[types.RESET_TRANSACTION]: () => {
 			return initialState;
+		},
+
+		[types.NAVIGATE_PRODUCT]: (state, { payload }: any) => {
+			var { pageNumber, products } = state;
+			let maxPage = ceil(products.length / PRODUCT_LENGTH_PER_PAGE);
+
+			switch (payload) {
+				case productNavigation.PREV: {
+					pageNumber = pageNumber > 1 ? pageNumber - 1 : 1;
+					break;
+				}
+				case productNavigation.NEXT: {
+					pageNumber = pageNumber < maxPage ? pageNumber + 1 : maxPage;
+					break;
+				}
+				case productNavigation.RESET: {
+					pageNumber = 1;
+					break;
+				}
+			}
+
+			return { ...state, pageNumber };
 		},
 	},
 	initialState,
@@ -123,6 +152,8 @@ export const actions = {
 	setCurrentTransaction: createAction(types.SET_CURRENT_TRANSACTION),
 	updateTransaction: createAction(types.UPDATE_TRANSACTION),
 	resetTransaction: createAction(types.RESET_TRANSACTION),
+
+	navigateProduct: createAction(types.NAVIGATE_PRODUCT),
 };
 
 const selectState = (state: any) => state[key] || initialState;
@@ -134,6 +165,7 @@ export const selectors = {
 	selectInvoiceId: () => createSelector(selectState, (state) => state.invoiceId),
 	selectTransactionId: () => createSelector(selectState, (state) => state.transactionId),
 	selectTransactionStatus: () => createSelector(selectState, (state) => state.status),
+	selectPageNumber: () => createSelector(selectState, (state) => state.pageNumber),
 };
 
 export default reducer;

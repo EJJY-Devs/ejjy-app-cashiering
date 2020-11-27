@@ -1,10 +1,23 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React from 'react';
+import { CaretLeftOutlined, CaretRightOutlined } from '@ant-design/icons';
+import { ceil } from 'lodash';
+import React, { useCallback } from 'react';
+import { PRODUCT_LENGTH_PER_PAGE } from '../../../../global/constants';
+import { productNavigation } from '../../../../global/types';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
+import { NavigationButton } from './NavigationButton';
 import './style.scss';
 
 export const NavigationButtons = () => {
-	const { transactionId, invoiceId } = useCurrentTransaction();
+	const {
+		products,
+		pageNumber,
+		transactionId,
+		invoiceId,
+		navigateProduct,
+	} = useCurrentTransaction();
+
+	const getMaxPage = useCallback(() => ceil(products.length / PRODUCT_LENGTH_PER_PAGE), [products]);
 
 	return (
 		<div className="NavigationButtons">
@@ -26,26 +39,21 @@ export const NavigationButtons = () => {
 					<p className="value">—</p>
 				</div>
 			</div>
-			{/* <div className="buttons">
-				<button
-					className={cn('NavigationButton btn-prev', {
-						disabled:
-							transactions.length === 0 || [0, NO_INDEX_SELECTED].includes(transactionIndex),
-					})}
-					onClick={() => checkCurrentTransaction(navigationTypes.PREVIOUS)}
-				>
-					<CaretLeftOutlined color="red" />
-				</button>
+			<div className="buttons">
+				<NavigationButton
+					classNames="btn-prev"
+					icon={<CaretLeftOutlined />}
+					onClick={() => navigateProduct(productNavigation.PREV)}
+					disabled={pageNumber === 1}
+				/>
 
-				<button
-					className={cn('NavigationButton btn-next', {
-						disabled: transactions.length === 0 || transactionIndex >= transactions.length - 1,
-					})}
-					onClick={() => checkCurrentTransaction(navigationTypes.NEXT)}
-				>
-					<CaretRightOutlined />
-				</button>
-			</div> */}
+				<NavigationButton
+					classNames="btn-next"
+					icon={<CaretRightOutlined />}
+					onClick={() => navigateProduct(productNavigation.NEXT)}
+					disabled={pageNumber === getMaxPage() || products.length <= PRODUCT_LENGTH_PER_PAGE}
+				/>
+			</div>
 		</div>
 	);
 };
