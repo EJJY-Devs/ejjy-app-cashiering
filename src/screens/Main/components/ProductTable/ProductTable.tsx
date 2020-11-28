@@ -36,6 +36,7 @@ export const ProductTable = ({ isLoading }: Props) => {
 		transactionId,
 		products,
 		pageNumber,
+		isFullyPaid,
 		removeProduct,
 		setCurrentTransaction,
 	} = useCurrentTransaction();
@@ -52,7 +53,9 @@ export const ProductTable = ({ isLoading }: Props) => {
 		const formattedProducts = products
 			.slice((pageNumber - 1) * PRODUCT_LENGTH_PER_PAGE, pageNumber * PRODUCT_LENGTH_PER_PAGE)
 			.map((item) => [
-				<CancelButtonIcon tooltip="Remove" onClick={() => onRemoveProduct(item.id)} />,
+				isFullyPaid ? null : (
+					<CancelButtonIcon tooltip="Remove" onClick={() => onRemoveProduct(item.id)} />
+				),
 				<Tooltip placement="top" title={item.productDescription}>
 					{item.productName}
 				</Tooltip>,
@@ -89,7 +92,7 @@ export const ProductTable = ({ isLoading }: Props) => {
 	};
 
 	const onHover = (index) => {
-		setSelectedProductIndex(index);
+		setSelectedProductIndex((pageNumber - 1) * PRODUCT_LENGTH_PER_PAGE + index);
 	};
 
 	const onExit = () => {
@@ -116,7 +119,7 @@ export const ProductTable = ({ isLoading }: Props) => {
 			<KeyboardEventHandler
 				handleKeys={['f1']}
 				onKeyEvent={(key, e) => handleKeyPress(key)}
-				isDisabled={!products.length}
+				isDisabled={!products.length || isFullyPaid}
 			/>
 
 			<TableNormalProducts
