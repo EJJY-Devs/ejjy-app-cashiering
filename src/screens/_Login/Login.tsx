@@ -15,7 +15,8 @@ const Login = () => {
 
 				<LoginForm
 					onSubmit={(data: ILoginValues) => {
-						const branchMachineMacAddress = localStorage.getItem('EJJY_MACHINE_ID') || 'EMPTY';
+						const branchMachineMacAddress =
+							localStorage.getItem('EJJY_MACHINE_ID') || '14:7d:da:18:06:61';
 						startSession({
 							...data,
 							branch_machine_mac_address: branchMachineMacAddress,
