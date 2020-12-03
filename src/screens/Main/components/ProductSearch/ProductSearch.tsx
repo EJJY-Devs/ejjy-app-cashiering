@@ -111,6 +111,7 @@ export const ProductSearch = () => {
 	};
 
 	const onAddProductSuccess = () => {
+		setSearchedKey('');
 		setProducts([]);
 	};
 

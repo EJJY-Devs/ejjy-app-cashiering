@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Modal } from 'antd';
+import { message, Modal, Spin } from 'antd';
+import cn from 'classnames';
 import React, { useEffect, useState } from 'react';
 import { TableNormal } from '../../../../components';
 import { ButtonLink } from '../../../../components/elements';
@@ -10,25 +11,23 @@ import { useSession } from '../../../../hooks/useSession';
 import { useTransactions } from '../../../../hooks/useTransactions';
 import { useUI } from '../../../../hooks/useUI';
 import { formatDateTime, numberWithCommas } from '../../../../utils/function';
-import { SearchTransaction } from './SearchTransaction';
 import './style.scss';
 
 interface Props {
-	onMidSession: any;
-	onEndSession: any;
 	visible: boolean;
 	onClose: any;
 }
 
 const columns = [{ name: 'ID' }, { name: 'Date' }, { name: 'Amount' }];
 
-export const OthersModal = ({ onMidSession, onEndSession, visible, onClose }: Props) => {
+export const HoldModal = ({ visible, onClose }: Props) => {
 	const { session } = useSession();
 	const {
 		transactionId,
 		products,
 		setCurrentTransaction,
 		createCurrentTransaction,
+		status: currentTransactionStatus,
 	} = useCurrentTransaction();
 	const { transactions, listTransactions, status: transactionsStatus } = useTransactions();
 	const { branchProducts } = useBranchProducts();
@@ -81,31 +80,39 @@ export const OthersModal = ({ onMidSession, onEndSession, visible, onClose }: Pr
 		setCurrentTransaction({ transaction, branchProducts });
 	};
 
+	const onHold = () => {
+		createCurrentTransaction(() => {
+			message.success('Transaction successfully set to Hold');
+			onClose();
+		});
+	};
+
 	return (
 		<Modal
-			title="Others"
-			className="OthersModal"
+			title="Hold & Resume"
+			className="HoldModal"
 			visible={visible}
 			footer={null}
 			onCancel={onClose}
 			centered
 			closable
 		>
-			<SearchTransaction closeModal={onClose} />
+			<Spin size="large" spinning={currentTransactionStatus === request.REQUESTING}>
+				<button
+					className={cn('other-button btn-cash-breakdown', {
+						disabled: transactionId || !products.length,
+					})}
+					onClick={onHold}
+				>
+					Hold
+				</button>
 
-			<TableNormal
-				columns={columns}
-				data={heldTransactions}
-				loading={transactionsStatus === request.REQUESTING}
-			/>
-
-			<button className="other-button btn-cash-breakdown" onClick={onMidSession}>
-				Cash Collection
-			</button>
-
-			<button className="other-button btn-end-session" onClick={onEndSession}>
-				End Session
-			</button>
+				<TableNormal
+					columns={columns}
+					data={heldTransactions}
+					loading={transactionsStatus === request.REQUESTING}
+				/>
+			</Spin>
 		</Modal>
 	);
 };

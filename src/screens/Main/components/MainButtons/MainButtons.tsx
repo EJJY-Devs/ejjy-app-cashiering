@@ -7,6 +7,7 @@ import { useTransactions } from '../../../../hooks/useTransactions';
 import { useUI } from '../../../../hooks/useUI';
 import { MainButton } from './MainButton';
 import { OthersModal } from './OthersModal';
+import { HoldModal } from './HoldModal';
 import './style.scss';
 
 interface Props {
@@ -21,16 +22,15 @@ export const MainButtons = ({ onMidSession, onEndSession }: Props) => {
 		isFullyPaid,
 		transactionStatus: transStatus,
 		products: transactionProducts,
-		createCurrentTransaction,
 		setCurrentTransaction,
 		resetTransaction,
-		status: currentTransactionStatus,
 	} = useCurrentTransaction();
 	const { voidTransaction } = useTransactions();
 	const { branchProducts } = useBranchProducts();
 	const { setMainLoading, setMainLoadingText } = useUI();
 
 	const [othersModalVisible, setOthersModalVisible] = useState(false);
+	const [holdModalVisible, setHoldModalVisible] = useState(false);
 
 	const onMidSessionModified = () => {
 		onMidSession();
@@ -89,13 +89,7 @@ export const MainButtons = ({ onMidSession, onEndSession }: Props) => {
 			</div>
 
 			<div className="buttons-wrapper">
-				<MainButton
-					title="Hold"
-					classNames="btn-hold"
-					disabled={transactionId || !transactionProducts.length}
-					onClick={createCurrentTransaction}
-					loading={currentTransactionStatus === request.REQUESTING}
-				/>
+				<MainButton title="Hold" classNames="btn-hold" onClick={() => setHoldModalVisible(true)} />
 
 				<MainButton title="Discount" onClick={() => null} />
 
@@ -120,6 +114,8 @@ export const MainButtons = ({ onMidSession, onEndSession }: Props) => {
 				visible={othersModalVisible}
 				onClose={() => setOthersModalVisible(false)}
 			/>
+
+			<HoldModal visible={holdModalVisible} onClose={() => setHoldModalVisible(false)} />
 		</div>
 	);
 };

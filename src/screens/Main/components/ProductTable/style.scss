@@ -34,8 +34,7 @@
 		}
 
 		.quantity-input {
-			font-weight: bold;
-			font-size: 30px;
+			@include font(75px, bold);
 			text-align: center;
 		}
 
