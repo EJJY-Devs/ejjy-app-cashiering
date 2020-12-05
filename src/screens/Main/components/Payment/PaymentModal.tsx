@@ -17,7 +17,11 @@ interface Props {
 
 export const PaymentModal = ({ amountDue, visible, onClose, onSuccess }: Props) => {
 	const { session } = useSession();
-	const { transactionId, products: transactionProducts } = useCurrentTransaction();
+	const {
+		transactionId,
+		previousVoidedTransactionId,
+		products: transactionProducts,
+	} = useCurrentTransaction();
 	const { payTransaction, firstTimePayment, status } = useTransactions();
 
 	const inputRef = useRef(null);
@@ -46,9 +50,10 @@ export const PaymentModal = ({ amountDue, visible, onClose, onSuccess }: Props) 
 			products,
 			amountTendered: removeCommas(formData.amountTendered),
 			transactionId,
+			previousVoidedTransactionId: previousVoidedTransactionId || undefined,
 		};
 
-		if (transactionId) {
+		if (transactionId && !previousVoidedTransactionId) {
 			payTransaction(data, ({ status }) => {
 				if (status === request.SUCCESS) {
 					onSuccess();
@@ -56,9 +61,9 @@ export const PaymentModal = ({ amountDue, visible, onClose, onSuccess }: Props) 
 				}
 			});
 		} else {
-			firstTimePayment(data, ({ status, response }) => {
+			firstTimePayment(data, ({ status, transaction }) => {
 				if (status === request.SUCCESS) {
-					if (response.is_fully_paid && response?.invoice.id) {
+					if (transaction.is_fully_paid && transaction?.invoice.id) {
 						onSuccess();
 					}
 					onClose();

@@ -12,7 +12,13 @@ import { service } from '../services/transactions';
 
 /* WORKERS */
 function* firstTimePayment({ payload }: any) {
-	const { branchMachineId, tellerId, dummyClientId, products } = payload;
+	const {
+		branchMachineId,
+		tellerId,
+		dummyClientId,
+		previousVoidedTransactionId,
+		products,
+	} = payload;
 	const { amountTendered } = payload;
 	const { callback, branchId = null, shouldUpdateBranchProducts = true } = payload;
 
@@ -23,6 +29,7 @@ function* firstTimePayment({ payload }: any) {
 			branch_machine_id: branchMachineId,
 			teller_id: tellerId,
 			dummy_client_id: dummyClientId,
+			previous_voided_transaction_id: previousVoidedTransactionId,
 			products,
 		});
 
@@ -54,28 +61,22 @@ function* firstTimePayment({ payload }: any) {
 			);
 		}
 
-		callback({ status: request.SUCCESS, response: response.data });
+		callback({ status: request.SUCCESS, transaction: response.data });
 	} catch (e) {
 		callback({ status: request.ERROR, errors: e.errors });
 	}
 }
 
-function* voidTransaction({ payload }: any) {
-	const { branchMachineId, tellerId, dummyClientId, products } = payload;
-	const { transactionId } = payload;
+function* cancelVoidedTransaction({ payload }: any) {
+	const { transactionId, status, products } = payload;
 	const { callback, branchId = null, shouldUpdateBranchProducts = true } = payload;
 
 	callback({ status: request.REQUESTING });
 
 	try {
-		yield call(service.void, transactionId);
-
-		const response = yield call(service.create, {
-			branch_machine_id: branchMachineId,
-			teller_id: tellerId,
-			dummy_client_id: dummyClientId,
+		yield call(service.update, transactionId, {
 			products,
-			previous_voided_transaction_id: transactionId,
+			status,
 		});
 
 		if (shouldUpdateBranchProducts && branchId) {
@@ -99,7 +100,7 @@ function* voidTransaction({ payload }: any) {
 			);
 		}
 
-		callback({ status: request.SUCCESS, transaction: response.data });
+		callback({ status: request.SUCCESS });
 	} catch (e) {
 		callback({ status: request.ERROR, errors: e.errors });
 	}
@@ -110,8 +111,8 @@ const firstTimePaymentWatcherSaga = function* firstTimePaymentWatcherSaga() {
 	yield takeLatest(types.FIRST_TIME_PAYMENT, firstTimePayment);
 };
 
-const voidTransactionWatcherSaga = function* voidTransactionWatcherSaga() {
-	yield takeLatest(types.VOID_TRANSACTION, voidTransaction);
+const cancelVoidedWatcherSaga = function* cancelVoidedWatcherSaga() {
+	yield takeLatest(types.CANCEL_VOIDED_TRANSACTION, cancelVoidedTransaction);
 };
 
-export default [firstTimePaymentWatcherSaga(), voidTransactionWatcherSaga()];
+export default [firstTimePaymentWatcherSaga(), cancelVoidedWatcherSaga()];

@@ -153,6 +153,20 @@ function* update({ payload }: any) {
 	}
 }
 
+function* voidTransaction({ payload }: any) {
+	const { callback, transactionId } = payload;
+	callback({ status: request.REQUESTING });
+
+	try {
+		const response = yield call(service.void, transactionId);
+		yield put(currentTransactionActions.transactionVoided({ transaction: response.data }));
+
+		callback({ status: request.SUCCESS, transaction: response.data });
+	} catch (e) {
+		callback({ status: request.ERROR, errors: e.errors });
+	}
+}
+
 /* WATCHERS */
 
 const listWatcherSaga = function* listWatcherSaga() {
@@ -175,10 +189,15 @@ const updateWatcherSaga = function* updateWatcherSaga() {
 	yield takeLatest(types.UPDATE_TRANSACTION, update);
 };
 
+const voidWatcherSaga = function* voidWatcherSaga() {
+	yield takeLatest(types.VOID_TRANSACTION, voidTransaction);
+};
+
 export default [
 	listWatcherSaga(),
 	getWatcherSaga(),
 	payWatcherSaga(),
 	createWatcherSaga(),
 	updateWatcherSaga(),
+	voidWatcherSaga(),
 ];

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import KeyboardEventHandler from 'react-keyboard-event-handler';
 import { CancelButtonIcon, TableNormalProducts } from '../../../../components';
 import { PRODUCT_LENGTH_PER_PAGE } from '../../../../global/constants';
-import { request } from '../../../../global/types';
+import { request, transactionStatus } from '../../../../global/types';
 import { useBranchProducts } from '../../../../hooks/useBranchProducts';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import { useTransactions } from '../../../../hooks/useTransactions';
@@ -36,7 +36,7 @@ export const ProductTable = ({ isLoading }: Props) => {
 		transactionId,
 		products,
 		pageNumber,
-		isFullyPaid,
+		transactionStatus: currentTransactionStatus,
 		removeProduct,
 		setCurrentTransaction,
 	} = useCurrentTransaction();
@@ -53,7 +53,7 @@ export const ProductTable = ({ isLoading }: Props) => {
 		const formattedProducts = products
 			.slice((pageNumber - 1) * PRODUCT_LENGTH_PER_PAGE, pageNumber * PRODUCT_LENGTH_PER_PAGE)
 			.map((item) => [
-				isFullyPaid ? null : (
+				currentTransactionStatus === transactionStatus.FULLY_PAID ? null : (
 					<CancelButtonIcon tooltip="Remove" onClick={() => onRemoveProduct(item.id)} />
 				),
 				<Tooltip placement="top" title={item.productDescription}>
@@ -119,7 +119,7 @@ export const ProductTable = ({ isLoading }: Props) => {
 			<KeyboardEventHandler
 				handleKeys={['f1']}
 				onKeyEvent={(key, e) => handleKeyPress(key)}
-				isDisabled={!products.length || isFullyPaid}
+				isDisabled={!products.length || currentTransactionStatus === transactionStatus.FULLY_PAID}
 			/>
 
 			<TableNormalProducts

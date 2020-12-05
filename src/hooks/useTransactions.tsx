@@ -18,6 +18,7 @@ export const useTransactions = () => {
 	const payTransaction = useActionDispatch(actions.payTransaction);
 	const firstTimePayment = useActionDispatch(actions.firstTimePayment);
 	const voidTransaction = useActionDispatch(actions.voidTransaction);
+	const cancelVoidedTransaction = useActionDispatch(actions.cancelVoidedTransaction);
 
 	const reset = () => {
 		resetError();
@@ -82,10 +83,19 @@ export const useTransactions = () => {
 		});
 	};
 
-	const voidTransactionRequest = (data, extraCallback = null) => {
+	const voidTransactionRequest = (transactionId, extraCallback = null) => {
 		setRecentRequest(types.VOID_TRANSACTION);
 
 		voidTransaction({
+			transactionId,
+			callback: modifiedExtraCallback(callback, extraCallback),
+		});
+	};
+
+	const cancelVoidedTransactionRequest = (data, extraCallback = null) => {
+		setRecentRequest(types.CANCEL_VOIDED_TRANSACTION);
+
+		cancelVoidedTransaction({
 			...data,
 			callback: modifiedExtraCallback(callback, extraCallback),
 		});
@@ -105,6 +115,7 @@ export const useTransactions = () => {
 		payTransaction: payTransactionRequest,
 		firstTimePayment: firstTimePaymentRequest,
 		voidTransaction: voidTransactionRequest,
+		cancelVoidedTransaction: cancelVoidedTransactionRequest,
 		status,
 		errors,
 		recentRequest,

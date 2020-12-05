@@ -13,6 +13,7 @@ export const useCurrentTransaction = () => {
 	const invoiceId = useSelector(selectors.selectInvoiceId());
 	const transactionId = useSelector(selectors.selectTransactionId());
 	const transactionStatus = useSelector(selectors.selectTransactionStatus());
+	const previousVoidedTransactionId = useSelector(selectors.selectPreviousVoidedTransactionId());
 	const pageNumber = useSelector(selectors.selectPageNumber());
 
 	const addProduct = useActionDispatch(actions.addProduct);
@@ -53,6 +54,7 @@ export const useCurrentTransaction = () => {
 		invoiceId,
 		transactionId,
 		transactionStatus,
+		previousVoidedTransactionId,
 		pageNumber,
 		addProduct,
 		removeProduct,
