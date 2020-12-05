@@ -12,10 +12,11 @@ export const types = {
 	PAY_TRANSACTION: `${key}/PAY_TRANSACTION`,
 	UPDATE_TRANSACTION: `${key}/UPDATE_TRANSACTION`,
 	CREATE_TRANSACTION: `${key}/CREATE_TRANSACTION`,
+	VOID_TRANSACTION: `${key}/VOID_TRANSACTION`,
 
 	// Combined
 	FIRST_TIME_PAYMENT: `${key}/FIRST_TIME_PAYMENT`,
-	VOID_TRANSACTION: `${key}/VOID_TRANSACTION`,
+	CANCEL_VOIDED_TRANSACTION: `${key}/CANCEL_VOIDED_TRANSACTION`,
 };
 
 const initialState = {
@@ -66,9 +67,10 @@ export const actions = {
 	payTransaction: createAction(types.PAY_TRANSACTION),
 	updateTransaction: createAction(types.UPDATE_TRANSACTION),
 	createTransaction: createAction(types.CREATE_TRANSACTION),
-
 	firstTimePayment: createAction(types.FIRST_TIME_PAYMENT),
+
 	voidTransaction: createAction(types.VOID_TRANSACTION),
+	cancelVoidedTransaction: createAction(types.CANCEL_VOIDED_TRANSACTION),
 };
 
 const selectState = (state: any) => state[key] || initialState;

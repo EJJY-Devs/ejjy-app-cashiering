@@ -23,6 +23,7 @@ interface ICreateTransaction {
 
 interface IUpdateTransaction {
 	products: ITransactionProduct[];
+	status?: string;
 }
 
 interface IListTransactions extends IGetRequest {

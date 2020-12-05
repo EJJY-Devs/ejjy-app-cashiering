@@ -25,9 +25,10 @@ export const HoldModal = ({ visible, onClose }: Props) => {
 	const {
 		transactionId,
 		products,
+		transactionStatus: currentTransactionStatus,
 		setCurrentTransaction,
 		createCurrentTransaction,
-		status: currentTransactionStatus,
+		status: transactionRequestStatus,
 	} = useCurrentTransaction();
 	const { transactions, listTransactions, status: transactionsStatus } = useTransactions();
 	const { branchProducts } = useBranchProducts();
@@ -97,10 +98,10 @@ export const HoldModal = ({ visible, onClose }: Props) => {
 			centered
 			closable
 		>
-			<Spin size="large" spinning={currentTransactionStatus === request.REQUESTING}>
+			<Spin size="large" spinning={transactionRequestStatus === request.REQUESTING}>
 				<button
 					className={cn('other-button btn-cash-breakdown', {
-						disabled: transactionId || !products.length,
+						disabled: currentTransactionStatus !== null || !products.length,
 					})}
 					onClick={onHold}
 				>

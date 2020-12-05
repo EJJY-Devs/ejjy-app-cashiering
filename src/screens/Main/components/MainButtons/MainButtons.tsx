@@ -1,13 +1,12 @@
+import { message } from 'antd';
 import React, { useState } from 'react';
 import { request, transactionStatus } from '../../../../global/types';
-import { useBranchProducts } from '../../../../hooks/useBranchProducts';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
-import { useSession } from '../../../../hooks/useSession';
 import { useTransactions } from '../../../../hooks/useTransactions';
 import { useUI } from '../../../../hooks/useUI';
+import { HoldModal } from './HoldModal';
 import { MainButton } from './MainButton';
 import { OthersModal } from './OthersModal';
-import { HoldModal } from './HoldModal';
 import './style.scss';
 
 interface Props {
@@ -16,17 +15,14 @@ interface Props {
 }
 
 export const MainButtons = ({ onMidSession, onEndSession }: Props) => {
-	const { session } = useSession();
 	const {
 		transactionId,
-		isFullyPaid,
-		transactionStatus: transStatus,
 		products: transactionProducts,
-		setCurrentTransaction,
+		previousVoidedTransactionId,
+		transactionStatus: currentTransactionStatus,
 		resetTransaction,
 	} = useCurrentTransaction();
-	const { voidTransaction } = useTransactions();
-	const { branchProducts } = useBranchProducts();
+	const { voidTransaction, cancelVoidedTransaction } = useTransactions();
 	const { setMainLoading, setMainLoadingText } = useUI();
 
 	const [othersModalVisible, setOthersModalVisible] = useState(false);
@@ -43,34 +39,48 @@ export const MainButtons = ({ onMidSession, onEndSession }: Props) => {
 	};
 
 	const onReset = () => {
-		resetTransaction();
+		if (previousVoidedTransactionId) {
+			setMainLoading(true);
+			setMainLoadingText('Cancelling voided transaction...');
+
+			const products = transactionProducts.map((product) => ({
+				product_id: product.productId,
+				quantity: product.quantity,
+				price_per_piece: product.pricePerPiece,
+			}));
+
+			cancelVoidedTransaction(
+				{
+					transactionId: previousVoidedTransactionId,
+					status: transactionStatus.VOID_CANCELLED,
+					products,
+				},
+				({ status, errors }) => {
+					if (status === request.ERROR) {
+						message.error(errors);
+					}
+
+					setMainLoading(false);
+					setMainLoadingText(null);
+					resetTransaction();
+				},
+			);
+		} else {
+			resetTransaction();
+		}
 	};
 
 	const onVoid = () => {
 		setMainLoading(true);
 		setMainLoadingText('Setting transaction to void...');
 
-		const products = transactionProducts.map((product) => ({
-			product_id: product.productId,
-			quantity: product.quantity,
-			price_per_piece: product.pricePerPiece,
-		}));
-
-		const data = {
-			branchId: session?.branch_machine?.branch_id,
-			branchMachineId: session.branch_machine.id,
-			tellerId: session.user.id,
-			dummyClientId: 1, // TODO: Update on next sprint
-			products,
-			transactionId,
-		};
-
-		voidTransaction(data, ({ status, transaction }) => {
-			if (status === request.SUCCESS) {
-				setMainLoading(false);
-				setMainLoadingText(null);
-				setCurrentTransaction({ transaction, branchProducts });
+		voidTransaction(transactionId, ({ status, errors }) => {
+			if (status === request.ERROR) {
+				message.error(errors);
 			}
+
+			setMainLoading(false);
+			setMainLoadingText(null);
 		});
 	};
 
@@ -89,7 +99,12 @@ export const MainButtons = ({ onMidSession, onEndSession }: Props) => {
 			</div>
 
 			<div className="buttons-wrapper">
-				<MainButton title="Hold" classNames="btn-hold" onClick={() => setHoldModalVisible(true)} />
+				<MainButton
+					title="Hold"
+					classNames="btn-hold"
+					onClick={() => setHoldModalVisible(true)}
+					disabled={currentTransactionStatus === transactionStatus.VOID}
+				/>
 
 				<MainButton title="Discount" onClick={() => null} />
 
@@ -98,7 +113,7 @@ export const MainButtons = ({ onMidSession, onEndSession }: Props) => {
 				<MainButton
 					title="Void"
 					onClick={onVoid}
-					disabled={!isFullyPaid || transStatus === transactionStatus.VOID}
+					disabled={currentTransactionStatus !== transactionStatus.FULLY_PAID}
 				/>
 
 				<MainButton
