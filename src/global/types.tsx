@@ -38,4 +38,5 @@ export const transactionStatus = {
 	FULLY_PAID: 'fully_paid',
 	HOLD: 'hold',
 	VOID: 'void',
+	VOID_CANCELLED: 'void_cancelled',
 };

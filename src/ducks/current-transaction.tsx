@@ -2,7 +2,7 @@ import { ceil, cloneDeep } from 'lodash';
 import { createAction, handleActions } from 'redux-actions';
 import { createSelector } from 'reselect';
 import { PRODUCT_LENGTH_PER_PAGE } from '../global/constants';
-import { productNavigation } from '../global/types';
+import { productNavigation, transactionStatus } from '../global/types';
 
 export const key = 'CURRENT_TRANSACTION';
 
@@ -15,6 +15,8 @@ export const types = {
 	UPDATE_TRANSACTION: `${key}/UPDATE_TRANSACTION`,
 	RESET_TRANSACTION: `${key}/RESET_TRANSACTION`,
 
+	TRANSACTION_VOIDED: `${key}/TRANSACTION_VOIDED`,
+
 	NAVIGATE_PRODUCT: `${key}/NAVIGATE_PRODUCT`,
 };
 
@@ -26,6 +28,7 @@ const initialState = {
 	totalPaidAmount: 0,
 	invoiceId: null,
 	status: null,
+	previousVoidedTransactionId: null,
 
 	pageNumber: 1,
 };
@@ -33,7 +36,7 @@ const initialState = {
 const reducer = handleActions(
 	{
 		[types.ADD_PRODUCT]: (state, { payload }: any) => {
-			return { ...state, products: [...state.products, payload.product] };
+			return { ...state, products: [payload.product, ...state.products] };
 		},
 
 		[types.REMOVE_PRODUCT]: (state, { payload }: any) => {
@@ -78,6 +81,7 @@ const reducer = handleActions(
 				isFullyPaid: transaction.is_fully_paid,
 				totalPaidAmount: transaction.total_paid_amount,
 				status: transaction.status,
+				previousVoidedTransactionId: transaction.previous_voided_transaction_id,
 				products,
 			};
 
@@ -86,7 +90,7 @@ const reducer = handleActions(
 
 		[types.SET_CURRENT_TRANSACTION]: (state, { payload }: any) => {
 			const { transaction, branchProducts } = payload;
-			console.log(transaction);
+
 			const products = transaction.products.map((item) => {
 				const branchProduct = branchProducts.find(({ product }) => product?.id === item.product.id);
 
@@ -108,7 +112,28 @@ const reducer = handleActions(
 				isFullyPaid: transaction.is_fully_paid,
 				totalPaidAmount: transaction.total_paid_amount,
 				status: transaction.status,
+				previousVoidedTransactionId:
+					transaction.status === transactionStatus.VOID
+						? transaction.id
+						: transaction.previous_voided_transaction_id,
 				products,
+				pageNumber: 1,
+			};
+
+			return { ...state, ...newData };
+		},
+
+		[types.TRANSACTION_VOIDED]: (state, { payload }: any) => {
+			const { transaction } = payload;
+
+			const newData = {
+				transactionId: null,
+				invoiceId: null,
+				clientId: null,
+				isFullyPaid: false,
+				totalPaidAmount: transaction.total_paid_amount,
+				status: transaction.status,
+				previousVoidedTransactionId: transaction.id,
 				pageNumber: 1,
 			};
 
@@ -153,6 +178,7 @@ export const actions = {
 	updateTransaction: createAction(types.UPDATE_TRANSACTION),
 	resetTransaction: createAction(types.RESET_TRANSACTION),
 
+	transactionVoided: createAction(types.TRANSACTION_VOIDED),
 	navigateProduct: createAction(types.NAVIGATE_PRODUCT),
 };
 
@@ -165,6 +191,8 @@ export const selectors = {
 	selectInvoiceId: () => createSelector(selectState, (state) => state.invoiceId),
 	selectTransactionId: () => createSelector(selectState, (state) => state.transactionId),
 	selectTransactionStatus: () => createSelector(selectState, (state) => state.status),
+	selectPreviousVoidedTransactionId: () =>
+		createSelector(selectState, (state) => state.previousVoidedTransactionId),
 	selectPageNumber: () => createSelector(selectState, (state) => state.pageNumber),
 };
 
