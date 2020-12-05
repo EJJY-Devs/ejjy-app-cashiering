@@ -2,7 +2,7 @@ import { ceil, cloneDeep } from 'lodash';
 import { createAction, handleActions } from 'redux-actions';
 import { createSelector } from 'reselect';
 import { PRODUCT_LENGTH_PER_PAGE } from '../global/constants';
-import { productNavigation, transactionStatus } from '../global/types';
+import { productNavigation, transactionStatusTypes } from '../global/types';
 
 export const key = 'CURRENT_TRANSACTION';
 
@@ -113,7 +113,7 @@ const reducer = handleActions(
 				totalPaidAmount: transaction.total_paid_amount,
 				status: transaction.status,
 				previousVoidedTransactionId:
-					transaction.status === transactionStatus.VOID
+					transaction.status === transactionStatusTypes.VOID
 						? transaction.id
 						: transaction.previous_voided_transaction_id,
 				products,

@@ -1,6 +1,6 @@
 import { message } from 'antd';
 import React, { useState } from 'react';
-import { request, transactionStatus } from '../../../../global/types';
+import { request, transactionStatusTypes } from '../../../../global/types';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import { useTransactions } from '../../../../hooks/useTransactions';
 import { useUI } from '../../../../hooks/useUI';
@@ -17,7 +17,7 @@ interface Props {
 export const MainButtons = ({ onMidSession, onEndSession }: Props) => {
 	const {
 		transactionId,
-		products: transactionProducts,
+		transactionProducts,
 		previousVoidedTransactionId,
 		transactionStatus: currentTransactionStatus,
 		resetTransaction,
@@ -52,7 +52,7 @@ export const MainButtons = ({ onMidSession, onEndSession }: Props) => {
 			cancelVoidedTransaction(
 				{
 					transactionId: previousVoidedTransactionId,
-					status: transactionStatus.VOID_CANCELLED,
+					status: transactionStatusTypes.VOID_CANCELLED,
 					products,
 				},
 				({ status, errors }) => {
@@ -103,7 +103,7 @@ export const MainButtons = ({ onMidSession, onEndSession }: Props) => {
 					title="Hold"
 					classNames="btn-hold"
 					onClick={() => setHoldModalVisible(true)}
-					disabled={currentTransactionStatus === transactionStatus.VOID}
+					disabled={currentTransactionStatus === transactionStatusTypes.VOID}
 				/>
 
 				<MainButton title="Discount" onClick={() => null} />
@@ -113,7 +113,7 @@ export const MainButtons = ({ onMidSession, onEndSession }: Props) => {
 				<MainButton
 					title="Void"
 					onClick={onVoid}
-					disabled={currentTransactionStatus !== transactionStatus.FULLY_PAID}
+					disabled={currentTransactionStatus !== transactionStatusTypes.FULLY_PAID}
 				/>
 
 				<MainButton

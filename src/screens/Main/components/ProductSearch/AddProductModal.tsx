@@ -16,7 +16,12 @@ interface Props {
 
 export const AddProductModal = ({ product, visible, onClose, onSuccess }: Props) => {
 	const { branchProducts } = useBranchProducts();
-	const { products, transactionId, addProduct, setCurrentTransaction } = useCurrentTransaction();
+	const {
+		transactionId,
+		transactionProducts,
+		addProduct,
+		setCurrentTransaction,
+	} = useCurrentTransaction();
 	const { updateTransaction, status } = useTransactions();
 
 	const inputRef = useRef(null);
@@ -42,7 +47,7 @@ export const AddProductModal = ({ product, visible, onClose, onSuccess }: Props)
 				{
 					transactionId,
 					products: [
-						...products.map((item) => ({
+						...transactionProducts.map((item) => ({
 							transaction_product_id: item.transactionProductId,
 							product_id: item.productId,
 							quantity: item.quantity,

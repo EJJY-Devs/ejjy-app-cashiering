@@ -18,7 +18,12 @@ interface Props {
 export const EditProductModal = ({ product, visible, onClose, onSuccess }: Props) => {
 	const { branchProducts } = useBranchProducts();
 	const { updateTransaction, status } = useTransactions();
-	const { products, transactionId, editProduct, setCurrentTransaction } = useCurrentTransaction();
+	const {
+		transactionId,
+		transactionProducts,
+		editProduct,
+		setCurrentTransaction,
+	} = useCurrentTransaction();
 
 	const inputRef = useRef(null);
 
@@ -59,7 +64,7 @@ export const EditProductModal = ({ product, visible, onClose, onSuccess }: Props
 				{
 					transactionId,
 					products: [
-						...products
+						...transactionProducts
 							.filter(
 								({ transactionProductId }) => transactionProductId !== product.transactionProductId,
 							)

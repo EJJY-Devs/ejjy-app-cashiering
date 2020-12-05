@@ -14,8 +14,8 @@ interface Props {
 export const BarcodeScanner = ({ setLoading }: Props) => {
 	const { branchProducts } = useBranchProducts();
 	const {
-		products,
 		transactionId,
+		transactionProducts,
 		addProduct,
 		editProduct,
 		setCurrentTransaction,
@@ -35,7 +35,7 @@ export const BarcodeScanner = ({ setLoading }: Props) => {
 				{
 					transactionId,
 					products: [
-						...products.map((item) => ({
+						...transactionProducts.map((item) => ({
 							transaction_product_id: item.transactionProductId,
 							product_id: item.productId,
 							quantity: item.quantity,
@@ -89,7 +89,7 @@ export const BarcodeScanner = ({ setLoading }: Props) => {
 				{
 					transactionId,
 					products: [
-						...products
+						...transactionProducts
 							.filter(
 								({ transactionProductId }) =>
 									transactionProductId !== existingProduct.transactionProductId,
@@ -131,7 +131,7 @@ export const BarcodeScanner = ({ setLoading }: Props) => {
 		const branchProduct = branchProducts.find(({ product }) => product?.barcode === scannedBarcode);
 
 		if (branchProduct) {
-			const existingProduct = products.find((product) => product.id);
+			const existingProduct = transactionProducts.find((product) => product.id);
 
 			if (existingProduct) {
 				editBarcodeProduct(branchProduct, existingProduct);

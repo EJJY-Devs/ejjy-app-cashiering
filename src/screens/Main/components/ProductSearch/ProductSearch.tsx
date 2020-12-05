@@ -15,7 +15,7 @@ import './style.scss';
 const SEARCH_DEBOUNCE_TIME = 300;
 
 export const ProductSearch = () => {
-	const { products: transactionProducts } = useCurrentTransaction();
+	const { transactionProducts } = useCurrentTransaction();
 	const { branchProducts } = useBranchProducts();
 
 	const itemRefs = useRef([]);

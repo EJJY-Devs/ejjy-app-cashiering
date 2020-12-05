@@ -10,14 +10,16 @@ import './style.scss';
 
 export const NavigationButtons = () => {
 	const {
-		products,
-		pageNumber,
 		transactionId,
+		transactionProducts,
+		pageNumber,
 		invoiceId,
 		navigateProduct,
 	} = useCurrentTransaction();
 
-	const getMaxPage = useCallback(() => ceil(products.length / PRODUCT_LENGTH_PER_PAGE), [products]);
+	const getMaxPage = useCallback(() => ceil(transactionProducts.length / PRODUCT_LENGTH_PER_PAGE), [
+		transactionProducts,
+	]);
 
 	return (
 		<div className="NavigationButtons">
@@ -51,7 +53,9 @@ export const NavigationButtons = () => {
 					classNames="btn-next"
 					icon={<CaretRightOutlined />}
 					onClick={() => navigateProduct(productNavigation.NEXT)}
-					disabled={pageNumber === getMaxPage() || products.length <= PRODUCT_LENGTH_PER_PAGE}
+					disabled={
+						pageNumber === getMaxPage() || transactionProducts.length <= PRODUCT_LENGTH_PER_PAGE
+					}
 				/>
 			</div>
 		</div>

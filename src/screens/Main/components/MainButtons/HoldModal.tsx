@@ -4,7 +4,7 @@ import cn from 'classnames';
 import React, { useEffect, useState } from 'react';
 import { TableNormal } from '../../../../components';
 import { ButtonLink } from '../../../../components/elements';
-import { request, transactionStatus } from '../../../../global/types';
+import { request, transactionStatusTypes } from '../../../../global/types';
 import { useBranchProducts } from '../../../../hooks/useBranchProducts';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import { useSession } from '../../../../hooks/useSession';
@@ -24,11 +24,11 @@ export const HoldModal = ({ visible, onClose }: Props) => {
 	const { session } = useSession();
 	const {
 		transactionId,
-		products,
-		transactionStatus: currentTransactionStatus,
+		transactionProducts,
+		transactionStatus,
 		setCurrentTransaction,
 		createCurrentTransaction,
-		status: transactionRequestStatus,
+		requestStatus: transactionsRequestStatus,
 	} = useCurrentTransaction();
 	const { transactions, listTransactions, status: transactionsStatus } = useTransactions();
 	const { branchProducts } = useBranchProducts();
@@ -40,7 +40,7 @@ export const HoldModal = ({ visible, onClose }: Props) => {
 	useEffect(() => {
 		if (visible) {
 			listTransactions({
-				status: transactionStatus.HOLD,
+				status: transactionStatusTypes.HOLD,
 				branchMachineId: session?.branch_machine?.id,
 				tellerId: session?.user_id,
 			});
@@ -50,7 +50,7 @@ export const HoldModal = ({ visible, onClose }: Props) => {
 	// Effect: Format transactions
 	useEffect(() => {
 		const formattedTransactions = transactions
-			.filter((transaction) => transaction.status === transactionStatus.HOLD)
+			.filter((transaction) => transaction.status === transactionStatusTypes.HOLD)
 			.map((transaction) => [
 				<ButtonLink text={transaction.id} onClick={() => checkCurrentTransaction(transaction)} />,
 				formatDateTime(transaction.datetime_created),
@@ -58,12 +58,12 @@ export const HoldModal = ({ visible, onClose }: Props) => {
 			]);
 
 		setHeldTransctions(formattedTransactions);
-	}, [transactions, transactionId, products]);
+	}, [transactions, transactionId, transactionProducts]);
 
 	const checkCurrentTransaction = (transaction) => {
 		onClose();
 
-		if (!transactionId && products?.length > 0) {
+		if (!transactionId && transactionProducts?.length > 0) {
 			setMainLoading(true);
 			setMainLoadingText('Saving current transaction...');
 			createCurrentTransaction(() => {
@@ -98,10 +98,10 @@ export const HoldModal = ({ visible, onClose }: Props) => {
 			centered
 			closable
 		>
-			<Spin size="large" spinning={transactionRequestStatus === request.REQUESTING}>
+			<Spin size="large" spinning={transactionsRequestStatus === request.REQUESTING}>
 				<button
 					className={cn('other-button btn-cash-breakdown', {
-						disabled: currentTransactionStatus !== null || !products.length,
+						disabled: transactionStatus !== null || !transactionProducts.length,
 					})}
 					onClick={onHold}
 				>

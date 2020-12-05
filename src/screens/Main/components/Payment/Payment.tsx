@@ -8,7 +8,7 @@ import { PaymentModal } from './PaymentModal';
 import './style.scss';
 
 export const Payment = () => {
-	const { products, isFullyPaid } = useCurrentTransaction();
+	const { transactionProducts, isFullyPaid } = useCurrentTransaction();
 
 	const [paymentModalVisible, setPaymentModalVisible] = useState(false);
 	const [invoiceModalVisible, setInvoiceModalVisible] = useState(false);
@@ -16,12 +16,12 @@ export const Payment = () => {
 	const getTotal = useCallback(
 		() =>
 			Number(
-				Object.values(products).reduce(
+				Object.values(transactionProducts).reduce(
 					(prev: number, { quantity, pricePerPiece }) => quantity * pricePerPiece + prev,
 					0,
 				),
 			),
-		[products],
+		[transactionProducts],
 	);
 
 	const onPaymentSuccess = () => {

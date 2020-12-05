@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import KeyboardEventHandler from 'react-keyboard-event-handler';
 import { CancelButtonIcon, TableNormalProducts } from '../../../../components';
 import { PRODUCT_LENGTH_PER_PAGE } from '../../../../global/constants';
-import { request, transactionStatus } from '../../../../global/types';
+import { request, transactionStatusTypes } from '../../../../global/types';
 import { useBranchProducts } from '../../../../hooks/useBranchProducts';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import { useTransactions } from '../../../../hooks/useTransactions';
@@ -34,7 +34,7 @@ interface Props {
 export const ProductTable = ({ isLoading }: Props) => {
 	const {
 		transactionId,
-		products,
+		transactionProducts,
 		pageNumber,
 		transactionStatus: currentTransactionStatus,
 		removeProduct,
@@ -50,10 +50,10 @@ export const ProductTable = ({ isLoading }: Props) => {
 
 	// Effect: Format product data
 	useEffect(() => {
-		const formattedProducts = products
+		const formattedProducts = transactionProducts
 			.slice((pageNumber - 1) * PRODUCT_LENGTH_PER_PAGE, pageNumber * PRODUCT_LENGTH_PER_PAGE)
 			.map((item) => [
-				currentTransactionStatus === transactionStatus.FULLY_PAID ? null : (
+				currentTransactionStatus === transactionStatusTypes.FULLY_PAID ? null : (
 					<CancelButtonIcon tooltip="Remove" onClick={() => onRemoveProduct(item.id)} />
 				),
 				<Tooltip placement="top" title={item.productDescription}>
@@ -65,14 +65,14 @@ export const ProductTable = ({ isLoading }: Props) => {
 			]);
 
 		setData(formattedProducts);
-	}, [products, pageNumber]);
+	}, [transactionProducts, pageNumber]);
 
 	const onRemoveProduct = (id) => {
 		if (transactionId) {
 			updateTransaction(
 				{
 					transactionId,
-					products: products
+					products: transactionProducts
 						.filter((item) => item.id !== id)
 						.map((item) => ({
 							transaction_product_id: item.transactionProductId,
@@ -119,7 +119,10 @@ export const ProductTable = ({ isLoading }: Props) => {
 			<KeyboardEventHandler
 				handleKeys={['f1']}
 				onKeyEvent={(key, e) => handleKeyPress(key)}
-				isDisabled={!products.length || currentTransactionStatus === transactionStatus.FULLY_PAID}
+				isDisabled={
+					!transactionProducts.length ||
+					currentTransactionStatus === transactionStatusTypes.FULLY_PAID
+				}
 			/>
 
 			<TableNormalProducts
@@ -131,7 +134,7 @@ export const ProductTable = ({ isLoading }: Props) => {
 			/>
 
 			<EditProductModal
-				product={products?.[selectedProductIndex]}
+				product={transactionProducts?.[selectedProductIndex]}
 				visible={editProductModalVisible}
 				onSuccess={onEditProductSuccess}
 				onClose={() => setEditProductModalVisible(false)}

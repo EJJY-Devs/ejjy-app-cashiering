@@ -17,13 +17,18 @@ const columns = [
 ];
 
 export const InvoiceModal = ({ visible, onClose }: Props) => {
-	const { transactionId, invoiceId, products, resetTransaction } = useCurrentTransaction();
+	const {
+		transactionId,
+		transactionProducts,
+		invoiceId,
+		resetTransaction,
+	} = useCurrentTransaction();
 
 	const [data, setData] = useState([]);
 
 	// Effect: Format product data
 	useEffect(() => {
-		const formattedProducts = products.map((item) => [
+		const formattedProducts = transactionProducts.map((item) => [
 			item.productName,
 			item.quantity.toFixed(3),
 			`₱${item.pricePerPiece.toFixed(2)}`,
@@ -31,7 +36,7 @@ export const InvoiceModal = ({ visible, onClose }: Props) => {
 		]);
 
 		setData(formattedProducts);
-	}, [products]);
+	}, [transactionProducts]);
 
 	const close = () => {
 		resetTransaction();

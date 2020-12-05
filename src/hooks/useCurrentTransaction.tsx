@@ -6,13 +6,13 @@ import { useSession } from './useSession';
 import { useTransactions } from './useTransactions';
 
 export const useCurrentTransaction = () => {
-	const products = useSelector(selectors.selectProducts());
+	const transactionId = useSelector(selectors.selectTransactionId());
+	const transactionProducts = useSelector(selectors.selectProducts());
+	const transactionStatus = useSelector(selectors.selectTransactionStatus());
 	const isFullyPaid = useSelector(selectors.selectIsFullyPaid());
 	const clientId = useSelector(selectors.selectClientId());
 	const totalPaidAmount = useSelector(selectors.selectTotalPaidAmount());
 	const invoiceId = useSelector(selectors.selectInvoiceId());
-	const transactionId = useSelector(selectors.selectTransactionId());
-	const transactionStatus = useSelector(selectors.selectTransactionStatus());
 	const previousVoidedTransactionId = useSelector(selectors.selectPreviousVoidedTransactionId());
 	const pageNumber = useSelector(selectors.selectPageNumber());
 
@@ -24,14 +24,14 @@ export const useCurrentTransaction = () => {
 	const navigateProduct = useActionDispatch(actions.navigateProduct);
 
 	const { session } = useSession();
-	const { createTransaction, status: transactionsStatus } = useTransactions();
+	const { createTransaction, status: transactionsRequestStatus } = useTransactions();
 	const createCurrentTransaction = (callback = null) => {
 		const data = {
 			branchId: session.branch_machine?.branch_id,
 			branchMachineId: session.branch_machine.id,
 			tellerId: session.user.id,
 			dummyClientId: 1, // TODO: Update on next sprint
-			products: products.map((product) => ({
+			products: transactionProducts.map((product) => ({
 				product_id: product.productId,
 				quantity: product.quantity,
 				price_per_piece: product.pricePerPiece,
@@ -47,13 +47,13 @@ export const useCurrentTransaction = () => {
 	};
 
 	return {
-		products,
+		transactionId,
+		transactionStatus,
+		transactionProducts,
 		isFullyPaid,
 		clientId,
 		totalPaidAmount,
 		invoiceId,
-		transactionId,
-		transactionStatus,
 		previousVoidedTransactionId,
 		pageNumber,
 		addProduct,
@@ -63,6 +63,6 @@ export const useCurrentTransaction = () => {
 		setCurrentTransaction,
 		createCurrentTransaction,
 		navigateProduct,
-		status: transactionsStatus,
+		requestStatus: transactionsRequestStatus,
 	};
 };

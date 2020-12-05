@@ -19,8 +19,8 @@ export const PaymentModal = ({ amountDue, visible, onClose, onSuccess }: Props) 
 	const { session } = useSession();
 	const {
 		transactionId,
+		transactionProducts,
 		previousVoidedTransactionId,
-		products: transactionProducts,
 	} = useCurrentTransaction();
 	const { payTransaction, firstTimePayment, status } = useTransactions();
 

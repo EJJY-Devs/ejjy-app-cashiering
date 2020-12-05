@@ -34,7 +34,7 @@ export const navigationTypes = {
 	NEXT: 1,
 };
 
-export const transactionStatus = {
+export const transactionStatusTypes = {
 	FULLY_PAID: 'fully_paid',
 	HOLD: 'hold',
 	VOID: 'void',
