@@ -2,6 +2,7 @@ import { message } from 'antd';
 import React, { useState } from 'react';
 import { request, transactionStatusTypes } from '../../../../global/types';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
+import { useSession } from '../../../../hooks/useSession';
 import { useTransactions } from '../../../../hooks/useTransactions';
 import { useUI } from '../../../../hooks/useUI';
 import { HoldModal } from './HoldModal';
@@ -15,6 +16,7 @@ interface Props {
 }
 
 export const MainButtons = ({ onMidSession, onEndSession }: Props) => {
+	const { session } = useSession();
 	const {
 		transactionId,
 		transactionProducts,
@@ -51,6 +53,7 @@ export const MainButtons = ({ onMidSession, onEndSession }: Props) => {
 
 			cancelVoidedTransaction(
 				{
+					branchId: session?.branch_machine?.branch_id,
 					transactionId: previousVoidedTransactionId,
 					status: transactionStatusTypes.VOID_CANCELLED,
 					products,

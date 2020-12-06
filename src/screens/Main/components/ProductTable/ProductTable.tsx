@@ -65,7 +65,7 @@ export const ProductTable = ({ isLoading }: Props) => {
 			]);
 
 		setData(formattedProducts);
-	}, [transactionProducts, pageNumber]);
+	}, [transactionProducts, currentTransactionStatus, pageNumber]);
 
 	const onRemoveProduct = (id) => {
 		if (transactionId) {
