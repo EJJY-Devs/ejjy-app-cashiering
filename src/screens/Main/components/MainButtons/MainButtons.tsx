@@ -1,5 +1,15 @@
 import { message } from 'antd';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
+import KeyboardEventHandler from 'react-keyboard-event-handler';
+import { EMPTY_CELL } from '../../../../global/constants';
+import {
+	cashCollectionShortcutKeys,
+	endSessionShortcutKeys,
+	holdResumeShortcutKeys,
+	othersShortcutKeys,
+	resetShortcutKeys,
+	voidShortcutKeys,
+} from '../../../../global/options';
 import { request, transactionStatusTypes } from '../../../../global/types';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import { useSession } from '../../../../hooks/useSession';
@@ -11,11 +21,11 @@ import { OthersModal } from './OthersModal';
 import './style.scss';
 
 interface Props {
-	onMidSession: any;
+	onCashCollection: any;
 	onEndSession: any;
 }
 
-export const MainButtons = ({ onMidSession, onEndSession }: Props) => {
+export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 	const { session } = useSession();
 	const {
 		transactionId,
@@ -30,8 +40,15 @@ export const MainButtons = ({ onMidSession, onEndSession }: Props) => {
 	const [othersModalVisible, setOthersModalVisible] = useState(false);
 	const [holdModalVisible, setHoldModalVisible] = useState(false);
 
-	const onMidSessionModified = () => {
-		onMidSession();
+	const isVoidDisabled = useCallback(
+		() => currentTransactionStatus !== transactionStatusTypes.FULLY_PAID,
+		[currentTransactionStatus],
+	);
+
+	const isResetDisabled = useCallback(() => !transactionProducts?.length, [transactionProducts]);
+
+	const onCashCollectionModified = () => {
+		onCashCollection();
 		setOthersModalVisible(false);
 	};
 
@@ -87,37 +104,81 @@ export const MainButtons = ({ onMidSession, onEndSession }: Props) => {
 		});
 	};
 
+	const handleKeyPress = (key, event) => {
+		event.preventDefault();
+		event.stopPropagation();
+
+		// Hold and Resume
+		if (holdResumeShortcutKeys.includes(key)) {
+			setHoldModalVisible(true);
+			return;
+		}
+
+		// Others
+		if (othersShortcutKeys.includes(key)) {
+			setOthersModalVisible(true);
+			return;
+		}
+
+		// End Session
+		if (endSessionShortcutKeys.includes(key)) {
+			onEndSessionModified();
+			return;
+		}
+
+		// Cash Collection
+		if (cashCollectionShortcutKeys.includes(key)) {
+			onCashCollectionModified();
+			return;
+		}
+
+		// Void
+		if (voidShortcutKeys.includes(key) && !isVoidDisabled()) {
+			onVoid();
+			return;
+		}
+
+		// Reset
+		if (resetShortcutKeys.includes(key) && !isResetDisabled()) {
+			onReset();
+			return;
+		}
+	};
+
 	return (
 		<div className="MainButtons">
+			<KeyboardEventHandler
+				handleKeys={[
+					...othersShortcutKeys,
+					...cashCollectionShortcutKeys,
+					...endSessionShortcutKeys,
+					...holdResumeShortcutKeys,
+					...voidShortcutKeys,
+					...resetShortcutKeys,
+				]}
+				onKeyEvent={(key, e) => handleKeyPress(key, e)}
+			/>
+
 			<div className="store-info-wrapper">
 				<div className="item">
 					<p className="label">Branch</p>
-					<p className="value">Branch Name</p>
+					<p className="value">{session?.user?.branch?.name || EMPTY_CELL}</p>
 				</div>
 
 				<div className="item">
 					<p className="label">Machine</p>
-					<p className="value">Machine Name</p>
+					<p className="value">{session?.branch_machine?.name || EMPTY_CELL}</p>
 				</div>
 			</div>
 
 			<div className="buttons-wrapper">
-				<MainButton
-					title="Hold"
-					classNames="btn-hold"
-					onClick={() => setHoldModalVisible(true)}
-					disabled={currentTransactionStatus === transactionStatusTypes.VOID}
-				/>
+				<MainButton title="Hold" classNames="btn-hold" onClick={() => setHoldModalVisible(true)} />
 
 				<MainButton title="Discount" onClick={() => null} />
 
-				<MainButton title="Reset" onClick={onReset} />
+				<MainButton title="Reset" onClick={onReset} disabled={isResetDisabled()} />
 
-				<MainButton
-					title="Void"
-					onClick={onVoid}
-					disabled={currentTransactionStatus !== transactionStatusTypes.FULLY_PAID}
-				/>
+				<MainButton title="Void" onClick={onVoid} disabled={isVoidDisabled()} />
 
 				<MainButton
 					title="Others"
@@ -127,7 +188,7 @@ export const MainButtons = ({ onMidSession, onEndSession }: Props) => {
 			</div>
 
 			<OthersModal
-				onMidSession={onMidSessionModified}
+				onCashCollection={onCashCollectionModified}
 				onEndSession={onEndSessionModified}
 				visible={othersModalVisible}
 				onClose={() => setOthersModalVisible(false)}

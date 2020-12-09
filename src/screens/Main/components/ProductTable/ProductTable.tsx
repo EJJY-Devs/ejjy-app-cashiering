@@ -3,7 +3,8 @@ import { message, Tooltip } from 'antd';
 import React, { useEffect, useState } from 'react';
 import KeyboardEventHandler from 'react-keyboard-event-handler';
 import { CancelButtonIcon, TableNormalProducts } from '../../../../components';
-import { PRODUCT_LENGTH_PER_PAGE } from '../../../../global/constants';
+import { NO_INDEX_SELECTED, PRODUCT_LENGTH_PER_PAGE } from '../../../../global/constants';
+import { deleteItemShortcutKeys, editQuantityShortcutKeys } from '../../../../global/options';
 import { request, transactionStatusTypes } from '../../../../global/types';
 import { useBranchProducts } from '../../../../hooks/useBranchProducts';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
@@ -20,7 +21,11 @@ const columns = [
 	{ name: 'Amount' },
 ];
 
-const NO_INDEX_SELECTED = -1;
+const uneditableStatus = [
+	transactionStatusTypes.FULLY_PAID,
+	transactionStatusTypes.VOID_CANCELLED,
+	transactionStatusTypes.VOID_EDITED,
+];
 
 export const editTypes = {
 	ADD: 1,
@@ -53,7 +58,7 @@ export const ProductTable = ({ isLoading }: Props) => {
 		const formattedProducts = transactionProducts
 			.slice((pageNumber - 1) * PRODUCT_LENGTH_PER_PAGE, pageNumber * PRODUCT_LENGTH_PER_PAGE)
 			.map((item) => [
-				currentTransactionStatus === transactionStatusTypes.FULLY_PAID ? null : (
+				uneditableStatus.includes(currentTransactionStatus) ? null : (
 					<CancelButtonIcon tooltip="Remove" onClick={() => onRemoveProduct(item.id)} />
 				),
 				<Tooltip placement="top" title={item.productDescription}>
@@ -101,13 +106,26 @@ export const ProductTable = ({ isLoading }: Props) => {
 		}
 	};
 
-	const handleKeyPress = (key) => {
-		if (key === 'f1' && selectedProductIndex === NO_INDEX_SELECTED) {
+	const handleKeyPress = (key, event) => {
+		event.preventDefault();
+		event.stopPropagation();
+
+		if (selectedProductIndex === NO_INDEX_SELECTED) {
 			message.error('Please select a product from the table first.');
 			return;
 		}
 
-		setEditProductModalVisible(true);
+		// Edit
+		if (editQuantityShortcutKeys.includes(key)) {
+			setEditProductModalVisible(true);
+			return;
+		}
+
+		// Delete
+		if (deleteItemShortcutKeys.includes(key)) {
+			onRemoveProduct(transactionProducts?.[selectedProductIndex]?.id);
+			return;
+		}
 	};
 
 	const onEditProductSuccess = () => {
@@ -117,11 +135,12 @@ export const ProductTable = ({ isLoading }: Props) => {
 	return (
 		<div className="ProductTable">
 			<KeyboardEventHandler
-				handleKeys={['f1']}
-				onKeyEvent={(key, e) => handleKeyPress(key)}
+				handleKeys={[...editQuantityShortcutKeys, ...deleteItemShortcutKeys]}
+				onKeyEvent={(key, e) => handleKeyPress(key, e)}
 				isDisabled={
+					selectedProductIndex === NO_INDEX_SELECTED ||
 					!transactionProducts.length ||
-					currentTransactionStatus === transactionStatusTypes.FULLY_PAID
+					uneditableStatus.includes(currentTransactionStatus)
 				}
 			/>
 
@@ -137,7 +156,10 @@ export const ProductTable = ({ isLoading }: Props) => {
 				product={transactionProducts?.[selectedProductIndex]}
 				visible={editProductModalVisible}
 				onSuccess={onEditProductSuccess}
-				onClose={() => setEditProductModalVisible(false)}
+				onClose={() => {
+					setSelectedProductIndex(NO_INDEX_SELECTED);
+					setEditProductModalVisible(false);
+				}}
 			/>
 		</div>
 	);

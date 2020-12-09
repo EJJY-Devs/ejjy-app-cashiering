@@ -13,6 +13,7 @@ export const useCurrentTransaction = () => {
 	const clientId = useSelector(selectors.selectClientId());
 	const totalPaidAmount = useSelector(selectors.selectTotalPaidAmount());
 	const invoiceId = useSelector(selectors.selectInvoiceId());
+	const orNumber = useSelector(selectors.selectOrNumber());
 	const previousVoidedTransactionId = useSelector(selectors.selectPreviousVoidedTransactionId());
 	const pageNumber = useSelector(selectors.selectPageNumber());
 
@@ -54,6 +55,7 @@ export const useCurrentTransaction = () => {
 		clientId,
 		totalPaidAmount,
 		invoiceId,
+		orNumber,
 		previousVoidedTransactionId,
 		pageNumber,
 		addProduct,
