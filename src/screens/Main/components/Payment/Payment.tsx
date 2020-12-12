@@ -69,7 +69,7 @@ export const Payment = () => {
 				</div>
 				<Button
 					classNames="btn-pay"
-					text="Pay"
+					text="Advance"
 					size="lg"
 					variant="primary"
 					onClick={onPay}
