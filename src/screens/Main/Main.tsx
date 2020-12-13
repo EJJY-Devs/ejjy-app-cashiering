@@ -94,7 +94,6 @@ const Main = () => {
 			cashBreakdownRecentRequest,
 			branchProductsStatus,
 			sessionStatus,
-
 			mainLoading,
 		],
 	);
