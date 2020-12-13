@@ -20,7 +20,7 @@ export const InvoiceModal = ({ visible, onClose }: Props) => {
 	const {
 		transactionId,
 		transactionProducts,
-		invoiceId,
+		orNumber,
 		resetTransaction,
 	} = useCurrentTransaction();
 
@@ -58,7 +58,7 @@ export const InvoiceModal = ({ visible, onClose }: Props) => {
 					classNamesLabel="invoice-label"
 					classNamesValue="invoice-value"
 					label="Invoice No."
-					value={invoiceId}
+					value={orNumber}
 				/>
 				<DetailsSingle
 					classNamesLabel="invoice-label"

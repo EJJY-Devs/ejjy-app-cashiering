@@ -14,37 +14,44 @@ interface Props {
 	onFocus?: any;
 	autoFocus?: boolean;
 	classNames?: any;
+	ref?: any;
 }
 
-const ControlledInput = ({
-	classNames,
-	type,
-	id,
-	max,
-	min,
-	placeholder,
-	onChange,
-	onFocus,
-	disabled,
-	autoFocus,
-	value,
-}: Props) => (
-	<input
-		type={type}
-		id={id}
-		name={id}
-		className={cn('Input', classNames)}
-		placeholder={placeholder}
-		max={max}
-		min={min}
-		disabled={disabled}
-		onChange={(event) => onChange(event.target.value)}
-		onFocus={(event) => {
-			if (onFocus) onFocus(event.target.value);
-		}}
-		autoFocus={autoFocus}
-		value={value}
-	/>
+const ControlledInput = React.forwardRef<HTMLInputElement, Props>(
+	(
+		{
+			classNames,
+			type,
+			id,
+			max,
+			min,
+			placeholder,
+			onChange,
+			onFocus,
+			disabled,
+			autoFocus,
+			value,
+		}: Props,
+		ref,
+	) => (
+		<input
+			ref={ref}
+			type={type}
+			id={id}
+			name={id}
+			className={cn('Input', classNames)}
+			placeholder={placeholder}
+			max={max}
+			min={min}
+			disabled={disabled}
+			onChange={(event) => onChange(event.target.value)}
+			onFocus={(event) => {
+				if (onFocus) onFocus(event.target.value);
+			}}
+			autoFocus={autoFocus}
+			value={value}
+		/>
+	),
 );
 
 ControlledInput.defaultProps = {

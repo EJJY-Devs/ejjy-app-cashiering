@@ -5,13 +5,13 @@ import { SearchTransaction } from './SearchTransaction';
 import './style.scss';
 
 interface Props {
-	onMidSession: any;
+	onCashCollection: any;
 	onEndSession: any;
 	visible: boolean;
 	onClose: any;
 }
 
-export const OthersModal = ({ onMidSession, onEndSession, visible, onClose }: Props) => {
+export const OthersModal = ({ onCashCollection, onEndSession, visible, onClose }: Props) => {
 	return (
 		<Modal
 			title="Others"
@@ -24,7 +24,7 @@ export const OthersModal = ({ onMidSession, onEndSession, visible, onClose }: Pr
 		>
 			<SearchTransaction closeModal={onClose} />
 
-			<button className="other-button btn-cash-breakdown" onClick={onMidSession}>
+			<button className="other-button btn-cash-breakdown" onClick={onCashCollection}>
 				Cash Collection
 			</button>
 

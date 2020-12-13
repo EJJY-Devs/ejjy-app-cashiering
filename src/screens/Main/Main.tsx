@@ -1,9 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { Alert } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Container } from '../../components';
 import { types as cashBreakdownsRequestTypes } from '../../ducks/cash-breakdowns';
 import { types as sessionTypes } from '../../ducks/sessions';
-import { cashBreakdownTypes, request } from '../../global/types';
+import { cashBreakdownTypes, request, transactionStatusTypes } from '../../global/types';
 import { useBranchProducts } from '../../hooks/useBranchProducts';
 import { useCashBreakdown } from '../../hooks/useCashBreakdown';
 import { useCurrentTransaction } from '../../hooks/useCurrentTransaction';
@@ -18,6 +19,12 @@ import { ProductSearch } from './components/ProductSearch/ProductSearch';
 import { ProductTable } from './components/ProductTable/ProductTable';
 import './style.scss';
 
+const voidTransactionStatus = [
+	transactionStatusTypes.VOID,
+	transactionStatusTypes.VOID_EDITED,
+	transactionStatusTypes.VOID_CANCELLED,
+];
+
 const Main = () => {
 	const {
 		session,
@@ -27,7 +34,7 @@ const Main = () => {
 		status: sessionStatus,
 		recentRequest: sessionRecentRequest,
 	} = useSession();
-	const { transactionId, resetTransaction } = useCurrentTransaction();
+	const { transactionId, transactionStatus, resetTransaction } = useCurrentTransaction();
 	const {
 		cashBreakdowns,
 		listCashBreakdown,
@@ -87,7 +94,6 @@ const Main = () => {
 			cashBreakdownRecentRequest,
 			branchProductsStatus,
 			sessionStatus,
-
 			mainLoading,
 		],
 	);
@@ -122,7 +128,7 @@ const Main = () => {
 		mainLoadingText,
 	]);
 
-	const onMidSession = () => {
+	const onCashCollection = () => {
 		setCashBreakdownModalVisible(true);
 		setCashBreakdownType(cashBreakdownTypes.MID_SESSION);
 	};
@@ -147,14 +153,27 @@ const Main = () => {
 				<div className="main-content">
 					<div className="left">
 						<ProductSearch />
+
+						{voidTransactionStatus.includes(transactionStatus) && (
+							<Alert
+								className="void-warning"
+								message="This transaction was voided."
+								type="warning"
+								showIcon
+								closable
+							/>
+						)}
+
 						<ProductTable isLoading={barcodeScanLoading} />
 						<NavigationButtons />
 					</div>
 					<div className="right">
 						<Payment />
-						<MainButtons onEndSession={onEndSession} onMidSession={onMidSession} />
+						<MainButtons onEndSession={onEndSession} onCashCollection={onCashCollection} />
 					</div>
 				</div>
+
+				<h1 className="store-title">EJ & JY WET MARKET AND ENTERPRISES</h1>
 
 				<BarcodeScanner setLoading={setBarcodeScanLoading} />
 

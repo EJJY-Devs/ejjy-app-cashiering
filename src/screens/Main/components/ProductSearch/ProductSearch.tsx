@@ -5,6 +5,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import KeyboardEventHandler from 'react-keyboard-event-handler';
 import { ControlledInput } from '../../../../components/elements';
 import { NO_INDEX_SELECTED } from '../../../../global/constants';
+import { searchShortcutKeys } from '../../../../global/options';
 import { branchProductStatus } from '../../../../global/types';
 import { useBranchProducts } from '../../../../hooks/useBranchProducts';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
@@ -19,6 +20,7 @@ export const ProductSearch = () => {
 	const { branchProducts } = useBranchProducts();
 
 	const itemRefs = useRef([]);
+	const inputRef = useRef(null);
 	const [searchableProducts, setSearchableProducts] = useState([]);
 	const [activeIndex, setActiveIndex] = useState(NO_INDEX_SELECTED);
 	const [products, setProducts] = useState([]);
@@ -66,7 +68,35 @@ export const ProductSearch = () => {
 		setActiveIndex(index);
 	};
 
-	const handleKeyPress = (key) => {
+	const onSelectProduct = () => {
+		const product = products?.[activeIndex];
+
+		if (!product) {
+			message.error('Please select a product first.');
+			return;
+		}
+
+		if (product?.product_status === branchProductStatus.OUT_OF_STOCK) {
+			message.error('Product is already out of stock.');
+			return;
+		}
+
+		setAddProductModalVisible(true);
+	};
+
+	const onAddProductSuccess = () => {
+		setSearchedKey('');
+		setProducts([]);
+	};
+
+	const handleKeyPress = (key, event) => {
+		event.preventDefault();
+		event.stopPropagation();
+
+		if (searchShortcutKeys.includes(key)) {
+			inputRef?.current?.focus();
+		}
+
 		if ((key === 'up' || key === 'down') && activeIndex === NO_INDEX_SELECTED) {
 			setActiveIndex(0);
 			return;
@@ -94,35 +124,20 @@ export const ProductSearch = () => {
 		}
 	};
 
-	const onSelectProduct = () => {
-		const product = products?.[activeIndex];
-
-		if (!product) {
-			message.error('Please select a product first.');
-			return;
-		}
-
-		if (product?.product_status === branchProductStatus.OUT_OF_STOCK) {
-			message.error('Product is already out of stock.');
-			return;
-		}
-
-		setAddProductModalVisible(true);
-	};
-
-	const onAddProductSuccess = () => {
-		setSearchedKey('');
-		setProducts([]);
-	};
-
 	return (
 		<div className="ProductSearch">
 			<KeyboardEventHandler
+				handleKeys={searchShortcutKeys}
+				onKeyEvent={(key, e) => handleKeyPress(key, e)}
+			/>
+
+			<KeyboardEventHandler
 				handleKeys={['up', 'down', 'enter', 'esc']}
-				onKeyEvent={(key, e) => handleKeyPress(key)}
+				onKeyEvent={(key, e) => handleKeyPress(key, e)}
 				isDisabled={!products.length}
 			>
 				<ControlledInput
+					ref={inputRef}
 					classNames="product-search-input"
 					value={searchedKey}
 					onFocus={onFocus}

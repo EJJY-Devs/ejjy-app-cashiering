@@ -12,8 +12,8 @@ export const NavigationButtons = () => {
 	const {
 		transactionId,
 		transactionProducts,
+		orNumber,
 		pageNumber,
-		invoiceId,
 		navigateProduct,
 	} = useCurrentTransaction();
 
@@ -34,7 +34,7 @@ export const NavigationButtons = () => {
 				</div>
 				<div className="item">
 					<p className="label">Invoice No:</p>
-					<p className="value">{invoiceId || '—'}</p>
+					<p className="value">{orNumber || '—'}</p>
 				</div>
 				<div className="item previous-sukli">
 					<p className="label">Previous Sukli:</p>

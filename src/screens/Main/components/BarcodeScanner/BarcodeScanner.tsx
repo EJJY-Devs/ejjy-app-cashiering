@@ -123,11 +123,16 @@ export const BarcodeScanner = ({ setLoading }: Props) => {
 
 	const handleScan = (test) => {
 		let data = `${test}`;
-		if (test === '6931717503055') {
-			data = '111111';
-		}
 
-		const scannedBarcode = data?.toLowerCase() || '';
+		const barcode = data.substr(0, 7);
+
+		const value = data.substr(-6);
+		const whole = value.substr(0, 2);
+		const decimal = value.substr(2, 3);
+
+		message.info(`Barcode: ${barcode} -> Value: ${whole}.${decimal}`);
+
+		const scannedBarcode = barcode?.toLowerCase() || '';
 		const branchProduct = branchProducts.find(({ product }) => product?.barcode === scannedBarcode);
 
 		if (branchProduct) {

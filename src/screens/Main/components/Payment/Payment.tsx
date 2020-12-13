@@ -1,6 +1,8 @@
 import { message } from 'antd';
 import React, { useCallback, useState } from 'react';
+import KeyboardEventHandler from 'react-keyboard-event-handler';
 import { Button } from '../../../../components/elements';
+import { tenderShortcutKeys } from '../../../../global/options';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import { numberWithCommas } from '../../../../utils/function';
 import { InvoiceModal } from './InvoiceModal';
@@ -42,8 +44,24 @@ export const Payment = () => {
 		setPaymentModalVisible(true);
 	};
 
+	const handleKeyPress = (key, event) => {
+		event.preventDefault();
+		event.stopPropagation();
+
+		// Tender
+		if (tenderShortcutKeys.includes(key) && !isFullyPaid) {
+			onPay();
+			return;
+		}
+	};
+
 	return (
 		<div className="Payment">
+			<KeyboardEventHandler
+				handleKeys={tenderShortcutKeys}
+				onKeyEvent={(key, e) => handleKeyPress(key, e)}
+			/>
+
 			<div className="payment-content">
 				<div className="text-wrapper">
 					<p className="label">Total</p>
@@ -51,7 +69,7 @@ export const Payment = () => {
 				</div>
 				<Button
 					classNames="btn-pay"
-					text="Pay"
+					text="Advance"
 					size="lg"
 					variant="primary"
 					onClick={onPay}

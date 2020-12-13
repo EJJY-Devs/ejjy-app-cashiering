@@ -27,6 +27,7 @@ const initialState = {
 	clientId: null,
 	totalPaidAmount: 0,
 	invoiceId: null,
+	orNumber: null,
 	status: null,
 	previousVoidedTransactionId: null,
 
@@ -77,6 +78,7 @@ const reducer = handleActions(
 			const newData = {
 				transactionId: transaction.id,
 				invoiceId: transaction?.invoice.id,
+				orNumber: transaction?.invoice.or_number,
 				clientId: transaction.client_id,
 				isFullyPaid: transaction.is_fully_paid,
 				totalPaidAmount: transaction.total_paid_amount,
@@ -108,6 +110,7 @@ const reducer = handleActions(
 			const newData = {
 				transactionId: transaction.id,
 				invoiceId: transaction?.invoice?.id,
+				orNumber: transaction?.invoice?.or_number,
 				clientId: transaction.client_id,
 				isFullyPaid: transaction.is_fully_paid,
 				totalPaidAmount: transaction.total_paid_amount,
@@ -129,6 +132,7 @@ const reducer = handleActions(
 			const newData = {
 				transactionId: null,
 				invoiceId: null,
+				orNumber: null,
 				clientId: null,
 				isFullyPaid: false,
 				totalPaidAmount: transaction.total_paid_amount,
@@ -189,6 +193,7 @@ export const selectors = {
 	selectClientId: () => createSelector(selectState, (state) => state.clientId),
 	selectTotalPaidAmount: () => createSelector(selectState, (state) => state.totalPaidAmount),
 	selectInvoiceId: () => createSelector(selectState, (state) => state.invoiceId),
+	selectOrNumber: () => createSelector(selectState, (state) => state.orNumber),
 	selectTransactionId: () => createSelector(selectState, (state) => state.transactionId),
 	selectTransactionStatus: () => createSelector(selectState, (state) => state.status),
 	selectPreviousVoidedTransactionId: () =>

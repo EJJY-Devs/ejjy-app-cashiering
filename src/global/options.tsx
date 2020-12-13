@@ -1,1 +1,11 @@
-import { upperFirst } from 'lodash';
+export const othersShortcutKeys = ['f1', 'ctrl+o', 'meta+o'];
+export const cashCollectionShortcutKeys = ['f2', 'ctrl+c', 'meta+c'];
+export const endSessionShortcutKeys = ['f3', 'ctrl+e', 'meta+e'];
+export const deleteItemShortcutKeys = ['f4', 'ctrl+d', 'meta+d'];
+export const discountShortcutKeys = ['f5', 'ctrl+f', 'meta+f'];
+export const editQuantityShortcutKeys = ['f7', 'ctrl+q', 'meta+q'];
+export const tenderShortcutKeys = ['f8', 'ctrl+a', 'meta+a'];
+export const holdResumeShortcutKeys = ['f9', 'ctrl+h', 'meta+h'];
+export const searchShortcutKeys = ['f10', 'ctrl+s', 'meta+s'];
+export const voidShortcutKeys = ['f11', 'ctrl+v', 'meta+v'];
+export const resetShortcutKeys = ['f12', 'ctrl+r', 'meta+r'];

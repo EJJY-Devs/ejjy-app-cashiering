@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { message, Modal, Spin } from 'antd';
 import cn from 'classnames';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { TableNormal } from '../../../../components';
 import { ButtonLink } from '../../../../components/elements';
 import { request, transactionStatusTypes } from '../../../../global/types';
@@ -60,6 +60,11 @@ export const HoldModal = ({ visible, onClose }: Props) => {
 		setHeldTransctions(formattedTransactions);
 	}, [transactions, transactionId, transactionProducts]);
 
+	const isHoldDisabled = useCallback(
+		() => transactionStatus !== null || !transactionProducts.length,
+		[transactionStatus, transactionProducts],
+	);
+
 	const checkCurrentTransaction = (transaction) => {
 		onClose();
 
@@ -100,9 +105,7 @@ export const HoldModal = ({ visible, onClose }: Props) => {
 		>
 			<Spin size="large" spinning={transactionsRequestStatus === request.REQUESTING}>
 				<button
-					className={cn('other-button btn-cash-breakdown', {
-						disabled: transactionStatus !== null || !transactionProducts.length,
-					})}
+					className={cn('other-button btn-cash-breakdown', { disabled: isHoldDisabled() })}
 					onClick={onHold}
 				>
 					Hold
