@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { message, Modal } from 'antd';
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { FieldError } from '../../../../components/elements';
 import { types as cashBreakdownsRequestTypes } from '../../../../ducks/cash-breakdowns';
-import { request } from '../../../../global/types';
+import { cashBreakdownTypes, request } from '../../../../global/types';
 import { useCashBreakdown } from '../../../../hooks/useCashBreakdown';
 import { CashBreakdownForm } from './CashBreakdownForm';
 import './style.scss';
@@ -49,6 +49,20 @@ export const CashBreakdownModal = ({
 		}
 	}, [status, recentRequest, reset, onClose]);
 
+	const getTitle = useCallback(() => {
+		switch (type) {
+			case cashBreakdownTypes.START_SESSION: {
+				return 'Cash Breakdown - Start Session';
+			}
+			case cashBreakdownTypes.MID_SESSION: {
+				return 'Cash Collection';
+			}
+			case cashBreakdownTypes.END_SESSION: {
+				return 'Cash Breakdown - End Session';
+			}
+		}
+	}, [type]);
+
 	const close = () => {
 		if (required) {
 			message.error('Cash breakdown is required.');
@@ -71,7 +85,7 @@ export const CashBreakdownModal = ({
 
 	return (
 		<Modal
-			title="Cash Breakdown"
+			title={getTitle()}
 			className="CashBreakdownModal"
 			visible={visible}
 			footer={null}
