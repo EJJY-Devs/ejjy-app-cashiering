@@ -1,13 +1,12 @@
 import { message, Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
+import KeyboardEventHandler from 'react-keyboard-event-handler';
 import { ControlledInput } from '../../../../components/elements';
 import { request } from '../../../../global/types';
-import { useTransactions } from '../../../../hooks/useTransactions';
-import './style.scss';
-import KeyboardEventHandler from 'react-keyboard-event-handler';
 import { useBranchProducts } from '../../../../hooks/useBranchProducts';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
-import { BooleanLiteral } from 'typescript';
+import { useTransactions } from '../../../../hooks/useTransactions';
+import './style.scss';
 
 interface Props {
 	visible: boolean;

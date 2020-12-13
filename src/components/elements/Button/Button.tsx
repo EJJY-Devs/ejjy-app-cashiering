@@ -9,7 +9,7 @@ const loadingIcon = <LoadingOutlined style={{ fontSize: 17, color: 'white' }} sp
 
 interface Props {
 	text: string;
-	variant: 'primary' | 'secondary' | 'default';
+	variant: 'primary' | 'secondary' | 'default' | 'dark-gray';
 	size: 'md' | 'lg';
 	onClick?: any;
 	type?: 'button' | 'submit' | 'reset';

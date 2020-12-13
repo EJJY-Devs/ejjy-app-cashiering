@@ -1,12 +1,17 @@
-import React from 'react';
-import { Box } from '../../components/elements';
+import { Divider } from 'antd';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Box, Button } from '../../components/elements';
 import { request } from '../../global/types';
 import { useSession } from '../../hooks/useSession';
 import { ILoginValues, LoginForm } from './components/LoginForm';
+import { RegisterModal } from './components/RegisterModal';
 import './style.scss';
 
 const Login = () => {
 	const { startSession, status, errors } = useSession();
+
+	const [registerModalVisible, setRegisterModalVisible] = useState(false);
 
 	return (
 		<section className="Login">
@@ -36,7 +41,24 @@ const Login = () => {
 					loading={status === request.REQUESTING}
 					errors={errors}
 				/>
+
+				<Divider />
+
+				<Button
+					text="Register Machine"
+					variant="dark-gray"
+					onClick={() => setRegisterModalVisible(true)}
+					block
+				/>
+				<Link to="/reports" className="btn-reports">
+					<Button text="Reports" variant="dark-gray" block />
+				</Link>
 			</Box>
+
+			<RegisterModal
+				visible={registerModalVisible}
+				onClose={() => setRegisterModalVisible(false)}
+			/>
 		</section>
 	);
 };

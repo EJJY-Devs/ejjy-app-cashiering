@@ -49,25 +49,30 @@
 		border: 1px solid;
 	}
 
+	&.dark-gray {
+		color: $color-dark-gray;
+		border: 1px solid $color-dark-gray;
+	}
+
 	&.primary {
 		background-color: $color-primary;
 		border: 1px solid $color-primary;
-		box-shadow: 0px 5px 20px 3px $color-primary-05;
+		box-shadow: 0px 2px 10px 2px $color-primary-05;
 
 		&:hover {
 			transition: 300ms;
-			box-shadow: 0px 5px 20px 3px $color-primary-08;
+			box-shadow: 0px 2px 10px 2px $color-primary-08;
 		}
 	}
 
 	&.secondary {
 		background-color: $color-secondary;
 		border: 1px solid $color-secondary;
-		box-shadow: 0px 5px 20px 3px $color-secondary-05;
+		box-shadow: 0px 2px 10px 2px $color-secondary-05;
 
 		&:hover {
 			transition: 300ms;
-			box-shadow: 0px 5px 20px 3px $color-secondary-08;
+			box-shadow: 0px 2px 10px 2px $color-secondary-08;
 		}
 	}
 

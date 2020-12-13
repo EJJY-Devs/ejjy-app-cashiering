@@ -14,9 +14,10 @@ interface ILoginForm {
 	errors: string[];
 	onSubmit: any;
 	loading: boolean;
+	submitText?: string;
 }
 
-export const LoginForm = ({ loading, errors, onSubmit }: ILoginForm) => {
+export const LoginForm = ({ loading, errors, onSubmit, submitText }: ILoginForm) => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const getFormDetails = useCallback(
@@ -66,7 +67,7 @@ export const LoginForm = ({ loading, errors, onSubmit }: ILoginForm) => {
 
 						<Button
 							type="submit"
-							text="Start Session"
+							text={submitText}
 							variant="secondary"
 							loading={loading || isSubmitting}
 							block
@@ -76,4 +77,8 @@ export const LoginForm = ({ loading, errors, onSubmit }: ILoginForm) => {
 			</Formik>
 		</>
 	);
+};
+
+LoginForm.defaultProps = {
+	submitText: 'Start Session',
 };

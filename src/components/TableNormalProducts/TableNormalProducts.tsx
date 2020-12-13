@@ -1,5 +1,8 @@
 import { Spin, Tooltip } from 'antd';
+import cn from 'classnames';
 import React, { ReactNode } from 'react';
+import { NO_INDEX_SELECTED, PRODUCT_LENGTH_PER_PAGE } from '../../global/constants';
+import { useCurrentTransaction } from '../../hooks/useCurrentTransaction';
 import { calculateTableHeight } from '../../utils/function';
 import { ROW_HEIGHT } from '../Table/Table';
 import './style.scss';
@@ -15,12 +18,22 @@ interface Column {
 interface Props {
 	columns: Column[];
 	data: any;
+	activeRow?: number;
 	onHover: any;
 	onExit: any;
-	loading;
+	loading?: any;
 }
 
-export const TableNormalProducts = ({ columns, data, onHover, onExit, loading }: Props) => {
+export const TableNormalProducts = ({
+	columns,
+	data,
+	activeRow,
+	onHover,
+	onExit,
+	loading,
+}: Props) => {
+	const { pageNumber } = useCurrentTransaction();
+
 	return (
 		<Spin size="large" spinning={loading}>
 			<div
@@ -44,6 +57,9 @@ export const TableNormalProducts = ({ columns, data, onHover, onExit, loading }:
 					<tbody>
 						{data?.map((row, index) => (
 							<tr
+								className={cn({
+									active: activeRow === (pageNumber - 1) * PRODUCT_LENGTH_PER_PAGE + index,
+								})}
 								key={`tr-${index}`}
 								style={{ height: `${ROW_HEIGHT}px` }}
 								onMouseEnter={() => onHover(index)}
@@ -64,4 +80,8 @@ export const TableNormalProducts = ({ columns, data, onHover, onExit, loading }:
 			</div>
 		</Spin>
 	);
+};
+
+TableNormalProducts.defaultProps = {
+	activeRow: NO_INDEX_SELECTED,
 };
