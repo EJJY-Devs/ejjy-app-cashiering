@@ -15,6 +15,7 @@ export const Payment = () => {
 
 	const [paymentModalVisible, setPaymentModalVisible] = useState(false);
 	const [invoiceModalVisible, setInvoiceModalVisible] = useState(false);
+	const [transaction, setTransaction] = useState(null);
 
 	const getTotal = useCallback(
 		() =>
@@ -37,8 +38,9 @@ export const Payment = () => {
 		[transactionStatus],
 	);
 
-	const onPaymentSuccess = () => {
+	const onPaymentSuccess = (transaction) => {
 		setInvoiceModalVisible(true);
+		setTransaction(transaction);
 	};
 
 	const onPay = () => {
@@ -94,7 +96,11 @@ export const Payment = () => {
 				onClose={() => setPaymentModalVisible(false)}
 			/>
 
-			<InvoiceModal visible={invoiceModalVisible} onClose={() => setInvoiceModalVisible(false)} />
+			<InvoiceModal
+				visible={invoiceModalVisible}
+				transaction={transaction}
+				onClose={() => setInvoiceModalVisible(false)}
+			/>
 		</div>
 	);
 };

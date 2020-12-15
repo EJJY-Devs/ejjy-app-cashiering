@@ -1,7 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Modal, Spin } from 'antd';
+import { message, Modal, Spin } from 'antd';
 import React from 'react';
-import { LoginForm } from './LoginForm';
+import { MACHINE_ID_KEY } from '../../../global/constants';
+import { request } from '../../../global/types';
+import { useBranchMachines } from '../../../hooks/useBranchMachines';
+import { RegisterForm } from './RegisterForm';
 
 interface Props {
 	visible: boolean;
@@ -9,7 +12,18 @@ interface Props {
 }
 
 export const RegisterModal = ({ visible, onClose }: Props) => {
-	const onRegister = (data) => {};
+	const { registerBranchMachine, status: registerRequestStatus } = useBranchMachines();
+	const onRegister = (data) => {
+		registerBranchMachine(data, ({ status, response, errors }) => {
+			if (status === request.ERROR) {
+				message.error(errors);
+			} else if (status === request.SUCCESS) {
+				localStorage.setItem(MACHINE_ID_KEY, response.id);
+				message.success('This machine is successfully registered.');
+				onClose();
+			}
+		});
+	};
 
 	return (
 		<Modal
@@ -21,7 +35,10 @@ export const RegisterModal = ({ visible, onClose }: Props) => {
 			closable
 		>
 			<Spin size="large" spinning={false}>
-				<LoginForm onSubmit={onRegister} submitText="Submit" loading={false} errors={[]} />
+				<RegisterForm
+					onSubmit={onRegister}
+					loading={registerRequestStatus === request.REQUESTING}
+				/>
 			</Spin>
 		</Modal>
 	);

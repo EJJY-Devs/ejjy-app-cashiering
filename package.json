@@ -4,7 +4,6 @@
 	"private": true,
 	"dependencies": {
 		"@ant-design/icons": "^4.2.2",
-		"@fingerprintjs/fingerprintjs": "^3.0.3",
 		"antd": "^4.6.2",
 		"axios": "^0.20.0",
 		"classnames": "^2.2.6",

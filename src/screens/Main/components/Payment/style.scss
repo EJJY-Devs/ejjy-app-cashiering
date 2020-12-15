@@ -93,12 +93,16 @@
 }
 
 .InvoiceModal {
-	.invoice-label {
-		font-size: 30px;
+	.label,
+	.value,
+	.official-receipt-label {
+		@include font(25px, bold);
 	}
 
-	.invoice-value {
-		font-size: 30px;
+	.official-receipt-label,
+	.value-center {
+		display: block;
+		text-align: center;
 	}
 
 	.TableNormal {

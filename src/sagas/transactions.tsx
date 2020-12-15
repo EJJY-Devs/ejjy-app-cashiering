@@ -48,6 +48,7 @@ function* pay({ payload }: any) {
 	const {
 		transactionId,
 		amountTendered,
+		cashierUserId,
 		callback,
 		branchId = null,
 		shouldUpdateBranchProducts = true,
@@ -58,6 +59,7 @@ function* pay({ payload }: any) {
 		const response = yield call(service.pay, {
 			transaction_id: transactionId,
 			amount_tendered: amountTendered,
+			cashier_user_id: cashierUserId,
 		});
 
 		yield put(currentTransactionActions.updateTransaction({ transaction: response.data }));

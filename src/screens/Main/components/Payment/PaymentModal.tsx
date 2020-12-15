@@ -49,6 +49,7 @@ export const PaymentModal = ({ amountDue, visible, onClose, onSuccess }: Props) 
 			dummyClientId: 1, // TODO: Update on next sprint
 			products,
 			amountTendered: removeCommas(formData.amountTendered),
+			cashierUserId: session.user.id,
 			transactionId,
 			previousVoidedTransactionId: previousVoidedTransactionId || undefined,
 		};
@@ -64,7 +65,7 @@ export const PaymentModal = ({ amountDue, visible, onClose, onSuccess }: Props) 
 			firstTimePayment(data, ({ status, transaction }) => {
 				if (status === request.SUCCESS) {
 					if (transaction.is_fully_paid && transaction?.invoice.id) {
-						onSuccess();
+						onSuccess(transaction);
 					}
 					onClose();
 				}

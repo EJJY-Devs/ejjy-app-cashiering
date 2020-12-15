@@ -12,6 +12,7 @@ export const productNavigation = {
 };
 
 export const userTypes = {
+	ADMIN: 'ADMIN',
 	OFFICE_MANAGER: 'office_manager',
 	BRANCH_MANAGER: 'branch_manager',
 	BRANCH_PERSONNEL: 'branch_personnel',
@@ -40,4 +41,9 @@ export const transactionStatusTypes = {
 	VOID: 'void',
 	VOID_EDITED: 'void_edited',
 	VOID_CANCELLED: 'void_cancelled',
+};
+
+export const reportTypes = {
+	XREAD: 'XREAD',
+	ZREAD: 'ZREAD',
 };

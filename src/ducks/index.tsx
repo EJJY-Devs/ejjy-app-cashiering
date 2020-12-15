@@ -3,6 +3,7 @@ import { combineReducers } from 'redux';
 import storage from 'redux-persist/lib/storage';
 import { STORAGE_KEY } from '../configureStore';
 import history from '../utils/history';
+import authReducer, { key as AUTH_KEY } from './auth';
 import branchProductsReducer, { key as BRANCH_PRODUCTS_KEY } from './branch-products';
 import cashBreakdownsReducer, { key as CASH_BREAKDOWN_KEY } from './cash-breakdowns';
 import currentTransactionReducer, { key as CURRENT_TRANSACTION_KEY } from './current-transaction';
@@ -13,6 +14,7 @@ import uiReducer, { key as UI_KEY } from './ui';
 
 const appReducer = combineReducers({
 	router: connectRouter(history),
+	[AUTH_KEY]: authReducer,
 	[CASH_BREAKDOWN_KEY]: cashBreakdownsReducer,
 	[SESSION_KEY]: sessionsReducer,
 	[REQUEST_KEY]: requestReducer,

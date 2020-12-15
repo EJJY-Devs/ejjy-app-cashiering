@@ -11,6 +11,7 @@ import {
 	ROW_HEIGHT,
 } from '../components';
 import { UncontrolledInput } from '../components/elements';
+import { MACHINE_ID_KEY } from '../global/constants';
 import { branchProductStatus, request } from '../global/types';
 
 export const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -35,6 +36,8 @@ export const showMessage = (status, successMessage, errorMessage) => {
 		message.error(errorMessage);
 	}
 };
+
+export const getBranchMachineId = () => localStorage.getItem(MACHINE_ID_KEY);
 
 interface ConfirmPassword {
 	title?: string;

@@ -1,15 +1,37 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Modal, Spin } from 'antd';
+import { message, Modal } from 'antd';
 import React from 'react';
+import { reportTypes, request } from '../../../global/types';
+import { useReports } from '../../../hooks/useReports';
+import { getBranchMachineId } from '../../../utils/function';
 import { LoginForm } from '../../_Login/components/LoginForm';
 
 interface Props {
+	reportType: any;
 	visible: boolean;
+	onSuccess: any;
 	onClose: any;
 }
 
-export const ReportAccessModal = ({ visible, onClose }: Props) => {
-	const onSubmit = (data) => {};
+export const ReportAccessModal = ({ reportType, onSuccess, visible, onClose }: Props) => {
+	const { createXreadReport, createZreadReport, status } = useReports();
+
+	const onSubmit = (formData) => {
+		const createReport = reportType === reportTypes.XREAD ? createXreadReport : createZreadReport;
+		const data = {
+			...formData,
+			branchMachineId: getBranchMachineId(),
+		};
+
+		createReport(data, ({ status, errors, response }) => {
+			if (status === request.ERROR) {
+				message.error(errors);
+			} else if (status === request.SUCCESS) {
+				onClose();
+				onSuccess(response);
+			}
+		});
+	};
 
 	return (
 		<Modal
@@ -20,9 +42,12 @@ export const ReportAccessModal = ({ visible, onClose }: Props) => {
 			centered
 			closable
 		>
-			<Spin size="large" spinning={false}>
-				<LoginForm onSubmit={onSubmit} submitText="Submit" loading={false} errors={[]} />
-			</Spin>
+			<LoginForm
+				onSubmit={onSubmit}
+				submitText="Submit"
+				loading={status === request.REQUESTING}
+				errors={[]}
+			/>
 		</Modal>
 	);
 };

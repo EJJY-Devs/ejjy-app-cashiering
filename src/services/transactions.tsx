@@ -5,6 +5,7 @@ import { IGetRequest } from './interfaces';
 interface IPayTransaction {
 	transaction_id: number;
 	amount_tendered: string;
+	cashier_user_id: number;
 }
 
 interface ITransactionProduct {

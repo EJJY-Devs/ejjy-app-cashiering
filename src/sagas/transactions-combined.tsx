@@ -19,7 +19,7 @@ function* firstTimePayment({ payload }: any) {
 		previousVoidedTransactionId,
 		products,
 	} = payload;
-	const { amountTendered } = payload;
+	const { amountTendered, cashierUserId } = payload;
 	const { callback, branchId = null, shouldUpdateBranchProducts = true } = payload;
 
 	callback({ status: request.REQUESTING });
@@ -36,6 +36,7 @@ function* firstTimePayment({ payload }: any) {
 		const response = yield call(service.pay, {
 			transaction_id: createResponse.data.id,
 			amount_tendered: amountTendered,
+			cashier_user_id: cashierUserId,
 		});
 
 		yield put(currentTransactionActions.updateTransaction({ transaction: response.data }));
