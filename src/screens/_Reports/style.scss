@@ -1,6 +1,6 @@
 @import '../../assets/styles/main';
 
-.Login {
+.Reports {
 	height: 100vh;
 	background-color: $color-main-background;
 	@include flex(center, center);
@@ -10,22 +10,13 @@
 		padding: 50px 40px;
 		@include flex(center, center, column);
 
-		.form {
-			width: 100%;
+		.title {
+			@include font(30px, 700);
+			margin: 0;
 		}
 
-		.logo {
-			width: 200px;
-			margin-bottom: 40px;
-		}
-
-		.errors {
-			width: 100%;
-		}
-
-		.btn-reports {
-			width: 100%;
-			margin-top: 10px;
+		.space-top {
+			margin-top: 15px;
 		}
 	}
 }

@@ -22,7 +22,7 @@ export const BarcodeScanner = ({ setLoading }: Props) => {
 	} = useCurrentTransaction();
 	const { updateTransaction } = useTransactions();
 
-	const addBarcodeProduct = (branchProduct) => {
+	const addBarcodeProduct = (branchProduct, quantity) => {
 		setLoading(true);
 
 		const callback = () => {
@@ -44,7 +44,7 @@ export const BarcodeScanner = ({ setLoading }: Props) => {
 						{
 							product_id: branchProduct.product.id,
 							price_per_piece: branchProduct.price_per_piece,
-							quantity: 1,
+							quantity,
 						},
 					],
 				},
@@ -63,17 +63,17 @@ export const BarcodeScanner = ({ setLoading }: Props) => {
 					productName: branchProduct.product.name,
 					productDescription: branchProduct.product.description,
 					pricePerPiece: branchProduct.price_per_piece,
-					quantity: 1,
+					quantity,
 				},
 			});
 			callback();
 		}
 	};
 
-	const editBarcodeProduct = (branchProduct, existingProduct) => {
+	const editBarcodeProduct = (branchProduct, existingProduct, newQuantity) => {
 		setLoading(true);
 
-		const quantity = existingProduct.quantity + 1;
+		const quantity = existingProduct.quantity + newQuantity;
 		if (quantity >= branchProduct.current_balance) {
 			message.error('Insufficient balance.');
 			return;
@@ -125,13 +125,13 @@ export const BarcodeScanner = ({ setLoading }: Props) => {
 		let data = `${test}`;
 
 		const barcode = data.substr(0, 7);
-
 		const value = data.substr(-6);
 		const whole = value.substr(0, 2);
 		const decimal = value.substr(2, 3);
 
 		message.info(`Barcode: ${barcode} -> Value: ${whole}.${decimal}`);
 
+		const quantity = Number(`${whole}.${decimal}`);
 		const scannedBarcode = barcode?.toLowerCase() || '';
 		const branchProduct = branchProducts.find(({ product }) => product?.barcode === scannedBarcode);
 
@@ -139,9 +139,9 @@ export const BarcodeScanner = ({ setLoading }: Props) => {
 			const existingProduct = transactionProducts.find((product) => product.id);
 
 			if (existingProduct) {
-				editBarcodeProduct(branchProduct, existingProduct);
+				editBarcodeProduct(branchProduct, existingProduct, quantity);
 			} else {
-				addBarcodeProduct(branchProduct);
+				addBarcodeProduct(branchProduct, quantity);
 			}
 		} else {
 			message.error(`Cannot find the scanned product: ${data}`);

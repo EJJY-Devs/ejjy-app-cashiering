@@ -11,11 +11,10 @@ import './style.scss';
 interface Props {
 	product: any;
 	visible: boolean;
-	onSuccess: any;
 	onClose: any;
 }
 
-export const EditProductModal = ({ product, visible, onClose, onSuccess }: Props) => {
+export const EditProductModal = ({ product, visible, onClose }: Props) => {
 	const { branchProducts } = useBranchProducts();
 	const { updateTransaction, status } = useTransactions();
 	const {
@@ -55,7 +54,6 @@ export const EditProductModal = ({ product, visible, onClose, onSuccess }: Props
 
 		const callback = () => {
 			message.success('Product sucessfully edited.');
-			onSuccess();
 			onClose();
 		};
 

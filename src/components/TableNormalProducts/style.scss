@@ -33,7 +33,7 @@
 				border-bottom: 1px solid $color-gray;
 				cursor: pointer;
 
-				&:hover {
+				&.active {
 					background-color: $color-primary-02;
 				}
 

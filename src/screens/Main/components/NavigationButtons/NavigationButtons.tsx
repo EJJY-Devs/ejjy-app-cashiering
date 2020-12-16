@@ -2,9 +2,10 @@
 import { CaretLeftOutlined, CaretRightOutlined } from '@ant-design/icons';
 import { ceil } from 'lodash';
 import React, { useCallback } from 'react';
-import { PRODUCT_LENGTH_PER_PAGE } from '../../../../global/constants';
+import { EMPTY_CELL, PRODUCT_LENGTH_PER_PAGE } from '../../../../global/constants';
 import { productNavigation } from '../../../../global/types';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
+import { numberWithCommas } from '../../../../utils/function';
 import { NavigationButton } from './NavigationButton';
 import './style.scss';
 
@@ -14,6 +15,7 @@ export const NavigationButtons = () => {
 		transactionProducts,
 		orNumber,
 		pageNumber,
+		previousSukli,
 		navigateProduct,
 	} = useCurrentTransaction();
 
@@ -30,15 +32,19 @@ export const NavigationButtons = () => {
 				</div>
 				<div className="item">
 					<p className="label">Transaction No:</p>
-					<p className="value">{transactionId || '—'}</p>
+					<p className="value">{transactionId || EMPTY_CELL}</p>
 				</div>
 				<div className="item">
 					<p className="label">Invoice No:</p>
-					<p className="value">{orNumber || '—'}</p>
+					<p className="value">{orNumber || EMPTY_CELL}</p>
 				</div>
 				<div className="item previous-sukli">
 					<p className="label">Previous Sukli:</p>
-					<p className="value">—</p>
+					<p className="value">
+						{previousSukli !== null
+							? `₱${numberWithCommas(previousSukli?.toFixed(2))}`
+							: EMPTY_CELL}
+					</p>
 				</div>
 			</div>
 			<div className="buttons">

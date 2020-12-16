@@ -3,7 +3,7 @@ import axios from 'axios';
 interface IStartSession {
 	login: string;
 	password: string;
-	branch_machine_mac_address: string;
+	branch_machine_id: number;
 }
 
 export const service = {

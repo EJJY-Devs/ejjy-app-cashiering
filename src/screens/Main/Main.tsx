@@ -20,7 +20,6 @@ import { ProductTable } from './components/ProductTable/ProductTable';
 import './style.scss';
 
 const voidTransactionStatus = [
-	transactionStatusTypes.VOID,
 	transactionStatusTypes.VOID_EDITED,
 	transactionStatusTypes.VOID_CANCELLED,
 ];

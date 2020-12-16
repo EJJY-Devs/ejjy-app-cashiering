@@ -22,7 +22,7 @@ export const OthersModal = ({ onCashCollection, onEndSession, visible, onClose }
 			centered
 			closable
 		>
-			<SearchTransaction closeModal={onClose} />
+			<SearchTransaction visible={visible} closeModal={onClose} />
 
 			<button className="other-button btn-cash-breakdown" onClick={onCashCollection}>
 				Cash Collection

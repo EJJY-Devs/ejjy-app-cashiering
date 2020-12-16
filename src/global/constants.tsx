@@ -1,3 +1,5 @@
+export const MACHINE_ID_KEY = 'EJJY_MACHINE_ID';
+
 export const MAX_PAGE_SIZE = 100;
 
 export const MAX_RETRY = 1;

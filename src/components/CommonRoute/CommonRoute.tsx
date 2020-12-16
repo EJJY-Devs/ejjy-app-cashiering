@@ -5,23 +5,26 @@ import { selectors } from '../../ducks/sessions';
 import { userTypes } from '../../global/types';
 
 const portal = ['/login'];
-const not404Pages = ['/', '/login', '/landing'];
+const not404Pages = ['/', '/login', 'reports'];
+const noAuthPages = ['/reports'];
 
 export const CommonRoute = ({ path, exact, component }: any) => {
 	const { pathname: pathName } = useLocation();
 
 	const session = useSelector(selectors.selectSession());
 
-	if (portal.includes(pathName) && session) {
-		return <Route render={() => <Redirect to="/landing" />} />;
-	}
+	if (!noAuthPages.includes(pathName)) {
+		if (portal.includes(pathName) && session) {
+			return <Route render={() => <Redirect to="/" />} />;
+		}
 
-	if (!portal.includes(pathName) && !session) {
-		return <Route render={() => <Redirect to="/login" />} />;
-	}
+		if (!portal.includes(pathName) && !session) {
+			return <Route render={() => <Redirect to="/login" />} />;
+		}
 
-	if (!not404Pages.includes(pathName) && !component[userTypes.BRANCH_PERSONNEL]) {
-		return <Route render={() => <Redirect to="404" />} />;
+		if (!not404Pages.includes(pathName) && !component[userTypes.BRANCH_PERSONNEL]) {
+			return <Route render={() => <Redirect to="404" />} />;
+		}
 	}
 
 	return (

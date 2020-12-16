@@ -3,6 +3,7 @@ import React, { useCallback, useState } from 'react';
 import KeyboardEventHandler from 'react-keyboard-event-handler';
 import { Button } from '../../../../components/elements';
 import { tenderShortcutKeys } from '../../../../global/options';
+import { transactionStatusTypes } from '../../../../global/types';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import { numberWithCommas } from '../../../../utils/function';
 import { InvoiceModal } from './InvoiceModal';
@@ -10,10 +11,11 @@ import { PaymentModal } from './PaymentModal';
 import './style.scss';
 
 export const Payment = () => {
-	const { transactionProducts, isFullyPaid } = useCurrentTransaction();
+	const { transactionProducts, transactionStatus } = useCurrentTransaction();
 
 	const [paymentModalVisible, setPaymentModalVisible] = useState(false);
 	const [invoiceModalVisible, setInvoiceModalVisible] = useState(false);
+	const [transaction, setTransaction] = useState(null);
 
 	const getTotal = useCallback(
 		() =>
@@ -26,18 +28,24 @@ export const Payment = () => {
 		[transactionProducts],
 	);
 
-	const onPaymentSuccess = () => {
+	const isPaymentDisabled = useCallback(
+		() =>
+			[
+				transactionStatusTypes.FULLY_PAID,
+				transactionStatusTypes.VOID_CANCELLED,
+				transactionStatusTypes.VOID_EDITED,
+			].includes(transactionStatus),
+		[transactionStatus],
+	);
+
+	const onPaymentSuccess = (transaction) => {
 		setInvoiceModalVisible(true);
+		setTransaction(transaction);
 	};
 
 	const onPay = () => {
-		if (getTotal() === 0) {
+		if (transactionProducts.length === 0) {
 			message.error('Please add a product first.');
-			return;
-		}
-
-		if (isFullyPaid) {
-			message.error("You've already fully paid this transaction.");
 			return;
 		}
 
@@ -49,7 +57,7 @@ export const Payment = () => {
 		event.stopPropagation();
 
 		// Tender
-		if (tenderShortcutKeys.includes(key) && !isFullyPaid) {
+		if (tenderShortcutKeys.includes(key) && !isPaymentDisabled()) {
 			onPay();
 			return;
 		}
@@ -73,7 +81,7 @@ export const Payment = () => {
 					size="lg"
 					variant="primary"
 					onClick={onPay}
-					disabled={isFullyPaid}
+					disabled={isPaymentDisabled()}
 				/>
 			</div>
 			<div className="pending-balance-wrapper">
@@ -88,7 +96,11 @@ export const Payment = () => {
 				onClose={() => setPaymentModalVisible(false)}
 			/>
 
-			<InvoiceModal visible={invoiceModalVisible} onClose={() => setInvoiceModalVisible(false)} />
+			<InvoiceModal
+				visible={invoiceModalVisible}
+				transaction={transaction}
+				onClose={() => setInvoiceModalVisible(false)}
+			/>
 		</div>
 	);
 };

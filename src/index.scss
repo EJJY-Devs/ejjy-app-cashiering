@@ -22,6 +22,10 @@ body {
 }
 
 .ant-modal-root {
+	.ant-modal {
+		margin-top: 25px;
+	}
+
 	.ant-modal-header {
 		.ant-modal-title {
 			@include font(25px, bold);

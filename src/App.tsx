@@ -1,13 +1,13 @@
 import React from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { CommonRoute } from './components';
-import { Error404, Landing, Login } from './screens';
+import { Error404, Login, Reports } from './screens';
 import { MainScreens } from './utils/routeMapping';
 
 const App = () => (
 	<Switch>
 		<CommonRoute path="/login" exact component={Login} />
-		<CommonRoute path="/landing" exact component={Landing} />
+		<CommonRoute path="/reports" exact component={Reports} />
 		<CommonRoute path="/" exact component={MainScreens} />
 
 		<Route path="/404" exact component={Error404} />
