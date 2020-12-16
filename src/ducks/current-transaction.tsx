@@ -18,6 +18,7 @@ export const types = {
 	TRANSACTION_VOIDED: `${key}/TRANSACTION_VOIDED`,
 
 	NAVIGATE_PRODUCT: `${key}/NAVIGATE_PRODUCT`,
+	SET_PREVIOUS_SUKLI: `${key}/SET_PREVIOUS_SUKLI`,
 };
 
 const initialState = {
@@ -32,6 +33,7 @@ const initialState = {
 	previousVoidedTransactionId: null,
 
 	pageNumber: 1,
+	previousSukli: null,
 };
 
 const reducer = handleActions(
@@ -115,8 +117,9 @@ const reducer = handleActions(
 				isFullyPaid: transaction.is_fully_paid,
 				totalPaidAmount: transaction.total_paid_amount,
 				status: transaction.status,
+				// TODO:: CHECK IF WORKING
 				previousVoidedTransactionId:
-					transaction.status === transactionStatusTypes.VOID
+					transaction.status === transactionStatusTypes.VOID_CANCELLED
 						? transaction.id
 						: transaction.previous_voided_transaction_id,
 				products,
@@ -144,8 +147,9 @@ const reducer = handleActions(
 			return { ...state, ...newData };
 		},
 
-		[types.RESET_TRANSACTION]: () => {
-			return initialState;
+		[types.RESET_TRANSACTION]: (state) => {
+			const { previousSukli, ...initialData } = initialState;
+			return { ...state, ...initialData };
 		},
 
 		[types.NAVIGATE_PRODUCT]: (state, { payload }: any) => {
@@ -169,6 +173,10 @@ const reducer = handleActions(
 
 			return { ...state, pageNumber };
 		},
+
+		[types.SET_PREVIOUS_SUKLI]: (state, { payload }: any) => {
+			return { ...state, previousSukli: payload };
+		},
 	},
 	initialState,
 );
@@ -184,6 +192,7 @@ export const actions = {
 
 	transactionVoided: createAction(types.TRANSACTION_VOIDED),
 	navigateProduct: createAction(types.NAVIGATE_PRODUCT),
+	setPreviousSukli: createAction(types.SET_PREVIOUS_SUKLI),
 };
 
 const selectState = (state: any) => state[key] || initialState;
@@ -199,6 +208,7 @@ export const selectors = {
 	selectPreviousVoidedTransactionId: () =>
 		createSelector(selectState, (state) => state.previousVoidedTransactionId),
 	selectPageNumber: () => createSelector(selectState, (state) => state.pageNumber),
+	selectPreviousSukli: () => createSelector(selectState, (state) => state.previousSukli),
 };
 
 export default reducer;

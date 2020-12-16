@@ -21,6 +21,7 @@ export const PaymentModal = ({ amountDue, visible, onClose, onSuccess }: Props) 
 		transactionId,
 		transactionProducts,
 		previousVoidedTransactionId,
+		setPreviousSukli,
 	} = useCurrentTransaction();
 	const { payTransaction, firstTimePayment, status } = useTransactions();
 
@@ -54,9 +55,12 @@ export const PaymentModal = ({ amountDue, visible, onClose, onSuccess }: Props) 
 			previousVoidedTransactionId: previousVoidedTransactionId || undefined,
 		};
 
+		const sukli = removeCommas(formData.amountTendered) - amountDue;
+
 		if (transactionId && !previousVoidedTransactionId) {
 			payTransaction(data, ({ status }) => {
 				if (status === request.SUCCESS) {
+					setPreviousSukli(sukli);
 					onSuccess();
 					onClose();
 				}
@@ -65,6 +69,7 @@ export const PaymentModal = ({ amountDue, visible, onClose, onSuccess }: Props) 
 			firstTimePayment(data, ({ status, transaction }) => {
 				if (status === request.SUCCESS) {
 					if (transaction.is_fully_paid && transaction?.invoice.id) {
+						setPreviousSukli(sukli);
 						onSuccess(transaction);
 					}
 					onClose();
