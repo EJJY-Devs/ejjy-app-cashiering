@@ -1,4 +1,4 @@
-import { Divider } from 'antd';
+import { Divider, message } from 'antd';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Box, Button } from '../../components/elements';
@@ -17,9 +17,15 @@ const Login = () => {
 	const [registerModalVisible, setRegisterModalVisible] = useState(false);
 
 	const onStartSession = (data: ILoginValues) => {
+		const branchMachineId = getBranchMachineId();
+		if (data.login !== 'specialpersonnel' && !branchMachineId) {
+			message.error('Machine is not yet registered.');
+			return;
+		}
+
 		startSession({
 			...data,
-			branch_machine_id: getBranchMachineId(),
+			branch_machine_id: data.login === 'specialpersonnel' ? 1 : branchMachineId,
 		});
 
 		setPreviousSukli(null);
