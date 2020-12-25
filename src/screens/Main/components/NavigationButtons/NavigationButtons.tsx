@@ -1,11 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { CaretLeftOutlined, CaretRightOutlined } from '@ant-design/icons';
 import { ceil } from 'lodash';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
+import { EditButtonIcon } from '../../../../components';
 import { EMPTY_CELL, PRODUCT_LENGTH_PER_PAGE } from '../../../../global/constants';
 import { productNavigation } from '../../../../global/types';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import { numberWithCommas } from '../../../../utils/function';
+import { ClientDetailsModal } from './ClientDetailsModal';
 import { NavigationButton } from './NavigationButton';
 import './style.scss';
 
@@ -16,8 +18,11 @@ export const NavigationButtons = () => {
 		orNumber,
 		pageNumber,
 		previousSukli,
+		client,
 		navigateProduct,
 	} = useCurrentTransaction();
+
+	const [clientDetailsModalVisible, setClientDetailsModalVisible] = useState(false);
 
 	const getMaxPage = useCallback(() => ceil(transactionProducts.length / PRODUCT_LENGTH_PER_PAGE), [
 		transactionProducts,
@@ -28,7 +33,16 @@ export const NavigationButtons = () => {
 			<div className="details">
 				<div className="item">
 					<p className="label">Client ID:</p>
-					<p className="value">—</p>
+					<p className="value">
+						{client && client?.name && client?.tin ? (
+							`${client.name}, ${client.tin}`
+						) : (
+							<EditButtonIcon
+								tooltip="Edit client details"
+								onClick={() => setClientDetailsModalVisible(true)}
+							/>
+						)}
+					</p>
 				</div>
 				<div className="item">
 					<p className="label">Transaction No:</p>
@@ -64,6 +78,11 @@ export const NavigationButtons = () => {
 					}
 				/>
 			</div>
+
+			<ClientDetailsModal
+				visible={clientDetailsModalVisible}
+				onClose={() => setClientDetailsModalVisible(false)}
+			/>
 		</div>
 	);
 };

@@ -12,9 +12,24 @@ import {
 } from '../components';
 import { UncontrolledInput } from '../components/elements';
 import { MACHINE_ID_KEY } from '../global/constants';
-import { branchProductStatus, request } from '../global/types';
+import { branchProductStatus, request, userTypes } from '../global/types';
 
 export const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+export const getUserTypeDescription = memoize((userType) => {
+	switch (userType) {
+		case userTypes.ADMIN:
+			return 'Admin';
+		case userTypes.BRANCH_MANAGER:
+			return 'Branch Manager';
+		case userTypes.BRANCH_PERSONNEL:
+			return 'Branch Personnel';
+		case userTypes.OFFICE_MANAGER:
+			return 'Office Manager';
+	}
+
+	return '';
+});
 
 export const calculateTableHeight = (listLength) => {
 	const MAX_ROW_COUNT = 6;

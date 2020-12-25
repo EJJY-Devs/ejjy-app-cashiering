@@ -12,13 +12,7 @@ import { service } from '../services/transactions';
 
 /* WORKERS */
 function* firstTimePayment({ payload }: any) {
-	const {
-		branchMachineId,
-		tellerId,
-		dummyClientId,
-		previousVoidedTransactionId,
-		products,
-	} = payload;
+	const { branchMachineId, tellerId, client, previousVoidedTransactionId, products } = payload;
 	const { amountTendered, cashierUserId } = payload;
 	const { callback, branchId = null, shouldUpdateBranchProducts = true } = payload;
 
@@ -28,7 +22,7 @@ function* firstTimePayment({ payload }: any) {
 		const createResponse = yield call(service.create, {
 			branch_machine_id: branchMachineId,
 			teller_id: tellerId,
-			dummy_client_id: dummyClientId,
+			client,
 			previous_voided_transaction_id: previousVoidedTransactionId,
 			products,
 		});

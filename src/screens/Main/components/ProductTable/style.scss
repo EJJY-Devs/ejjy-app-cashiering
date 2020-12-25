@@ -9,6 +9,13 @@
 		min-height: 426px;
 		border: 1px solid $color-gray;
 	}
+
+	.original-price {
+		@include font(12px, 400);
+		margin-top: 5px;
+		display: block;
+		text-decoration: line-through;
+	}
 }
 
 .EditProductModal {
@@ -46,6 +53,42 @@
 			.btn-cancel {
 				margin-right: 20px;
 			}
+		}
+	}
+}
+
+.DiscountModal {
+	.label {
+		@include font(20px, bold);
+	}
+
+	.value {
+		@include font(20px);
+	}
+
+	.other-button {
+		&.spacing {
+			margin-bottom: 15px;
+		}
+	}
+
+	.form {
+		.input-field {
+			margin-bottom: 20px;
+
+			.input-label {
+				font-size: 20px;
+			}
+
+			.input-control {
+				font-size: 18px;
+			}
+		}
+
+		button {
+			display: block;
+			margin-left: auto;
+			margin-right: auto;
 		}
 	}
 }

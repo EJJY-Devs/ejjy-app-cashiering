@@ -10,7 +10,7 @@ export const useCurrentTransaction = () => {
 	const transactionProducts = useSelector(selectors.selectProducts());
 	const transactionStatus = useSelector(selectors.selectTransactionStatus());
 	const isFullyPaid = useSelector(selectors.selectIsFullyPaid());
-	const clientId = useSelector(selectors.selectClientId());
+	const client = useSelector(selectors.selectClient());
 	const totalPaidAmount = useSelector(selectors.selectTotalPaidAmount());
 	const invoiceId = useSelector(selectors.selectInvoiceId());
 	const orNumber = useSelector(selectors.selectOrNumber());
@@ -25,27 +25,33 @@ export const useCurrentTransaction = () => {
 	const resetTransaction = useActionDispatch(actions.resetTransaction);
 	const navigateProduct = useActionDispatch(actions.navigateProduct);
 	const setPreviousSukli = useActionDispatch(actions.setPreviousSukli);
+	const setClient = useActionDispatch(actions.setClient);
 
 	const { session } = useSession();
 	const { createTransaction, status: transactionsRequestStatus } = useTransactions();
-	const createCurrentTransaction = (callback = null) => {
+	const createCurrentTransaction = (callback = null, shouldResetTransaction = true) => {
 		const data = {
 			branchId: session.branch_machine?.branch_id,
 			branchMachineId: session.branch_machine.id,
 			tellerId: session.user.id,
-			dummyClientId: 1, // TODO: Update on next sprint
+			client,
+			previousVoidedTransactionId: previousVoidedTransactionId || undefined,
 			products: transactionProducts.map((product) => ({
 				product_id: product.productId,
 				quantity: product.quantity,
 				price_per_piece: product.pricePerPiece,
+				discount_per_piece: product?.discountPerPiece || undefined,
 			})),
 		};
 
-		createTransaction(data, ({ status }) => {
-			if (status === request.SUCCESS) {
-				resetTransaction();
-				callback?.();
+		createTransaction(data, (response) => {
+			if (response.status === request.SUCCESS) {
+				if (shouldResetTransaction) {
+					resetTransaction();
+				}
 			}
+
+			callback?.(response);
 		});
 	};
 
@@ -54,7 +60,7 @@ export const useCurrentTransaction = () => {
 		transactionStatus,
 		transactionProducts,
 		isFullyPaid,
-		clientId,
+		client,
 		totalPaidAmount,
 		invoiceId,
 		orNumber,
@@ -69,6 +75,7 @@ export const useCurrentTransaction = () => {
 		createCurrentTransaction,
 		navigateProduct,
 		setPreviousSukli,
+		setClient,
 		requestStatus: transactionsRequestStatus,
 	};
 };

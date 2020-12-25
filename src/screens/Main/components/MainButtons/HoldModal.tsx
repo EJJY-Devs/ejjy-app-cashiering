@@ -71,8 +71,12 @@ export const HoldModal = ({ visible, onClose }: Props) => {
 		if (!transactionId && transactionProducts?.length > 0) {
 			setMainLoading(true);
 			setMainLoadingText('Saving current transaction...');
-			createCurrentTransaction(() => {
-				onViewTransaction(transaction);
+			createCurrentTransaction(({ status }) => {
+				if (status === request.SUCCESS) {
+					onViewTransaction(transaction);
+				} else if (status === request.ERROR) {
+					message.error('An error occurred while creating transaction');
+				}
 
 				setMainLoading(false);
 				setMainLoadingText(null);
@@ -87,9 +91,13 @@ export const HoldModal = ({ visible, onClose }: Props) => {
 	};
 
 	const onHold = () => {
-		createCurrentTransaction(() => {
-			message.success('Transaction successfully set to Hold');
-			onClose();
+		createCurrentTransaction(({ status }) => {
+			if (status === request.SUCCESS) {
+				message.success('Transaction successfully set to Hold');
+				onClose();
+			} else if (status === request.ERROR) {
+				message.error('An error occurred while holding the transaction');
+			}
 		});
 	};
 

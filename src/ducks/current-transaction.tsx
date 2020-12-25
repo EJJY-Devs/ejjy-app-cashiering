@@ -19,18 +19,19 @@ export const types = {
 
 	NAVIGATE_PRODUCT: `${key}/NAVIGATE_PRODUCT`,
 	SET_PREVIOUS_SUKLI: `${key}/SET_PREVIOUS_SUKLI`,
+	SET_CLIENT: `${key}/SET_CLIENT`,
 };
 
 const initialState = {
 	products: [],
 	transactionId: null,
 	isFullyPaid: false,
-	clientId: null,
 	totalPaidAmount: 0,
 	invoiceId: null,
 	orNumber: null,
 	status: null,
 	previousVoidedTransactionId: null,
+	client: null,
 
 	pageNumber: 1,
 	previousSukli: null,
@@ -81,7 +82,7 @@ const reducer = handleActions(
 				transactionId: transaction.id,
 				invoiceId: transaction?.invoice.id,
 				orNumber: transaction?.invoice.or_number,
-				clientId: transaction.client_id,
+				clientId: transaction.client,
 				isFullyPaid: transaction.is_fully_paid,
 				totalPaidAmount: transaction.total_paid_amount,
 				status: transaction.status,
@@ -105,6 +106,7 @@ const reducer = handleActions(
 					productName: item.product.name,
 					productDescription: item.product.description,
 					pricePerPiece: Number(item.price_per_piece),
+					discountPerPiece: Number(item.discount_per_piece),
 					quantity: item.quantity,
 				};
 			});
@@ -113,7 +115,7 @@ const reducer = handleActions(
 				transactionId: transaction.id,
 				invoiceId: transaction?.invoice?.id,
 				orNumber: transaction?.invoice?.or_number,
-				clientId: transaction.client_id,
+				client: transaction.client,
 				isFullyPaid: transaction.is_fully_paid,
 				totalPaidAmount: transaction.total_paid_amount,
 				status: transaction.status,
@@ -136,11 +138,11 @@ const reducer = handleActions(
 				transactionId: null,
 				invoiceId: null,
 				orNumber: null,
-				clientId: null,
 				isFullyPaid: false,
 				totalPaidAmount: transaction.total_paid_amount,
 				status: transaction.status,
 				previousVoidedTransactionId: transaction.id,
+				client: null,
 				pageNumber: 1,
 			};
 
@@ -177,6 +179,10 @@ const reducer = handleActions(
 		[types.SET_PREVIOUS_SUKLI]: (state, { payload }: any) => {
 			return { ...state, previousSukli: payload };
 		},
+
+		[types.SET_CLIENT]: (state, { payload }: any) => {
+			return { ...state, client: payload };
+		},
 	},
 	initialState,
 );
@@ -193,13 +199,14 @@ export const actions = {
 	transactionVoided: createAction(types.TRANSACTION_VOIDED),
 	navigateProduct: createAction(types.NAVIGATE_PRODUCT),
 	setPreviousSukli: createAction(types.SET_PREVIOUS_SUKLI),
+	setClient: createAction(types.SET_CLIENT),
 };
 
 const selectState = (state: any) => state[key] || initialState;
 export const selectors = {
 	selectProducts: () => createSelector(selectState, (state) => state.products),
 	selectIsFullyPaid: () => createSelector(selectState, (state) => state.isFullyPaid),
-	selectClientId: () => createSelector(selectState, (state) => state.clientId),
+	selectClient: () => createSelector(selectState, (state) => state.client),
 	selectTotalPaidAmount: () => createSelector(selectState, (state) => state.totalPaidAmount),
 	selectInvoiceId: () => createSelector(selectState, (state) => state.invoiceId),
 	selectOrNumber: () => createSelector(selectState, (state) => state.orNumber),

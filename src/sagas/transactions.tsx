@@ -1,13 +1,8 @@
-import { call, put, retry, takeLatest } from 'redux-saga/effects';
-import {
-	actions as branchProductActions,
-	types as branchProductTypes,
-} from '../ducks/branch-products';
+import { call, put, takeLatest } from 'redux-saga/effects';
 import { actions as currentTransactionActions } from '../ducks/current-transaction';
 import { actions, types } from '../ducks/transactions';
-import { MAX_PAGE_SIZE, MAX_RETRY, RETRY_INTERVAL_MS } from '../global/constants';
+import { MAX_PAGE_SIZE } from '../global/constants';
 import { request } from '../global/types';
-import { service as branchProductService } from '../services/branch-products';
 import { service } from '../services/transactions';
 
 /* WORKERS */
@@ -45,14 +40,7 @@ function* get({ payload }: any) {
 }
 
 function* pay({ payload }: any) {
-	const {
-		transactionId,
-		amountTendered,
-		cashierUserId,
-		callback,
-		branchId = null,
-		shouldUpdateBranchProducts = true,
-	} = payload;
+	const { transactionId, amountTendered, cashierUserId, callback } = payload;
 	callback({ status: request.REQUESTING });
 
 	try {
@@ -64,51 +52,22 @@ function* pay({ payload }: any) {
 
 		yield put(currentTransactionActions.updateTransaction({ transaction: response.data }));
 
-		if (shouldUpdateBranchProducts && branchId) {
-			const response = yield retry(
-				MAX_RETRY,
-				RETRY_INTERVAL_MS,
-				branchProductService.listByBranch,
-				{
-					page: 1,
-					page_size: MAX_PAGE_SIZE,
-					branch_id: branchId,
-					fields: 'id,product,price_per_piece,product_status',
-				},
-			);
-
-			yield put(
-				branchProductActions.save({
-					type: branchProductTypes.LIST_BRANCH_PRODUCTS,
-					branchProducts: response.data,
-				}),
-			);
-		}
-
-		callback({ status: request.SUCCESS });
+		callback({ status: request.SUCCESS, response: response.data });
 	} catch (e) {
+		console.table(e);
 		callback({ status: request.ERROR, errors: e.errors });
 	}
 }
 
 function* create({ payload }: any) {
-	const {
-		branchMachineId,
-		tellerId,
-		dummyClientId,
-		products,
-		callback,
-
-		// branchId = null,
-		// shouldUpdateBranchProducts = true,
-	} = payload;
+	const { branchMachineId, tellerId, client, products, callback } = payload;
 	callback({ status: request.REQUESTING });
 
 	try {
 		const response = yield call(service.create, {
 			branch_machine_id: branchMachineId,
 			teller_id: tellerId,
-			dummy_client_id: dummyClientId,
+			client,
 			products,
 		});
 		yield put(actions.save({ type: types.CREATE_TRANSACTION, transaction: response.data }));
@@ -135,7 +94,7 @@ function* create({ payload }: any) {
 		// 	);
 		// }
 
-		callback({ status: request.SUCCESS });
+		callback({ status: request.SUCCESS, response: response.data });
 	} catch (e) {
 		callback({ status: request.ERROR, errors: e.errors });
 	}

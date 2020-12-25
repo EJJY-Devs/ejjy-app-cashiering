@@ -1,5 +1,6 @@
-import { Modal, Spin } from 'antd';
-import React, { useEffect, useRef } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { Modal, Spin, message } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
 import { request } from '../../../../global/types';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import { useSession } from '../../../../hooks/useSession';
@@ -17,15 +18,12 @@ interface Props {
 
 export const PaymentModal = ({ amountDue, visible, onClose, onSuccess }: Props) => {
 	const { session } = useSession();
-	const {
-		transactionId,
-		transactionProducts,
-		previousVoidedTransactionId,
-		setPreviousSukli,
-	} = useCurrentTransaction();
-	const { payTransaction, firstTimePayment, status } = useTransactions();
+	const { setPreviousSukli, createCurrentTransaction } = useCurrentTransaction();
+	const { payTransaction, status } = useTransactions();
 
 	const inputRef = useRef(null);
+	const [loading, setLoading] = useState(false);
+	const [transactionId, setTransactionId] = useState(null);
 
 	useEffect(() => {
 		if (inputRef && inputRef.current) {
@@ -36,46 +34,41 @@ export const PaymentModal = ({ amountDue, visible, onClose, onSuccess }: Props) 
 		}
 	}, [visible, inputRef]);
 
-	const onSubmit = (formData) => {
-		const products = transactionProducts.map((product) => ({
-			product_id: product.productId,
-			quantity: product.quantity,
-			price_per_piece: product.pricePerPiece,
-		}));
+	useEffect(() => {
+		if (visible) {
+			setLoading(true);
+			createCurrentTransaction(({ status, response }) => {
+				if (status === request.SUCCESS) {
+					setTransactionId(response.id);
+				} else if (status === request.ERROR) {
+					message.error('An error occurred while setting up payment.');
+					onClose();
+				}
 
+				setLoading(false);
+			}, false);
+		}
+	}, [visible]);
+
+	const onSubmit = (formData) => {
 		const data = {
-			branchId: session?.branch_machine?.branch_id,
-			branchMachineId: session.branch_machine.id,
-			tellerId: session.user.id,
-			dummyClientId: 1, // TODO: Update on next sprint
-			products,
+			transactionId,
 			amountTendered: removeCommas(formData.amountTendered),
 			cashierUserId: session.user.id,
-			transactionId,
-			previousVoidedTransactionId: previousVoidedTransactionId || undefined,
 		};
 
 		const sukli = removeCommas(formData.amountTendered) - amountDue;
-
-		if (transactionId && !previousVoidedTransactionId) {
-			payTransaction(data, ({ status }) => {
-				if (status === request.SUCCESS) {
+		payTransaction(data, ({ status, response }) => {
+			if (status === request.SUCCESS) {
+				if (response.is_fully_paid && response?.invoice.id) {
 					setPreviousSukli(sukli);
-					onSuccess();
-					onClose();
+					onSuccess(response);
 				}
-			});
-		} else {
-			firstTimePayment(data, ({ status, transaction }) => {
-				if (status === request.SUCCESS) {
-					if (transaction.is_fully_paid && transaction?.invoice.id) {
-						setPreviousSukli(sukli);
-						onSuccess(transaction);
-					}
-					onClose();
-				}
-			});
-		}
+				onClose();
+			} else if (status === request.ERROR) {
+				message.error('An error occured while processing the payment.');
+			}
+		});
 	};
 
 	return (
@@ -88,7 +81,7 @@ export const PaymentModal = ({ amountDue, visible, onClose, onSuccess }: Props) 
 			centered
 			closable
 		>
-			<Spin size="large" spinning={status === request.REQUESTING}>
+			<Spin size="large" spinning={loading || status === request.REQUESTING}>
 				<PaymentForm
 					amountDue={amountDue}
 					inputRef={(el) => (inputRef.current = el)}
