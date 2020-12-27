@@ -19,10 +19,10 @@ export const ClientDetailsForm = ({ onSubmit, onClose }: Props) => {
 	const getFormDetails = useCallback(
 		() => ({
 			DefaultValues: {
-				id: client?.id,
-				name: client?.name,
-				address: client?.address,
-				tin: client?.tin,
+				id: client?.id || '',
+				name: client?.name || '',
+				address: client?.address || '',
+				tin: client?.tin || '',
 			},
 			Schema: Yup.object().shape({
 				name: Yup.string().required().max(100).label('Client Name'),
