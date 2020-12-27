@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Modal, Spin, message } from 'antd';
+import { message, Modal, Spin } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import { request } from '../../../../global/types';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
