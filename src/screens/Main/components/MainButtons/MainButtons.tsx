@@ -99,8 +99,10 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 				message.error(errors);
 			}
 
-			setMainLoading(false);
-			setMainLoadingText(null);
+			if ([request.ERROR, request.SUCCESS].includes(status)) {
+				setMainLoading(false);
+				setMainLoadingText(null);
+			}
 		});
 	};
 

@@ -34,11 +34,9 @@ export const Payment = () => {
 
 	const isPaymentDisabled = useCallback(
 		() =>
-			[
-				transactionStatusTypes.FULLY_PAID,
-				transactionStatusTypes.VOID_CANCELLED,
-				transactionStatusTypes.VOID_EDITED,
-			].includes(transactionStatus),
+			[transactionStatusTypes.FULLY_PAID, transactionStatusTypes.VOID_EDITED].includes(
+				transactionStatus,
+			),
 		[transactionStatus],
 	);
 

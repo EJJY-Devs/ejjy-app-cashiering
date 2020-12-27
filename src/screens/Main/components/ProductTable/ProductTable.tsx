@@ -23,11 +23,7 @@ const columns = [
 	{ name: 'Amount' },
 ];
 
-const uneditableStatus = [
-	transactionStatusTypes.FULLY_PAID,
-	transactionStatusTypes.VOID_CANCELLED,
-	transactionStatusTypes.VOID_EDITED,
-];
+const uneditableStatus = [transactionStatusTypes.FULLY_PAID, transactionStatusTypes.VOID_EDITED];
 
 export const editTypes = {
 	ADD: 1,
