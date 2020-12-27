@@ -40,12 +40,12 @@ export const PaymentModal = ({ amountDue, visible, onClose, onSuccess }: Props) 
 			createCurrentTransaction(({ status, response }) => {
 				if (status === request.SUCCESS) {
 					setTransactionId(response.id);
+					setLoading(false);
 				} else if (status === request.ERROR) {
 					message.error('An error occurred while setting up payment.');
+					setLoading(false);
 					onClose();
 				}
-
-				setLoading(false);
 			}, false);
 		}
 	}, [visible]);
