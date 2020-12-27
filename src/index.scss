@@ -50,6 +50,10 @@ body {
 
 			.custom-footer {
 				@include flex($justify-content: flex-end);
+
+				.btn-cancel {
+					margin-right: 20px;
+				}
 			}
 		}
 	}

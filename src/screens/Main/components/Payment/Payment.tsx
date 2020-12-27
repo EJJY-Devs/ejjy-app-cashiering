@@ -4,7 +4,9 @@ import KeyboardEventHandler from 'react-keyboard-event-handler';
 import { Button } from '../../../../components/elements';
 import { tenderShortcutKeys } from '../../../../global/options';
 import { transactionStatusTypes } from '../../../../global/types';
+import { useBranchProducts } from '../../../../hooks/useBranchProducts';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
+import { useSession } from '../../../../hooks/useSession';
 import { numberWithCommas } from '../../../../utils/function';
 import { InvoiceModal } from './InvoiceModal';
 import { PaymentModal } from './PaymentModal';
@@ -12,6 +14,8 @@ import './style.scss';
 
 export const Payment = () => {
 	const { transactionProducts, transactionStatus } = useCurrentTransaction();
+	const { listBranchProducts } = useBranchProducts();
+	const { session } = useSession();
 
 	const [paymentModalVisible, setPaymentModalVisible] = useState(false);
 	const [invoiceModalVisible, setInvoiceModalVisible] = useState(false);
@@ -39,6 +43,7 @@ export const Payment = () => {
 	);
 
 	const onPaymentSuccess = (transaction) => {
+		listBranchProducts(session?.user?.branch?.id);
 		setInvoiceModalVisible(true);
 		setTransaction(transaction);
 	};

@@ -1,7 +1,9 @@
-import { Divider, Modal } from 'antd';
+import { Divider, message, Modal } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { DetailsRow, DetailsSingle, TableNormal } from '../../../../components';
+import Button from '../../../../components/elements/Button/Button';
+import { ePosDev, printSalesInvoice } from '../../../../configurePrinter';
 import { EMPTY_CELL } from '../../../../global/constants';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import { numberWithCommas } from '../../../../utils/function';
@@ -40,6 +42,14 @@ export const InvoiceModal = ({ visible, transaction, onClose }: Props) => {
 	const close = () => {
 		resetTransaction();
 		onClose();
+	};
+
+	const onPrint = () => {
+		if (ePosDev.isConnected()) {
+			printSalesInvoice(transaction);
+		} else {
+			message.error('Cannot print, no printer connected.');
+		}
 	};
 
 	return (
@@ -260,6 +270,13 @@ export const InvoiceModal = ({ visible, transaction, onClose }: Props) => {
 					value={transaction?.invoice?.pos_accreditation_date || EMPTY_CELL}
 				/>
 			</DetailsRow>
+
+			<Divider />
+
+			<div className="custom-footer">
+				<Button classNames="btn-cancel" text="Close" size="lg" onClick={close} />
+				<Button text="Print" size="lg" variant="primary" onClick={onPrint} />
+			</div>
 		</Modal>
 	);
 };

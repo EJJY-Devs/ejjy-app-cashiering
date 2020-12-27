@@ -5,6 +5,7 @@ export const key = 'AUTH';
 
 export const types = {
 	SAVE: `${key}/SAVE`,
+	VALIDATE_USER: `${key}/VALIDATE_USER`,
 };
 
 const initialState = {
@@ -24,6 +25,7 @@ const reducer = handleActions(
 
 export const actions = {
 	save: createAction(types.SAVE),
+	validateUser: createAction(types.VALIDATE_USER),
 };
 
 const selectState = (state: any) => state[key] || initialState;

@@ -11,6 +11,7 @@ import { useBranchProducts } from '../../../../hooks/useBranchProducts';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import { useTransactions } from '../../../../hooks/useTransactions';
 import { numberWithCommas } from '../../../../utils/function';
+import { DiscountModal } from './DiscountModal';
 import { EditProductModal } from './EditProductModal';
 import './style.scss';
 
@@ -51,8 +52,9 @@ export const ProductTable = ({ isLoading }: Props) => {
 	const { updateTransaction, status } = useTransactions();
 
 	const [selectedProductIndex, setSelectedProductIndex] = useState(0);
+	const [selectedDiscountProduct, setSelectedDiscountProduct] = useState(null);
 	const [editProductModalVisible, setEditProductModalVisible] = useState(false);
-
+	const [discountModalVisible, setDiscountModalVisible] = useState(false);
 	const [data, setData] = useState([]);
 
 	// Effect: Format product data
@@ -67,7 +69,18 @@ export const ProductTable = ({ isLoading }: Props) => {
 					{item.productName}
 				</Tooltip>,
 				item.quantity.toFixed(3),
-				`₱${numberWithCommas(item.pricePerPiece.toFixed(2))}`,
+				<div onClick={() => onClickRate(item)}>
+					{item?.discountPerPiece > 0 ? (
+						<>
+							{`₱${numberWithCommas(item.pricePerPiece.toFixed(2))}`}
+							<span className="original-price">
+								{`₱${numberWithCommas((item.pricePerPiece + item.discountPerPiece).toFixed(2))}`}
+							</span>
+						</>
+					) : (
+						`₱${numberWithCommas(item.pricePerPiece.toFixed(2))}`
+					)}
+				</div>,
 				`₱${numberWithCommas((item.quantity * item.pricePerPiece).toFixed(2))}`,
 			]);
 
@@ -117,6 +130,13 @@ export const ProductTable = ({ isLoading }: Props) => {
 		// if (!editProductModalVisible) {
 		// 	setSelectedProductIndex(NO_INDEX_SELECTED);
 		// }
+	};
+
+	const onClickRate = (product) => {
+		if (currentTransactionStatus !== transactionStatusTypes.FULLY_PAID) {
+			setSelectedDiscountProduct(product);
+			setDiscountModalVisible(true);
+		}
 	};
 
 	const handleKeyPress = throttle((key, event) => {
@@ -204,6 +224,12 @@ export const ProductTable = ({ isLoading }: Props) => {
 				product={transactionProducts?.[selectedProductIndex]}
 				visible={editProductModalVisible}
 				onClose={() => setEditProductModalVisible(false)}
+			/>
+
+			<DiscountModal
+				product={selectedDiscountProduct}
+				visible={discountModalVisible}
+				onClose={() => setDiscountModalVisible(false)}
 			/>
 		</div>
 	);

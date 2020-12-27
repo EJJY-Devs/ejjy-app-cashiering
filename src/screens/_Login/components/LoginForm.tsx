@@ -27,8 +27,8 @@ export const LoginForm = ({ loading, errors, onSubmit, submitText }: ILoginForm)
 				password: '',
 			},
 			Schema: Yup.object().shape({
-				login: Yup.string().required('Username is required'),
-				password: Yup.string().required('Password is required'),
+				login: Yup.string().required().label('Username'),
+				password: Yup.string().required().label('Password'),
 			}),
 		}),
 		[],

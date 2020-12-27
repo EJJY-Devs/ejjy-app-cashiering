@@ -14,10 +14,16 @@ interface ITransactionProduct {
 	quantity: number;
 }
 
+interface ICreateTransactionClient {
+	name: string;
+	address: string;
+	tin: string;
+}
+
 interface ICreateTransaction {
 	branch_machine_id: number;
 	teller_id: string;
-	dummy_client_id: number;
+	client?: ICreateTransactionClient;
 	products: ITransactionProduct[];
 	previous_voided_transaction_id?: number;
 }

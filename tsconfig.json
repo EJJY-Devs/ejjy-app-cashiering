@@ -15,5 +15,5 @@
 		"noEmit": true,
 		"jsx": "react"
 	},
-	"include": ["src"]
+	"include": ["src", "public/js/epos-2.16.0.js"]
 }
