@@ -67,6 +67,14 @@
 			}
 		}
 	}
+
+	.client-details-wrapper {
+		@include flex(flex-start, center);
+
+		.client-text {
+			margin-right: 10px;
+		}
+	}
 }
 
 .ClientDetailsModal {

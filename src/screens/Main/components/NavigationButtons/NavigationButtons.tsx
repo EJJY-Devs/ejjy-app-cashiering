@@ -35,7 +35,13 @@ export const NavigationButtons = () => {
 					<p className="label">Client ID:</p>
 					<p className="value">
 						{client && client?.name && client?.tin ? (
-							`${client.name}, ${client.tin}`
+							<div className="client-details-wrapper">
+								<span className="client-text">{`${client.name}, ${client.tin}`}</span>
+								<EditButtonIcon
+									tooltip="Edit client details"
+									onClick={() => setClientDetailsModalVisible(true)}
+								/>
+							</div>
 						) : (
 							<EditButtonIcon
 								tooltip="Edit client details"
