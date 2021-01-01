@@ -36,12 +36,14 @@ export const AddProductForm = ({ maxQuantity, inputRef, onSubmit, onClose }: Pro
 			initialValues={getFormDetails().DefaultValues}
 			validationSchema={getFormDetails().Schema}
 			onSubmit={async (values, { resetForm }) => {
-				setSubmitting(true);
-				await sleep(500);
-				setSubmitting(false);
+				if (!isSubmitting) {
+					setSubmitting(true);
+					await sleep(500);
+					setSubmitting(false);
 
-				onSubmit(values);
-				resetForm();
+					onSubmit(values);
+					resetForm();
+				}
 			}}
 			enableReinitialize
 		>

@@ -14,7 +14,7 @@ interface Props {
 export const ViewXreadReportModal = ({ report, visible, onClose }: Props) => {
 	return (
 		<Modal
-			title="XRead Report"
+			title={`XRead Report (${report?.total_sales === 0 ? 'Not Used' : 'Used'})`}
 			visible={visible}
 			footer={[<Button text="Close" onClick={onClose} />]}
 			onCancel={onClose}

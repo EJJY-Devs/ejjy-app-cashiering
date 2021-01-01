@@ -2,8 +2,10 @@
 import { CaretLeftOutlined, CaretRightOutlined } from '@ant-design/icons';
 import { ceil } from 'lodash';
 import React, { useCallback, useState } from 'react';
+import KeyboardEventHandler from 'react-keyboard-event-handler';
 import { EditButtonIcon } from '../../../../components';
 import { EMPTY_CELL, PRODUCT_LENGTH_PER_PAGE } from '../../../../global/constants';
+import { editClientShortcutKeys } from '../../../../global/options';
 import { productNavigation } from '../../../../global/types';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import { numberWithCommas } from '../../../../utils/function';
@@ -12,6 +14,10 @@ import { NavigationButton } from './NavigationButton';
 import './style.scss';
 
 export const NavigationButtons = () => {
+	// STATES
+	const [clientDetailsModalVisible, setClientDetailsModalVisible] = useState(false);
+
+	// CUSTOM HOOKS
 	const {
 		transactionId,
 		transactionProducts,
@@ -22,14 +28,29 @@ export const NavigationButtons = () => {
 		navigateProduct,
 	} = useCurrentTransaction();
 
-	const [clientDetailsModalVisible, setClientDetailsModalVisible] = useState(false);
-
+	// METHODS
 	const getMaxPage = useCallback(() => ceil(transactionProducts.length / PRODUCT_LENGTH_PER_PAGE), [
 		transactionProducts,
 	]);
 
+	const handleKeyPress = (key, event) => {
+		event.preventDefault();
+		event.stopPropagation();
+
+		// Edit Client
+		if (editClientShortcutKeys.includes(key)) {
+			setClientDetailsModalVisible(true);
+			return;
+		}
+	};
+
 	return (
 		<div className="NavigationButtons">
+			<KeyboardEventHandler
+				handleKeys={editClientShortcutKeys}
+				onKeyEvent={(key, e) => handleKeyPress(key, e)}
+			/>
+
 			<div className="details">
 				<div className="item">
 					<p className="label">Client ID:</p>

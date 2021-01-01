@@ -92,21 +92,24 @@
 	}
 }
 
-.InvoiceModal {
-	.label,
-	.value,
-	.official-receipt-label {
-		@include font(25px, bold);
-	}
+.ThankYouModal {
+	.transaction-details {
+		text-align: left;
+		margin-top: 30px;
 
-	.official-receipt-label,
-	.value-center {
-		display: block;
-		text-align: center;
-	}
+		.item {
+			&:not(:last-child) {
+				margin-bottom: 10px;
+			}
 
-	.TableNormal {
-		border-radius: 10px;
-		border: 1px solid $color-gray;
+			.label,
+			.value {
+				@include font(25px, bold);
+			}
+
+			.label {
+				color: $color-dark-gray;
+			}
+		}
 	}
 }

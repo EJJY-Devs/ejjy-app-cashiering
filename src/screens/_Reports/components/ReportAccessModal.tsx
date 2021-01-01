@@ -47,6 +47,7 @@ export const ReportAccessModal = ({ reportType, onSuccess, visible, onClose }: P
 				submitText="Submit"
 				loading={status === request.REQUESTING}
 				errors={[]}
+				isManager
 			/>
 		</Modal>
 	);

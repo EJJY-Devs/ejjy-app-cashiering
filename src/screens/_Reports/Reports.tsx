@@ -1,7 +1,8 @@
-import { Divider } from 'antd';
+import { Divider, message } from 'antd';
 import React, { useState } from 'react';
 import { Box, Button } from '../../components/elements';
 import { reportTypes } from '../../global/types';
+import { getBranchMachineId } from '../../utils/function';
 import { ReportAccessModal } from './components/ReportAccessModal';
 import { ViewXreadReportModal } from './components/ViewXreadReportModal';
 import { ViewZreadReportModal } from './components/ViewZreadReportModal';
@@ -16,13 +17,10 @@ const Reports = () => {
 	const [zreadReport, setZreadReport] = useState(null);
 
 	const onGenerateReadReport = (type) => {
-		if (type === reportTypes.XREAD && xreadReport) {
-			setXreadReportModalVisible(true);
-			return;
-		}
+		const branchMachineId = getBranchMachineId();
 
-		if (type === reportTypes.ZREAD && zreadReport) {
-			setZreadReportModalVisible(true);
+		if (!branchMachineId) {
+			message.error('This machine is not yet registered.');
 			return;
 		}
 

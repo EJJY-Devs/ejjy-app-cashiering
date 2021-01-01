@@ -16,6 +16,7 @@ import { useSession } from '../../../../hooks/useSession';
 import { useTransactions } from '../../../../hooks/useTransactions';
 import { useUI } from '../../../../hooks/useUI';
 import { HoldModal } from './HoldModal';
+import { KeyboardShortcutsModal } from './KeyboardShortcutsModal';
 import { MainButton } from './MainButton';
 import { OthersModal } from './OthersModal';
 import './style.scss';
@@ -26,6 +27,12 @@ interface Props {
 }
 
 export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
+	// STATES
+	const [othersModalVisible, setOthersModalVisible] = useState(false);
+	const [holdModalVisible, setHoldModalVisible] = useState(false);
+	const [keyboardShortcutsVisible, setKeyboardShortcutsVisible] = useState(false);
+
+	// CUSTOM HOOKS
 	const { session } = useSession();
 	const {
 		transactionId,
@@ -37,9 +44,7 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 	const { voidTransaction, cancelVoidedTransaction } = useTransactions();
 	const { setMainLoading, setMainLoadingText } = useUI();
 
-	const [othersModalVisible, setOthersModalVisible] = useState(false);
-	const [holdModalVisible, setHoldModalVisible] = useState(false);
-
+	// METHODS
 	const isVoidDisabled = useCallback(
 		() => currentTransactionStatus !== transactionStatusTypes.FULLY_PAID,
 		[currentTransactionStatus],
@@ -147,6 +152,11 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 		}
 	};
 
+	const onKeyboardShortcuts = () => {
+		setKeyboardShortcutsVisible(true);
+		setOthersModalVisible(false);
+	};
+
 	return (
 		<div className="MainButtons">
 			<KeyboardEventHandler
@@ -190,10 +200,16 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 			</div>
 
 			<OthersModal
+				onKeyboardShortcuts={onKeyboardShortcuts}
 				onCashCollection={onCashCollectionModified}
 				onEndSession={onEndSessionModified}
 				visible={othersModalVisible}
 				onClose={() => setOthersModalVisible(false)}
+			/>
+
+			<KeyboardShortcutsModal
+				visible={keyboardShortcutsVisible}
+				onClose={() => setKeyboardShortcutsVisible(false)}
 			/>
 
 			<HoldModal visible={holdModalVisible} onClose={() => setHoldModalVisible(false)} />

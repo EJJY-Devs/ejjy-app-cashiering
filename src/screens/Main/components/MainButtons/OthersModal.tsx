@@ -1,17 +1,24 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Modal } from 'antd';
+import { Divider, Modal } from 'antd';
 import React from 'react';
 import { SearchTransaction } from './SearchTransaction';
 import './style.scss';
 
 interface Props {
+	onKeyboardShortcuts: any;
 	onCashCollection: any;
 	onEndSession: any;
 	visible: boolean;
 	onClose: any;
 }
 
-export const OthersModal = ({ onCashCollection, onEndSession, visible, onClose }: Props) => {
+export const OthersModal = ({
+	onKeyboardShortcuts,
+	onCashCollection,
+	onEndSession,
+	visible,
+	onClose,
+}: Props) => {
 	return (
 		<Modal
 			title="Others"
@@ -30,6 +37,12 @@ export const OthersModal = ({ onCashCollection, onEndSession, visible, onClose }
 
 			<button className="other-button btn-end-session" onClick={onEndSession}>
 				End Session
+			</button>
+
+			<Divider />
+
+			<button className="other-button" onClick={onKeyboardShortcuts}>
+				Keyboard Shortcuts
 			</button>
 		</Modal>
 	);

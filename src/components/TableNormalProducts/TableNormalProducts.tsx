@@ -10,7 +10,7 @@ import './style.scss';
 interface Column {
 	name: string | ReactNode;
 	width?: string;
-	center?: boolean;
+	rightAligned?: boolean;
 	tooltip?: string;
 	loading?: boolean;
 }
@@ -47,8 +47,11 @@ export const TableNormalProducts = ({
 				<table>
 					<thead>
 						<tr>
-							{columns.map(({ name, width, center = false, tooltip = null }, index) => (
-								<th key={`th-${index}`} style={{ width, textAlign: center ? 'center' : 'left' }}>
+							{columns.map(({ name, width, rightAligned = false, tooltip = null }, index) => (
+								<th
+									key={`th-${index}`}
+									style={{ width, textAlign: rightAligned ? 'right' : 'left' }}
+								>
 									{tooltip ? <Tooltip title={tooltip}>{name}</Tooltip> : name}
 								</th>
 							))}
@@ -68,7 +71,7 @@ export const TableNormalProducts = ({
 								{row.map((item, index) => (
 									<td
 										key={`td-${index}`}
-										style={{ textAlign: columns?.[index].center ? 'center' : 'left' }}
+										style={{ textAlign: columns?.[index].rightAligned ? 'right' : 'left' }}
 									>
 										{item}
 									</td>

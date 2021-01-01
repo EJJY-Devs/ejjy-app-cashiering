@@ -48,23 +48,24 @@ export const RegisterForm = ({ loading, onSubmit }: IRegisterForm) => {
 		<Formik
 			initialValues={getFormDetails().DefaultValues}
 			validationSchema={getFormDetails().Schema}
-			onSubmit={async (values: IRegisterValues) => {
+			onSubmit={async (values: IRegisterValues, { resetForm }) => {
 				setIsSubmitting(true);
 				await sleep(500);
 				setIsSubmitting(false);
 
 				onSubmit(values);
+				resetForm();
 			}}
 		>
 			{({ errors, touched }) => (
 				<Form className="form">
 					<div className="input-field">
-						<FormInputLabel id="login" label="Username" />
+						<FormInputLabel id="login" label="Manager's Username" />
 						{errors.login && touched.login ? <FieldError error={errors.login} /> : null}
 					</div>
 
 					<div className="input-field">
-						<FormInputLabel type="password" id="password" label="Password" />
+						<FormInputLabel type="password" id="password" label="Manager's Password" />
 						{errors.password && touched.password ? <FieldError error={errors.password} /> : null}
 					</div>
 

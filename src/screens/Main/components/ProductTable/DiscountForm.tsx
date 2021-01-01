@@ -59,7 +59,7 @@ export const DiscountForm = ({ maxQuantity, onSubmit }: Props) => {
 					<div className="input-field">
 						<FormInputLabel
 							id="login"
-							label="Username"
+							label="Manager's Username"
 							inputClassname="input-control"
 							labelClassname="input-label"
 						/>
@@ -69,7 +69,7 @@ export const DiscountForm = ({ maxQuantity, onSubmit }: Props) => {
 						<FormInputLabel
 							type="password"
 							id="password"
-							label="Password"
+							label="Manager's Password"
 							inputClassname="input-control"
 							labelClassname="input-label"
 						/>

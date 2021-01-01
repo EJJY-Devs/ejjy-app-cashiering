@@ -9,6 +9,7 @@ import { useBranchProducts } from '../../hooks/useBranchProducts';
 import { useCashBreakdown } from '../../hooks/useCashBreakdown';
 import { useCurrentTransaction } from '../../hooks/useCurrentTransaction';
 import { useSession } from '../../hooks/useSession';
+import { useSiteSettings } from '../../hooks/useSiteSettings';
 import { useUI } from '../../hooks/useUI';
 import { BarcodeScanner } from './components/BarcodeScanner/BarcodeScanner';
 import { CashBreakdownModal } from './components/CashBreakdown/CashBreakdownModal';
@@ -25,6 +26,13 @@ const voidTransactionStatus = [
 ];
 
 const Main = () => {
+	// STATES
+	const [requiredCashBreakdown, setRequiredCashBreakdown] = useState(false);
+	const [cashBreakdownModalVisible, setCashBreakdownModalVisible] = useState(false);
+	const [cashBreakdownType, setCashBreakdownType] = useState(null);
+	const [barcodeScanLoading, setBarcodeScanLoading] = useState(false);
+
+	// CUSTOM HOOKS
 	const {
 		session,
 		validateSession,
@@ -41,14 +49,10 @@ const Main = () => {
 		recentRequest: cashBreakdownRecentRequest,
 	} = useCashBreakdown();
 	const { listBranchProducts, status: branchProductsStatus } = useBranchProducts();
+	const { getSiteSettings, status: siteSettingsStatus } = useSiteSettings();
 	const { mainLoading, mainLoadingText } = useUI();
 
-	// States
-	const [requiredCashBreakdown, setRequiredCashBreakdown] = useState(false);
-	const [cashBreakdownModalVisible, setCashBreakdownModalVisible] = useState(false);
-	const [cashBreakdownType, setCashBreakdownType] = useState(null);
-	const [barcodeScanLoading, setBarcodeScanLoading] = useState(false);
-
+	// METHODS
 	// Effect: Reset current transaction if refreshed and there is already transaction id
 	useEffect(() => {
 		if (transactionId) {
@@ -63,6 +67,7 @@ const Main = () => {
 				if (response) {
 					listCashBreakdown(session?.id);
 					listBranchProducts(session?.user?.branch?.id);
+					getSiteSettings();
 				} else {
 					invalidSession();
 				}
@@ -87,11 +92,14 @@ const Main = () => {
 	const isLoading = useCallback(
 		() =>
 			mainLoading ||
-			[cashBreakdownStatus, branchProductsStatus, sessionStatus].includes(request.REQUESTING),
+			[cashBreakdownStatus, branchProductsStatus, sessionStatus, siteSettingsStatus].includes(
+				request.REQUESTING,
+			),
 		[
 			cashBreakdownStatus,
 			cashBreakdownRecentRequest,
 			branchProductsStatus,
+			siteSettingsStatus,
 			sessionStatus,
 			mainLoading,
 		],
@@ -108,7 +116,9 @@ const Main = () => {
 			}
 		}
 
-		if ([cashBreakdownStatus, branchProductsStatus].includes(request.REQUESTING)) {
+		if (
+			[cashBreakdownStatus, branchProductsStatus, siteSettingsStatus].includes(request.REQUESTING)
+		) {
 			return 'Fetching data...';
 		}
 
@@ -116,6 +126,7 @@ const Main = () => {
 			return mainLoadingText;
 		}
 	}, [
+		siteSettingsStatus,
 		branchProductsStatus,
 		cashBreakdownStatus,
 		cashBreakdownRecentRequest,

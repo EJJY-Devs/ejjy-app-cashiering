@@ -76,3 +76,14 @@
 		margin-top: 10px;
 	}
 }
+
+.KeyboardShortcutsModal {
+	.label,
+	.value {
+		@include font(20px, bold);
+	}
+
+	.KeyboardButtonDisplay {
+		margin-right: 10px;
+	}
+}
