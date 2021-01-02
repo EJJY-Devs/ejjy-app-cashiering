@@ -2,18 +2,19 @@ import { message } from 'antd';
 import React, { useCallback, useState } from 'react';
 import KeyboardEventHandler from 'react-keyboard-event-handler';
 import { Button } from '../../../../components/elements';
+import { printSalesInvoice } from '../../../../configurePrinter';
 import { tenderShortcutKeys } from '../../../../global/options';
 import { transactionStatusTypes } from '../../../../global/types';
 import { useBranchProducts } from '../../../../hooks/useBranchProducts';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import { useSession } from '../../../../hooks/useSession';
 import { numberWithCommas } from '../../../../utils/function';
-import { InvoiceModal } from './InvoiceModal';
 import { PaymentModal } from './PaymentModal';
 import './style.scss';
+import { ThankYouModal } from './ThankYouModal';
 
 export const Payment = () => {
-	const { transactionProducts, transactionStatus } = useCurrentTransaction();
+	const { transactionProducts, transactionStatus, previousSukli } = useCurrentTransaction();
 	const { listBranchProducts } = useBranchProducts();
 	const { session } = useSession();
 
@@ -44,6 +45,7 @@ export const Payment = () => {
 		listBranchProducts(session?.user?.branch?.id);
 		setInvoiceModalVisible(true);
 		setTransaction(transaction);
+		printSalesInvoice(transaction, transactionProducts, previousSukli);
 	};
 
 	const onPay = () => {
@@ -99,7 +101,7 @@ export const Payment = () => {
 				onClose={() => setPaymentModalVisible(false)}
 			/>
 
-			<InvoiceModal
+			<ThankYouModal
 				visible={invoiceModalVisible}
 				transaction={transaction}
 				onClose={() => setInvoiceModalVisible(false)}

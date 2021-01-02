@@ -1,96 +1,564 @@
 import { message } from 'antd';
+import moment from 'moment';
+import qz from 'qz-tray';
+import { EMPTY_CELL } from './global/constants';
+import { numberWithCommas } from './utils/function';
 
-declare global {
-	interface Window {
-		epson: any;
-	}
-}
+const PAPER_MARGIN = 0.2; // inches
+const PAPER_WIDTH = 3; // inches
+const PRINTER_MESSAGE_KEY = 'configurePrinter';
+const SI_MESSAGE_KEY = 'SI_MESSAGE_KEY';
+const PRINTER_NAME = 'EPSON TM-U220 Receipt';
+// const PRINTER_NAME = 'Microsoft Print to PDF';
 
-export var printer = null;
-export var ePosDev = null;
+const configurePrinter = (callback = null) => {
+	if (!qz.websocket.isActive()) {
+		message.loading({
+			content: 'Connecting to printer...',
+			key: PRINTER_MESSAGE_KEY,
+			duration: 0,
+		});
 
-const configurePrinter = () => {
-	const PRINTER_MESSAGE_KEY = 'configurePrinter';
-	const epson = window.epson;
-	const ipAddress = '192.168.192.168';
-	const port = '8008';
-	const ePosDevObj = new epson.ePOSDevice();
-
-	const onCreateDevice = (deviceObj, errorCode) => {
-		if (deviceObj === null) {
-			// Displays an error message if the system fails to retrieve the Printer object
-			message.error({
-				content: 'Cannot retrieve printer.',
-				key: PRINTER_MESSAGE_KEY,
-			});
-			return;
-		}
-
-		console.log('onCreateDevice: deviceObj', deviceObj);
-		printer = deviceObj;
-
-		// Registers the print complete event
-		printer.onreceive = function (response) {
-			//Displays the successful print message
-			console.log('onCreateDevice: onreceive: response', deviceObj);
-			if (response.success) {
+		qz.websocket
+			.connect()
+			.then(() => {
 				message.success({
-					content: 'Successfully registered the printer.',
+					content: 'Successfully connected to printer: .',
 					key: PRINTER_MESSAGE_KEY,
 				});
-			} else {
-				//Displays error messages
+
+				callback?.();
+			})
+			.catch((err) => {
 				message.error({
 					content: 'Cannot register the printer.',
 					key: PRINTER_MESSAGE_KEY,
 				});
-			}
-		};
-	};
-
-	const onConnect = (resultConnect) => {
-		console.log('onConnect: resultConnect', resultConnect);
-		var deviceId = 'local_printer';
-		var options = { crypto: false, buffer: false };
-
-		if (resultConnect === 'OK' || resultConnect === 'SSL_CONNECT_OK') {
-			// Retrieves the Printer object
-			message.loading({
-				content: 'Setting up printer...',
-				key: PRINTER_MESSAGE_KEY,
-				duration: 0,
+				console.error(err);
 			});
-			ePosDevObj.createDevice(deviceId, ePosDevObj.DEVICE_TYPE_PRINTER, options, onCreateDevice);
-		} else {
-			message.error({
-				content: 'Cannot initialize printer. Please make sure to connect the printer.',
-				key: PRINTER_MESSAGE_KEY,
-			});
-		}
-	};
+	}
+};
 
+export const printSalesInvoice = (transaction, transactionProducts, change) => {
 	message.loading({
-		content: 'Connecting to printer...',
-		key: PRINTER_MESSAGE_KEY,
+		content: 'Printing sales invoice...',
+		key: SI_MESSAGE_KEY,
 		duration: 0,
 	});
 
-	ePosDevObj.connect(ipAddress, port, onConnect);
-	ePosDev = ePosDevObj;
+	const generated = transaction?.invoice?.datetime_created
+		? moment(transaction?.invoice?.datetime_created).format('YYYY-MM-DD')
+		: EMPTY_CELL;
+	const cashier = `${transaction?.teller?.first_name} ${transaction?.teller?.last_name}`;
+
+	qz.printers
+		.find(PRINTER_NAME)
+		.then((printer) => {
+			message.success(`Printer found: ${printer}`);
+			const config = qz.configs.create(printer, { margins: { top: 0, right: PAPER_MARGIN, bottom: 0, left: PAPER_MARGIN }});
+			const data = [
+				{
+					type: 'pixel',
+					format: 'html',
+					flavor: 'plain',
+					options: { pageWidth: PAPER_WIDTH },
+					data: `
+					<div style="width: 100%; font-family: tahoma, helvetica, verdana; font-size: 10px; line-height: 12px">
+						<div style="font-size: 20px; text-align: center; line-height: 20px">EJ AND JY</div>
+						<div style="width: 100%; text-align: center">WET AND MARKET ENTERPRISES</div>
+
+						<br />
+
+						<table style="width: 100%; font-size: 10px; line-height: 12px">
+							<tr>
+								<td>LOCATION</td>
+								<td style="text-align: right">${transaction?.invoice?.location || EMPTY_CELL}</td>
+							</tr>
+							<tr>
+								<td>PROPRIETOR</td>
+								<td style="text-align: right">${transaction?.invoice?.proprietor || EMPTY_CELL}</td>
+							</tr>
+							<tr>
+								<td>TIN</td>
+								<td style="text-align: right">${transaction?.invoice?.tin || EMPTY_CELL}</td>
+							</tr>
+							<tr>
+								<td>PERMIT NO</td>
+								<td style="text-align: right">${transaction?.invoice?.permit_number || EMPTY_CELL}</td>
+							</tr>
+							<tr>
+								<td>MACHINE ID</td>
+								<td style="text-align: right">${transaction?.branch_machine?.machine_id || EMPTY_CELL}</td>
+							</tr>
+							<tr>
+								<td>SERIAL NO</td>
+								<td style="text-align: right">${transaction?.branch_machine?.machine_printer_serial_number || EMPTY_CELL}</td>
+							</tr>
+						</table>
+
+						<hr />
+
+						<div style="text-align: center">OFFICIAL RECEIPT</div>
+
+						<hr />
+
+						<table style="width: 100%; font-size: 10px; line-height: 12px">
+							${transactionProducts.map((item) => (
+									`<tr>
+										<td colspan="2">${item.productName}</td>
+									</tr>
+									<tr>
+										<td style="padding-left: 30px">${item.quantity.toFixed(3)} @ ${`₱${item.pricePerPiece.toFixed(2)}`}</td>
+										<td style="text-align: right">
+											${`₱${(item.quantity * item.pricePerPiece).toFixed(2)}`}
+										</td>
+									</tr>`
+								))	
+							}
+						</table>
+
+						<hr />
+
+						<table style="width: 100%; font-size: 10px; line-height: 12px">
+							<tr>
+								<td>SUBTOTAL</td>
+								<td style="text-align: right">
+									₱${numberWithCommas(Number(transaction?.total_amount).toFixed(2))}
+								</td>
+							</tr>
+						</table>
+
+						<table style="width: 100%; font-size: 10px; line-height: 12px">
+							<tr>
+								<td style="padding-left: 30px">AMOUNT RECEIVED</td>
+								<td style="text-align: right">
+									₱${numberWithCommas(Number(transaction?.total_paid_amount).toFixed(2))}
+								</td>
+							</tr>
+							<tr>
+								<td style="padding-left: 30px">AMOUNT DUE</td>
+								<td style="text-align: right">
+									₱${numberWithCommas(Number(transaction?.total_amount).toFixed(2))}
+								</td>
+							</tr>
+							<tr>
+								<td style="padding-left: 30px">CHANGE</td>
+								<td style="text-align: right">₱${change.toFixed(2)}</td>
+							</tr>
+						</table>
+
+						<br />
+
+						<table style="width: 100%; font-size: 10px; line-height: 12px">
+							<tr>
+								<td>VAT EXEMPT</td>
+								<td style="text-align: right">
+									₱${numberWithCommas(Number(transaction?.invoice?.vat_exempt).toFixed(2))}
+								</td>
+							</tr>
+							<tr>
+								<td>VAT SALES</td>
+								<td style="text-align: right">
+									₱${numberWithCommas(Number(transaction?.invoice?.vat_sales).toFixed(2))}
+								</td>
+							</tr>
+							<tr>
+								<td>12% OF VAT</td>
+								<td style="text-align: right">
+									₱${numberWithCommas(Number(transaction?.invoice?.vat_12_percent).toFixed(2))}
+								</td>
+							</tr>
+						</table>
+
+						<hr />
+
+						<table style="width: 100%; font-size: 10px; line-height: 12px">
+							<tr>
+								<td>GENERATED</td>
+								<td>${generated}</td>
+							</tr>
+							<tr>
+								<td>CASHIER</td>
+								<td>${cashier}</td>
+							</tr>
+							<tr>
+								<td>TOTAL TRANSACTIONS</td>
+								<td>${transaction?.invoice?.total_transactions}</td>
+							</tr>
+
+							<tr>
+								<td></td>
+								<td></td>
+							</tr>
+
+							<tr>
+								<td></td>
+								<td></td>
+							</tr>
+
+							<tr>
+								<td>NAME:</td>
+								<td>${EMPTY_CELL}</td>
+							</tr>
+							<tr>
+								<td>TIN:</td>
+								<td>${EMPTY_CELL}</td>
+							</tr>
+							<tr>
+								<td>ADDRESS:</td>
+								<td>${EMPTY_CELL}</td>
+							</tr>
+						</table>
+
+						<br />
+
+						<div style="text-align: center">${transaction?.invoice?.software_developer}</div>
+						<div style="text-align: center">${transaction?.invoice?.software_developer_tin}</div>
+						<div style="text-align: center">${transaction?.invoice?.pos_accreditation_number}</div>
+						<div style="text-align: center">${transaction?.invoice?.pos_accreditation_date}</div>
+					</div>
+					`,
+				},
+			];
+
+			return qz.print(config, data);
+		})
+		.then(() => {
+			message.success({
+				content: 'Successfully printed receipt.',
+				key: SI_MESSAGE_KEY,
+			});
+		})
+		.catch((err) => {
+			message.error({
+				content: 'Error occurred while trying to print receipt.',
+				key: SI_MESSAGE_KEY,
+			});
+			console.error(err);
+		});
 };
 
-export const printSalesInvoice = (transaction) => {
-	printer.addTextAlign(printer.ALIGN_CENTER);
-	printer.addText('EJ AND JY\n');
-	printer.addText('WET MARKET AND ENTERPRISES\n');
-
-	printer.send(({ success, code }) => {
-		if (success) {
-			message.success('Successfully printed.');
-		} else {
-			message.success(`Error occurred while trying to print receipt: ${code}`);
-		}
+export const printXreadReport = (report) => {
+	message.loading({
+		content: 'Printing xread report...',
+		key: SI_MESSAGE_KEY,
+		duration: 0,
 	});
+
+	qz.printers
+		.find(PRINTER_NAME)
+		.then((printer) => {
+			message.success(`Printer found: ${printer}`);
+			const config = qz.configs.create(printer, { margins: { top: 0, right: PAPER_MARGIN, bottom: 0, left: PAPER_MARGIN }});
+			const data = [
+				{
+					type: 'pixel',
+					format: 'html',
+					flavor: 'plain',
+					options: { pageWidth: PAPER_WIDTH },
+					data: `
+					<div style="width: 100%; font-family: tahoma, helvetica, verdana; font-size: 10px; line-height: 12px">
+						<div style="font-size: 20px; text-align: center; line-height: 20px">EJ AND JY</div>
+						<div style="width: 100%; text-align: center">WET AND MARKET ENTERPRISES</div>
+
+						<br />
+
+						<table style="width: 100%; font-size: 10px; line-height: 12px">
+							<tr>
+								<td>Location</td>
+								<td style="text-align: right">${report?.location || EMPTY_CELL}</td>
+							</tr>
+							<tr>
+								<td>Proprietor</td>
+								<td style="text-align: right">${report?.proprietor || EMPTY_CELL}</td>
+							</tr>
+							<tr>
+								<td>Tin</td>
+								<td style="text-align: right">${report?.tin || EMPTY_CELL}</td>
+							</tr>
+							<tr>
+								<td>Permit No.</td>
+								<td style="text-align: right">${report?.permit_number || EMPTY_CELL}</td>
+							</tr>
+							<tr>
+								<td>Machine ID</td>
+								<td style="text-align: right">${report?.branch_machine?.machine_id || EMPTY_CELL}</td>
+							</tr>
+							<tr>
+								<td>Serial No.</td>
+								<td style="text-align: right">${report?.branch_machine?.machine_printer_serial_number || EMPTY_CELL}</td>
+							</tr>
+						</table>
+
+						<hr />
+
+						<div style="font-size: 20px; text-align: center; line-height: 20px">XREAD</div>
+
+						<hr />
+
+						<table style="width: 100%; font-size: 10px; line-height: 12px">
+							<tr>
+								<td>Cash Sales</td>
+								<td style="text-align: right">₱${numberWithCommas(Number(report?.cash_sales).toFixed(2))}</td>
+							</tr>
+							<tr>
+								<td>Check Sales</td>
+								<td style="text-align: right">₱${numberWithCommas(Number(report?.check_sales).toFixed(2))}</td>
+							</tr>
+							<tr>
+								<td>Credit Pay</td>
+								<td style="text-align: right">₱${numberWithCommas(Number(report?.credit_pay).toFixed(2))}</td>
+							</tr>
+						</table>
+
+						<hr />
+
+						<table style="width: 100%; font-size: 10px; line-height: 12px">
+							<tr>
+								<td>Sales Return</td>
+								<td style="text-align: right">₱${numberWithCommas(Number(report?.sales_return).toFixed(2))}</td>
+							</tr>
+							<tr>
+								<td>Total Sales</td>
+								<td style="text-align: right">₱${numberWithCommas(Number(report?.total_sales).toFixed(2))}</td>
+							</tr>
+						</table>
+
+						<hr />
+
+						<table style="width: 100%; font-size: 10px; line-height: 12px">
+							<tr>
+								<td>VAT Exempt</td>
+								<td style="text-align: right">₱${numberWithCommas(Number(report?.vat_exempt).toFixed(2))}</td>
+							</tr>
+							<tr>
+								<td>VAT Sales</td>
+								<td style="text-align: right">₱${numberWithCommas(Number(report?.vat_sales).toFixed(2))}</td>
+							</tr>
+							<tr>
+								<td>12% of VAT</td>
+								<td style="text-align: right">₱${numberWithCommas(Number(report?.vat_12_percent).toFixed(2))}</td>
+							</tr>
+						</table>
+
+						<hr />
+
+						<table style="width: 100%; font-size: 10px; line-height: 12px">
+							<tr>
+								<td>Cashier</td>
+								<td style="text-align: right">${`${report?.generated_by?.first_name} ${report?.generated_by?.last_name}`}</td>
+							</tr>
+							<tr>
+								<td>Total Transactions</td>
+								<td style="text-align: right">${report?.total_transactions}</td>
+							</tr>
+						</table>
+
+						<hr />
+
+						<table style="width: 100%; font-size: 10px; line-height: 12px">
+							<tr>
+								<td>Beginning OR #</td>
+								<td style="text-align: right">${report?.beginning_or?.or_number || EMPTY_CELL}</td>
+							</tr>
+							<tr>
+								<td>Ending OR #</td>
+								<td style="text-align: right">${report?.ending_or?.or_number || EMPTY_CELL}</td>
+							</tr>
+						</table>
+
+						<hr />
+
+						<table style="width: 100%; font-size: 10px; line-height: 12px">
+							<tr>
+								<td>Beginning Sales</td>
+								<td style="text-align: right">₱${numberWithCommas(Number(report?.beginning_sales).toFixed(2))}</td>
+							</tr>
+							<tr>
+								<td>Current Sales</td>
+								<td style="text-align: right">₱${numberWithCommas(Number(report?.total_sales).toFixed(2))}</td>
+							</tr>
+							<tr>
+								<td>Ending Sales</td>
+								<td style="text-align: right">₱${numberWithCommas(Number(report?.ending_sales).toFixed(2))}</td>
+							</tr>
+						</table>
+
+						<hr />
+
+						<div style="text-align: center">${report?.software_developer || EMPTY_CELL}</div>
+						<div style="text-align: center">${report?.software_developer_tin || EMPTY_CELL}</div>
+						<div style="text-align: center">${report?.pos_accreditation_number || EMPTY_CELL}</div>
+						<div style="text-align: center">${report?.pos_accreditation_date || EMPTY_CELL}</div>
+					</div>
+					`,
+				},
+			];
+
+			return qz.print(config, data);
+		})
+		.then(() => {
+			message.success({
+				content: 'Successfully printed xread report.',
+				key: SI_MESSAGE_KEY,
+			});
+		})
+		.catch((err) => {
+			message.error({
+				content: 'Error occurred while trying to print xread report.',
+				key: SI_MESSAGE_KEY,
+			});
+			console.error(err);
+		});
+};
+
+export const printZreadReport = (report) => {
+	message.loading({
+		content: 'Printing xread report...',
+		key: SI_MESSAGE_KEY,
+		duration: 0,
+	});
+
+	qz.printers
+		.find(PRINTER_NAME)
+		.then((printer) => {
+			message.success(`Printer found: ${printer}`);
+			const config = qz.configs.create(printer, { margins: { top: 0, right: PAPER_MARGIN, bottom: 0, left: PAPER_MARGIN }});
+			const data = [
+				{
+					type: 'pixel',
+					format: 'html',
+					flavor: 'plain',
+					options: { pageWidth: PAPER_WIDTH },
+					data: `
+					<div style="width: 100%; font-family: tahoma, helvetica, verdana; font-size: 10px; line-height: 12px">
+						<div style="font-size: 20px; text-align: center; line-height: 20px">EJ AND JY</div>
+						<div style="width: 100%; text-align: center">WET AND MARKET ENTERPRISES</div>
+
+						<br />
+
+						<table style="width: 100%; font-size: 10px; line-height: 12px">
+							<tr>
+								<td>Location</td>
+								<td style="text-align: right">${report?.location || EMPTY_CELL}</td>
+							</tr>
+							<tr>
+								<td>Proprietor</td>
+								<td style="text-align: right">${report?.proprietor || EMPTY_CELL}</td>
+							</tr>
+							<tr>
+								<td>Tin</td>
+								<td style="text-align: right">${report?.tin || EMPTY_CELL}</td>
+							</tr>
+							<tr>
+								<td>Permit No.</td>
+								<td style="text-align: right">${report?.permit_number || EMPTY_CELL}</td>
+							</tr>
+							<tr>
+								<td>Machine ID</td>
+								<td style="text-align: right">${report?.branch_machine?.machine_id || EMPTY_CELL}</td>
+							</tr>
+							<tr>
+								<td>Serial No.</td>
+								<td style="text-align: right">${report?.branch_machine?.machine_printer_serial_number || EMPTY_CELL}</td>
+							</tr>
+						</table>
+
+						<hr />
+
+						<div style="font-size: 20px; text-align: center; line-height: 20px">ZREAD</div>
+
+						<hr />
+
+						<table style="width: 100%; font-size: 10px; line-height: 12px">
+							<tr>
+								<td>Cash Sales</td>
+								<td style="text-align: right">₱${numberWithCommas(Number(report?.cash_sales).toFixed(2))}</td>
+							</tr>
+							<tr>
+								<td>Check Sales</td>
+								<td style="text-align: right">₱${numberWithCommas(Number(report?.check_sales).toFixed(2))}</td>
+							</tr>
+							<tr>
+								<td>Credit Pay</td>
+								<td style="text-align: right">₱${numberWithCommas(Number(report?.credit_pay).toFixed(2))}</td>
+							</tr>
+						</table>
+
+						<hr />
+
+						<table style="width: 100%; font-size: 10px; line-height: 12px">
+							<tr>
+								<td>Sales Return</td>
+								<td style="text-align: right">₱${numberWithCommas(Number(report?.sales_return).toFixed(2))}</td>
+							</tr>
+							<tr>
+								<td>Total Sales</td>
+								<td style="text-align: right">₱${numberWithCommas(Number(report?.total_sales).toFixed(2))}</td>
+							</tr>
+						</table>
+
+						<hr />
+
+						<table style="width: 100%; font-size: 10px; line-height: 12px">
+							<tr>
+								<td>VAT Exempt</td>
+								<td style="text-align: right">₱${numberWithCommas(Number(report?.vat_exempt).toFixed(2))}</td>
+							</tr>
+							<tr>
+								<td>VAT Sales</td>
+								<td style="text-align: right">₱${numberWithCommas(Number(report?.vat_sales).toFixed(2))}</td>
+							</tr>
+							<tr>
+								<td>12% of VAT</td>
+								<td style="text-align: right">₱${numberWithCommas(Number(report?.vat_12_percent).toFixed(2))}</td>
+							</tr>
+						</table>
+
+						<hr />
+
+						<table style="width: 100%; font-size: 10px; line-height: 12px">
+							<tr>
+								<td>Cashier</td>
+								<td style="text-align: right">${`${report?.generated_by?.first_name} ${report?.generated_by?.last_name}`}</td>
+							</tr>
+						</table>
+
+						<hr />
+
+						<table style="width: 100%; font-size: 10px; line-height: 12px">
+							<tr>
+								<td>Ending OR #</td>
+								<td style="text-align: right">${report?.ending_or?.or_number || EMPTY_CELL}</td>
+							</tr>
+						</table>
+
+						<hr />
+
+						<div style="text-align: center">${report?.software_developer || EMPTY_CELL}</div>
+						<div style="text-align: center">${report?.software_developer_tin || EMPTY_CELL}</div>
+						<div style="text-align: center">${report?.pos_accreditation_number || EMPTY_CELL}</div>
+						<div style="text-align: center">${report?.pos_accreditation_date || EMPTY_CELL}</div>
+					</div>
+					`,
+				},
+			];
+
+			return qz.print(config, data);
+		})
+		.then(() => {
+			message.success({
+				content: 'Successfully printed xread report.',
+				key: SI_MESSAGE_KEY,
+			});
+		})
+		.catch((err) => {
+			message.error({
+				content: 'Error occurred while trying to print xread report.',
+				key: SI_MESSAGE_KEY,
+			});
+			console.error(err);
+		});
 };
 
 export default configurePrinter;

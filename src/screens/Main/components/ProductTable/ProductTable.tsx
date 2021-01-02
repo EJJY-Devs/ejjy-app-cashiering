@@ -14,13 +14,15 @@ import { numberWithCommas } from '../../../../utils/function';
 import { DiscountModal } from './DiscountModal';
 import { EditProductModal } from './EditProductModal';
 import './style.scss';
+import { Modal } from 'antd';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 const columns = [
 	{ name: '', width: '1px' },
 	{ name: 'Item', width: '40%' },
-	{ name: 'Qty', width: '15%' },
-	{ name: 'Rate', width: '15%' },
-	{ name: 'Amount' },
+	{ name: 'Qty', width: '15%', rightAligned: true },
+	{ name: 'Rate', width: '15%', rightAligned: true },
+	{ name: 'Amount', rightAligned: true },
 ];
 
 const uneditableStatus = [transactionStatusTypes.FULLY_PAID, transactionStatusTypes.VOID_EDITED];
@@ -59,7 +61,7 @@ export const ProductTable = ({ isLoading }: Props) => {
 			.slice((pageNumber - 1) * PRODUCT_LENGTH_PER_PAGE, pageNumber * PRODUCT_LENGTH_PER_PAGE)
 			.map((item) => [
 				uneditableStatus.includes(currentTransactionStatus) ? null : (
-					<CancelButtonIcon tooltip="Remove" onClick={() => onRemoveProduct(item.id)} />
+					<CancelButtonIcon tooltip="Remove" onClick={() => onRemoveProductConfirmation(item)} />
 				),
 				<Tooltip placement="top" title={item.productDescription}>
 					{item.productName}
@@ -118,6 +120,17 @@ export const ProductTable = ({ isLoading }: Props) => {
 		}
 	};
 
+	const onRemoveProductConfirmation = (product) => {
+		Modal.confirm({
+			title: 'Delete Confirmation',
+			icon: <ExclamationCircleOutlined />,
+			content: `Are you sure you want to delete ${product.productName}?`,
+			okText: 'Delete',
+			cancelText: 'Cancel',
+			onOk: () => onRemoveProduct(product.id),
+		});
+	};
+
 	const onHover = (index) => {
 		// setSelectedProductIndex((pageNumber - 1) * PRODUCT_LENGTH_PER_PAGE + index);
 	};
@@ -152,7 +165,7 @@ export const ProductTable = ({ isLoading }: Props) => {
 
 		// Delete
 		if (deleteItemShortcutKeys.includes(key)) {
-			onRemoveProduct(transactionProducts?.[selectedProductIndex]?.id);
+			onRemoveProductConfirmation(transactionProducts?.[selectedProductIndex]);
 			return;
 		}
 

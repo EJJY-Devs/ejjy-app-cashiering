@@ -17,14 +17,17 @@ interface Props {
 }
 
 export const PaymentModal = ({ amountDue, visible, onClose, onSuccess }: Props) => {
-	const { session } = useSession();
-	const { setPreviousSukli, createCurrentTransaction } = useCurrentTransaction();
-	const { payTransaction, status } = useTransactions();
-
+	// STATES
 	const inputRef = useRef(null);
 	const [loading, setLoading] = useState(false);
 	const [transactionId, setTransactionId] = useState(null);
 
+	// CUSTOM HOOKS
+	const { session } = useSession();
+	const { setPreviousSukli, createCurrentTransaction } = useCurrentTransaction();
+	const { payTransaction, status } = useTransactions();
+
+	// METHODS
 	useEffect(() => {
 		if (inputRef && inputRef.current) {
 			setTimeout(() => {
@@ -35,7 +38,7 @@ export const PaymentModal = ({ amountDue, visible, onClose, onSuccess }: Props) 
 	}, [visible, inputRef]);
 
 	useEffect(() => {
-		if (visible) {
+		if (visible && !transactionId) {
 			setLoading(true);
 			createCurrentTransaction(({ status, response }) => {
 				if (status === request.SUCCESS) {
@@ -61,6 +64,7 @@ export const PaymentModal = ({ amountDue, visible, onClose, onSuccess }: Props) 
 		payTransaction(data, ({ status, response }) => {
 			if (status === request.SUCCESS) {
 				if (response.is_fully_paid && response?.invoice.id) {
+					setTransactionId(null);
 					setPreviousSukli(sukli);
 					onSuccess(response);
 				}

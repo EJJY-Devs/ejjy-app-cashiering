@@ -7,6 +7,7 @@ import authReducer, { key as AUTH_KEY } from './auth';
 import branchProductsReducer, { key as BRANCH_PRODUCTS_KEY } from './branch-products';
 import cashBreakdownsReducer, { key as CASH_BREAKDOWN_KEY } from './cash-breakdowns';
 import currentTransactionReducer, { key as CURRENT_TRANSACTION_KEY } from './current-transaction';
+import siteSettingsReducer, { key as SITE_SETTINGS_KEY } from './site-settings';
 import requestReducer, { REQUEST_KEY } from './request';
 import sessionsReducer, { key as SESSION_KEY, types } from './sessions';
 import transactionsReducer, { key as TRANSACTIONS_KEY } from './transactions';
@@ -20,6 +21,7 @@ const appReducer = combineReducers({
 	[REQUEST_KEY]: requestReducer,
 	[BRANCH_PRODUCTS_KEY]: branchProductsReducer,
 	[CURRENT_TRANSACTION_KEY]: currentTransactionReducer,
+	[SITE_SETTINGS_KEY]: siteSettingsReducer,
 	[TRANSACTIONS_KEY]: transactionsReducer,
 	[UI_KEY]: uiReducer,
 });

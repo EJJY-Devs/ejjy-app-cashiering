@@ -2,6 +2,7 @@ import { Divider, Modal } from 'antd';
 import React from 'react';
 import { DetailsRow, DetailsSingle } from '../../../components';
 import { Button } from '../../../components/elements';
+import { printXreadReport } from '../../../configurePrinter';
 import { EMPTY_CELL } from '../../../global/constants';
 import { numberWithCommas } from '../../../utils/function';
 
@@ -12,11 +13,15 @@ interface Props {
 }
 
 export const ViewXreadReportModal = ({ report, visible, onClose }: Props) => {
+	const onPrint = () => {
+		printXreadReport(report);
+	};
+
 	return (
 		<Modal
-			title="XRead Report"
+			title={`XRead Report (${report?.total_sales === 0 ? 'Not Used' : 'Used'})`}
 			visible={visible}
-			footer={[<Button text="Close" onClick={onClose} />]}
+			footer={[<Button text="Print" variant="primary" onClick={onPrint} block />]}
 			onCancel={onClose}
 			centered
 			closable
@@ -142,7 +147,7 @@ export const ViewXreadReportModal = ({ report, visible, onClose }: Props) => {
 				<DetailsSingle
 					labelSpan={12}
 					valueSpan={12}
-					label="Ending OR # "
+					label="Ending OR #"
 					value={report?.ending_or?.or_number || EMPTY_CELL}
 				/>
 
