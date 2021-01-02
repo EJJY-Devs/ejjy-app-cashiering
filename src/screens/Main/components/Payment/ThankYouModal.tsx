@@ -1,6 +1,5 @@
 import { Modal, Result } from 'antd';
 import React from 'react';
-import { printSalesInvoice } from '../../../../configurePrinter';
 import { EMPTY_CELL } from '../../../../global/constants';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import { useSiteSettings } from '../../../../hooks/useSiteSettings';
@@ -16,12 +15,7 @@ interface Props {
 export const ThankYouModal = ({ visible, transaction, onClose }: Props) => {
 	// CUSTOM HOOKS
 	const { siteSettings } = useSiteSettings();
-	const { transactionProducts, previousSukli, orNumber } = useCurrentTransaction();
-
-	// METHODS
-	const onPrint = () => {
-		printSalesInvoice(transaction, transactionProducts, previousSukli);
-	};
+	const { previousSukli, orNumber } = useCurrentTransaction();
 
 	return (
 		<Modal
