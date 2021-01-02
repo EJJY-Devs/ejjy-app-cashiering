@@ -2,6 +2,7 @@ import { Divider, Modal } from 'antd';
 import React from 'react';
 import { DetailsRow, DetailsSingle } from '../../../components';
 import { Button } from '../../../components/elements';
+import { printZreadReport } from '../../../configurePrinter';
 import { EMPTY_CELL } from '../../../global/constants';
 import { numberWithCommas } from '../../../utils/function';
 
@@ -12,11 +13,15 @@ interface Props {
 }
 
 export const ViewZreadReportModal = ({ report, visible, onClose }: Props) => {
+	const onPrint = () => {
+		printZreadReport(report);
+	};
+
 	return (
 		<Modal
 			title="ZRead Report"
 			visible={visible}
-			footer={[<Button text="Close" onClick={onClose} />]}
+			footer={[<Button text="Print" variant="primary" onClick={onPrint} block />]}
 			onCancel={onClose}
 			centered
 			closable

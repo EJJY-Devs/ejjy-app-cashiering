@@ -16,11 +16,11 @@ interface Props {
 export const ThankYouModal = ({ visible, transaction, onClose }: Props) => {
 	// CUSTOM HOOKS
 	const { siteSettings } = useSiteSettings();
-	const { previousSukli, orNumber } = useCurrentTransaction();
+	const { transactionProducts, previousSukli, orNumber } = useCurrentTransaction();
 
 	// METHODS
 	const onPrint = () => {
-		printSalesInvoice(transaction, previousSukli);
+		printSalesInvoice(transaction, transactionProducts, previousSukli);
 	};
 
 	return (

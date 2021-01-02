@@ -9,9 +9,9 @@ import { useBranchProducts } from '../../../../hooks/useBranchProducts';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import { useSession } from '../../../../hooks/useSession';
 import { numberWithCommas } from '../../../../utils/function';
-import { ThankYouModal } from './ThankYouModal';
 import { PaymentModal } from './PaymentModal';
 import './style.scss';
+import { ThankYouModal } from './ThankYouModal';
 
 export const Payment = () => {
 	const { transactionProducts, transactionStatus, previousSukli } = useCurrentTransaction();
@@ -45,7 +45,7 @@ export const Payment = () => {
 		listBranchProducts(session?.user?.branch?.id);
 		setInvoiceModalVisible(true);
 		setTransaction(transaction);
-		printSalesInvoice(transaction, previousSukli);
+		printSalesInvoice(transaction, transactionProducts, previousSukli);
 	};
 
 	const onPay = () => {
