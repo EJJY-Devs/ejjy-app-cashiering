@@ -5,6 +5,7 @@ import { EMPTY_CELL } from './global/constants';
 import { numberWithCommas } from './utils/function';
 
 const PRINTER_MESSAGE_KEY = 'configurePrinter';
+const SI_MESSAGE_KEY = 'SI_MESSAGE_KEY';
 const PRINTER_NAME = 'EPSON TM-U220 Receipt';
 
 const configurePrinter = (callback = null) => {
@@ -37,6 +38,12 @@ const configurePrinter = (callback = null) => {
 };
 
 export const printSalesInvoice = (transaction, change) => {
+	message.loading({
+		content: 'Printing sales invoice...',
+		key: SI_MESSAGE_KEY,
+		duration: 0,
+	});
+
 	const generated = transaction?.invoice?.datetime_created
 		? moment(transaction?.invoice?.datetime_created).format('YYYY-MM-DD')
 		: EMPTY_CELL;
@@ -92,10 +99,16 @@ export const printSalesInvoice = (transaction, change) => {
 				return qz.print(config, data);
 			})
 			.then(() => {
-				message.success('Successfully printed receipt.');
+				message.success({
+					content: 'Successfully printed receipt.',
+					key: SI_MESSAGE_KEY,
+				});
 			})
 			.catch((err) => {
-				message.error(`Error occurred while trying to print receipt.`);
+				message.error({
+					content: 'Error occurred while trying to print receipt.',
+					key: SI_MESSAGE_KEY,
+				});
 				console.error(err);
 			});
 	});
