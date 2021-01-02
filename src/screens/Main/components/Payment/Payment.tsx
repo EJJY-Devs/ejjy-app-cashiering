@@ -9,6 +9,7 @@ import { useBranchProducts } from '../../../../hooks/useBranchProducts';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import { useSession } from '../../../../hooks/useSession';
 import { numberWithCommas } from '../../../../utils/function';
+import { InvoiceModal } from './InvoiceModal';
 import { PaymentModal } from './PaymentModal';
 import './style.scss';
 import { ThankYouModal } from './ThankYouModal';
@@ -19,6 +20,7 @@ export const Payment = () => {
 	const { session } = useSession();
 
 	const [paymentModalVisible, setPaymentModalVisible] = useState(false);
+	const [thankYouModalVisible, setThankYouModalVisible] = useState(false);
 	const [invoiceModalVisible, setInvoiceModalVisible] = useState(false);
 	const [transaction, setTransaction] = useState(null);
 
@@ -43,7 +45,8 @@ export const Payment = () => {
 
 	const onPaymentSuccess = (transaction) => {
 		listBranchProducts(session?.user?.branch?.id);
-		setInvoiceModalVisible(true);
+		setPaymentModalVisible(false);
+		setThankYouModalVisible(true);
 		setTransaction(transaction);
 		printSalesInvoice(transaction, transactionProducts, previousSukli);
 	};
@@ -55,6 +58,12 @@ export const Payment = () => {
 		}
 
 		setPaymentModalVisible(true);
+	};
+
+	const onViewInvoice = () => {
+		if (transaction) {
+			setInvoiceModalVisible(true);
+		}
 	};
 
 	const handleKeyPress = (key, event) => {
@@ -102,6 +111,13 @@ export const Payment = () => {
 			/>
 
 			<ThankYouModal
+				onViewInvoice={onViewInvoice}
+				visible={thankYouModalVisible}
+				transaction={transaction}
+				onClose={() => setThankYouModalVisible(false)}
+			/>
+
+			<InvoiceModal
 				visible={invoiceModalVisible}
 				transaction={transaction}
 				onClose={() => setInvoiceModalVisible(false)}

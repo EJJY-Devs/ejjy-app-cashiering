@@ -561,4 +561,102 @@ export const printZreadReport = (report) => {
 		});
 };
 
+export const printCashBreakdown = (cashBreakdown) => {
+	message.loading({
+		content: 'Printing cash breakdown...',
+		key: SI_MESSAGE_KEY,
+		duration: 0,
+	});
+
+	qz.printers
+		.find(PRINTER_NAME)
+		.then((printer) => {
+			message.success(`Printer found: ${printer}`);
+			const config = qz.configs.create(printer, { margins: { top: 0, right: PAPER_MARGIN, bottom: 0, left: PAPER_MARGIN }});
+			const data = [
+				{
+					type: 'pixel',
+					format: 'html',
+					flavor: 'plain',
+					options: { pageWidth: PAPER_WIDTH },
+					data: `
+					<div style="width: 100%; font-family: tahoma, helvetica, verdana; font-size: 10px; line-height: 12px">
+						<div style="font-size: 20px; text-align: center; line-height: 20px">EJ AND JY</div>
+						<div style="width: 100%; text-align: center">WET AND MARKET ENTERPRISES</div>
+
+						<hr />
+
+						<div style="font-size: 20px; text-align: center; line-height: 20px">CASH BREAKDOWN</div>
+
+						<hr />
+
+						<table style="width: 100%; font-size: 10px; line-height: 12px">
+							<tr>
+								<td>₱0.25</td>
+								<td style="text-align: right">${cashBreakdown.coins_25}</td>
+							</tr>
+							<tr>
+								<td>₱0.50</td>
+								<td style="text-align: right">${cashBreakdown.coins_50}</td>
+							</tr>
+							<tr>
+								<td>₱1.00</td>
+								<td style="text-align: right">${cashBreakdown.coins_1}</td>
+							</tr>
+							<tr>
+								<td>₱5.00</td>
+								<td style="text-align: right">${cashBreakdown.coins_5}</td>
+							</tr>
+							<tr>
+								<td>₱10.00</td>
+								<td style="text-align: right">${cashBreakdown.coins_10}</td>
+							</tr>
+							<tr>
+								<td>₱20</td>
+								<td style="text-align: right">${cashBreakdown.bills_20}</td>
+							</tr>
+							<tr>
+								<td>₱50</td>
+								<td style="text-align: right">${cashBreakdown.bills_50}</td>
+							</tr>
+							<tr>
+								<td>₱100</td>
+								<td style="text-align: right">${cashBreakdown.bills_100}</td>
+							</tr>
+							<tr>
+								<td>₱200</td>
+								<td style="text-align: right">${cashBreakdown.bills_200}</td>
+							</tr>
+							<tr>
+								<td>₱500</td>
+								<td style="text-align: right">${cashBreakdown.bills_500}</td>
+							</tr>
+							<tr>
+								<td>₱1000</td>
+								<td style="text-align: right">${cashBreakdown.bills_1000}</td>
+							</tr>
+						</table>
+					</div>
+					`,
+				},
+			];
+
+			return qz.print(config, data);
+		})
+		.then(() => {
+			message.success({
+				content: 'Successfully printed cash breakdown.',
+				key: SI_MESSAGE_KEY,
+			});
+		})
+		.catch((err) => {
+			message.error({
+				content: 'Error occurred while trying to print cash breakdown.',
+				key: SI_MESSAGE_KEY,
+			});
+			console.error(err);
+		});
+};
+
+
 export default configurePrinter;

@@ -1,7 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { message, Modal } from 'antd';
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { FieldError } from '../../../../components/elements';
+import { printCashBreakdown } from '../../../../configurePrinter';
 import { types as cashBreakdownsRequestTypes } from '../../../../ducks/cash-breakdowns';
 import { cashBreakdownTypes, request } from '../../../../global/types';
 import { useCashBreakdown } from '../../../../hooks/useCashBreakdown';
@@ -25,9 +26,14 @@ export const CashBreakdownModal = ({
 	onSuccess,
 	onClose,
 }: Props) => {
-	const { createCashBreakdown, status, recentRequest, errors, reset } = useCashBreakdown();
+	// STATES
+	const [cashBreakdown, setCashBreakdown] = useState([]);
 
+	// REFS
 	const inputRef = useRef(null);
+
+	// CUSTOM HOOKS
+	const { createCashBreakdown, status, recentRequest, errors, reset } = useCashBreakdown();
 
 	useEffect(() => {
 		if (inputRef && inputRef.current) {
@@ -37,17 +43,6 @@ export const CashBreakdownModal = ({
 			}, 500);
 		}
 	}, [visible, inputRef]);
-
-	// Effect: Close modal if recent requests are Create or Edit
-	useEffect(() => {
-		if (
-			status === request.SUCCESS &&
-			recentRequest === cashBreakdownsRequestTypes.CREATE_CASH_BREAKDOWN
-		) {
-			reset();
-			onSuccess();
-		}
-	}, [status, recentRequest, reset, onClose]);
 
 	const getTitle = useCallback(() => {
 		switch (type) {
@@ -64,6 +59,15 @@ export const CashBreakdownModal = ({
 	}, [type]);
 
 	const close = () => {
+		if (
+			status === request.SUCCESS &&
+			recentRequest === cashBreakdownsRequestTypes.CREATE_CASH_BREAKDOWN
+		) {
+			reset();
+			onSuccess();
+			return;
+		}
+
 		if (required) {
 			message.error('Cash breakdown is required.');
 		} else {
@@ -78,8 +82,15 @@ export const CashBreakdownModal = ({
 				type,
 				cashiering_session_id: sessionId,
 			});
+			setCashBreakdown(data);
 		} else {
 			message.error('An error occured before submitting the cash breakdown.');
+		}
+	};
+
+	const onPrint = () => {
+		if (cashBreakdown) {
+			printCashBreakdown(cashBreakdown);
 		}
 	};
 
@@ -103,6 +114,11 @@ export const CashBreakdownModal = ({
 				onSubmit={onSubmit}
 				onClose={close}
 				loading={status === request.REQUESTING}
+				onPrint={onPrint}
+				forPrinting={
+					status === request.SUCCESS &&
+					recentRequest === cashBreakdownsRequestTypes.CREATE_CASH_BREAKDOWN
+				}
 			/>
 		</Modal>
 	);

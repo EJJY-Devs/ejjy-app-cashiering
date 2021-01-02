@@ -118,7 +118,7 @@ export const KeyboardShortcutsModal = ({ visible, onClose }: Props) => {
 					classNamesValue="value"
 					labelSpan={12}
 					valueSpan={12}
-					label="Tender"
+					label="Advance"
 					value={tenderShortcutKeysDisplay.map((key) => (
 						<KeyboardButtonDisplay key={key} keyboardKey={key} />
 					))}

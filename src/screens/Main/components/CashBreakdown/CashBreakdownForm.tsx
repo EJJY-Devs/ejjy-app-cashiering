@@ -11,9 +11,19 @@ interface Props {
 	onSubmit: any;
 	onClose: any;
 	loading: boolean;
+	onPrint: any;
+	forPrinting: boolean;
 }
 
-export const CashBreakdownForm = ({ inputRef, required, onSubmit, onClose, loading }: Props) => {
+export const CashBreakdownForm = ({
+	inputRef,
+	required,
+	onSubmit,
+	onClose,
+	loading,
+	forPrinting,
+	onPrint,
+}: Props) => {
 	const [isSubmitting, setSubmitting] = useState(false);
 
 	const getFormDetails = useCallback(
@@ -117,21 +127,26 @@ export const CashBreakdownForm = ({ inputRef, required, onSubmit, onClose, loadi
 						{!required && (
 							<Button
 								type="button"
-								text="Cancel"
+								text={forPrinting ? 'Close' : 'Cancel'}
 								size="lg"
 								onClick={onClose}
-								classNames="btn-cancel"
+								classNames="space-right"
 								disabled={loading || isSubmitting}
 							/>
 						)}
 
-						<Button
-							type="submit"
-							text="Submit"
-							size="lg"
-							variant="primary"
-							loading={loading || isSubmitting}
-						/>
+						{forPrinting ? (
+							<Button type="button" text="Print" size="lg" onClick={onPrint} variant="primary" />
+						) : (
+							<Button
+								type="submit"
+								text="Submit"
+								size="lg"
+								variant="primary"
+								classNames="space-right"
+								loading={loading || isSubmitting}
+							/>
+						)}
 					</div>
 				</Form>
 			)}

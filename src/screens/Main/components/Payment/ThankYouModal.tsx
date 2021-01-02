@@ -1,5 +1,6 @@
 import { Modal, Result } from 'antd';
 import React from 'react';
+import Button from '../../../../components/elements/Button/Button';
 import { EMPTY_CELL } from '../../../../global/constants';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import { useSiteSettings } from '../../../../hooks/useSiteSettings';
@@ -8,14 +9,21 @@ import './style.scss';
 
 interface Props {
 	visible: boolean;
+	onViewInvoice: any;
 	transaction: any;
 	onClose: any;
 }
 
-export const ThankYouModal = ({ visible, transaction, onClose }: Props) => {
+export const ThankYouModal = ({ visible, transaction, onViewInvoice, onClose }: Props) => {
 	// CUSTOM HOOKS
 	const { siteSettings } = useSiteSettings();
-	const { previousSukli, orNumber } = useCurrentTransaction();
+	const { previousSukli, orNumber, resetTransaction } = useCurrentTransaction();
+
+	// METHODS
+	const close = () => {
+		resetTransaction();
+		onClose();
+	};
 
 	return (
 		<Modal
@@ -23,7 +31,7 @@ export const ThankYouModal = ({ visible, transaction, onClose }: Props) => {
 			className="ThankYouModal"
 			visible={visible}
 			footer={null}
-			onCancel={onClose}
+			onCancel={close}
 			centered
 			closable
 		>
@@ -47,6 +55,7 @@ export const ThankYouModal = ({ visible, transaction, onClose }: Props) => {
 							</span>
 						</div>
 					</div>,
+					<Button text="VIEW OR" variant="primary" size="lg" onClick={onViewInvoice} />,
 				]}
 			/>
 		</Modal>
