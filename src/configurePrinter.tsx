@@ -414,7 +414,7 @@ export const printXreadReport = (report) => {
 
 export const printZreadReport = (report) => {
 	message.loading({
-		content: 'Printing xread report...',
+		content: 'Printing zread report...',
 		key: SI_MESSAGE_KEY,
 		duration: 0,
 	});
@@ -548,13 +548,13 @@ export const printZreadReport = (report) => {
 		})
 		.then(() => {
 			message.success({
-				content: 'Successfully printed xread report.',
+				content: 'Successfully printed zread report.',
 				key: SI_MESSAGE_KEY,
 			});
 		})
 		.catch((err) => {
 			message.error({
-				content: 'Error occurred while trying to print xread report.',
+				content: 'Error occurred while trying to print zread report.',
 				key: SI_MESSAGE_KEY,
 			});
 			console.error(err);
