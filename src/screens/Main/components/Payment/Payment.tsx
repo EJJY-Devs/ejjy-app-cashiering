@@ -14,7 +14,7 @@ import { PaymentModal } from './PaymentModal';
 import './style.scss';
 
 export const Payment = () => {
-	const { transactionProducts, transactionStatus } = useCurrentTransaction();
+	const { transactionProducts, transactionStatus, previousSukli } = useCurrentTransaction();
 	const { listBranchProducts } = useBranchProducts();
 	const { session } = useSession();
 
@@ -45,7 +45,7 @@ export const Payment = () => {
 		listBranchProducts(session?.user?.branch?.id);
 		setInvoiceModalVisible(true);
 		setTransaction(transaction);
-		printSalesInvoice(transaction);
+		printSalesInvoice(transaction, previousSukli);
 	};
 
 	const onPay = () => {

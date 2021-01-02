@@ -20,7 +20,7 @@ export const ThankYouModal = ({ visible, transaction, onClose }: Props) => {
 
 	// METHODS
 	const onPrint = () => {
-		printSalesInvoice(transaction);
+		printSalesInvoice(transaction, previousSukli);
 	};
 
 	return (
