@@ -1,15 +1,12 @@
-import { Divider, message } from 'antd';
+import { message } from 'antd';
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import { Box, Button } from '../../components/elements';
-import { reportTypes } from '../../global/types';
-import { getBranchMachineId } from '../../utils/function';
-import { ReportAccessModal } from './components/ReportAccessModal';
-import { ViewXreadReportModal } from './components/ViewXreadReportModal';
-import { ViewZreadReportModal } from './components/ViewZreadReportModal';
-import './style.scss';
+import { reportTypes } from '../../../../global/types';
+import { getBranchMachineId } from '../../../../utils/function';
+import { ReportAccessModal } from '../../../_Reports/components/ReportAccessModal';
+import { ViewXreadReportModal } from '../../../_Reports/components/ViewXreadReportModal';
+import { ViewZreadReportModal } from '../../../_Reports/components/ViewZreadReportModal';
 
-const Reports = () => {
+export const OthersReports = () => {
 	// STATES
 	const [selectedReportType, setSelectedReportType] = useState(null);
 	const [reportAccessModalVisible, setReportAccessModalVisible] = useState(false);
@@ -18,14 +15,7 @@ const Reports = () => {
 	const [xreadReport, setXreadReport] = useState(null);
 	const [zreadReport, setZreadReport] = useState(null);
 
-	// CUSTOM HOOKS
-	const history = useHistory();
-
 	// METHODS
-	const onBack = () => {
-		history.replace('/');
-	};
-
 	const onGenerateReadReport = (type) => {
 		const branchMachineId = getBranchMachineId();
 
@@ -49,31 +39,17 @@ const Reports = () => {
 	};
 
 	return (
-		<section className="Reports">
-			<Box className="container">
-				<h3 className="title">REPORTS</h3>
+		<section className="OthersReports">
+			<button className="other-button" onClick={() => onGenerateReadReport(reportTypes.XREAD)}>
+				Generate XRead Report
+			</button>
 
-				<Divider />
-
-				<Button
-					text="Generate XRead Report"
-					variant="primary"
-					block
-					onClick={() => onGenerateReadReport(reportTypes.XREAD)}
-				/>
-
-				<Button
-					classNames="space-top"
-					text="Generate ZRead Report"
-					variant="primary"
-					onClick={() => onGenerateReadReport(reportTypes.ZREAD)}
-					block
-				/>
-
-				<Divider />
-
-				<Button classNames="space-top" text="Back to Login" onClick={onBack} block />
-			</Box>
+			<button
+				className="other-button spacing-top"
+				onClick={() => onGenerateReadReport(reportTypes.ZREAD)}
+			>
+				Generate ZRead Report
+			</button>
 
 			<ViewXreadReportModal
 				visible={xreadReportModalVisible}
@@ -96,5 +72,3 @@ const Reports = () => {
 		</section>
 	);
 };
-
-export default Reports;

@@ -1,6 +1,6 @@
 import { Col, Divider, Row } from 'antd';
 import { Form, Formik } from 'formik';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import * as Yup from 'yup';
 import { Button, FieldError, FormInput, Label } from '../../../../components/elements';
 import { sleep } from '../../../../utils/function';
@@ -11,21 +11,16 @@ interface Props {
 	onSubmit: any;
 	onClose: any;
 	loading: boolean;
-	onPrint: any;
-	forPrinting: boolean;
 }
 
-export const CashBreakdownForm = ({
-	inputRef,
-	required,
-	onSubmit,
-	onClose,
-	loading,
-	forPrinting,
-	onPrint,
-}: Props) => {
+export const CashBreakdownForm = ({ inputRef, required, onSubmit, onClose, loading }: Props) => {
+	// STATES
 	const [isSubmitting, setSubmitting] = useState(false);
 
+	// REFS
+	const formRef = useRef(null);
+
+	// METHODS
 	const getFormDetails = useCallback(
 		() => ({
 			DefaultValues: {
@@ -72,8 +67,20 @@ export const CashBreakdownForm = ({
 		</div>
 	);
 
+	const onKeyDown = (event) => {
+		if ((event.charCode || event.keyCode) === 13) {
+			event.preventDefault();
+			return;
+		}
+
+		if ((event.charCode || event.keyCode) === 112) {
+			formRef.current?.submitForm();
+		}
+	};
+
 	return (
 		<Formik
+			innerRef={(e) => (formRef.current = e)}
 			initialValues={getFormDetails().DefaultValues}
 			validationSchema={getFormDetails().Schema}
 			onSubmit={async (values, { resetForm }) => {
@@ -87,7 +94,7 @@ export const CashBreakdownForm = ({
 			enableReinitialize
 		>
 			{({ errors, touched }) => (
-				<Form className="form">
+				<Form className="form" onKeyDown={onKeyDown}>
 					<p className="title">Coins</p>
 					<div className="breakdown-field">
 						<Row gutter={[15, 0]} align="middle">
@@ -127,7 +134,7 @@ export const CashBreakdownForm = ({
 						{!required && (
 							<Button
 								type="button"
-								text={forPrinting ? 'Close' : 'Cancel'}
+								text="Cancel"
 								size="lg"
 								onClick={onClose}
 								classNames="space-right"
@@ -135,18 +142,13 @@ export const CashBreakdownForm = ({
 							/>
 						)}
 
-						{forPrinting ? (
-							<Button type="button" text="Print" size="lg" onClick={onPrint} variant="primary" />
-						) : (
-							<Button
-								type="submit"
-								text="Submit"
-								size="lg"
-								variant="primary"
-								classNames="space-right"
-								loading={loading || isSubmitting}
-							/>
-						)}
+						<Button
+							type="submit"
+							text="Submit"
+							size="lg"
+							variant="primary"
+							loading={loading || isSubmitting}
+						/>
 					</div>
 				</Form>
 			)}

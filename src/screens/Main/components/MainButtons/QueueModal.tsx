@@ -2,8 +2,10 @@
 import { message, Modal, Spin } from 'antd';
 import cn from 'classnames';
 import React, { useCallback, useEffect, useState } from 'react';
-import { TableNormal } from '../../../../components';
+import KeyboardEventHandler from 'react-keyboard-event-handler';
 import { ButtonLink } from '../../../../components/elements';
+import { TableQueue } from '../../../../components/TableQueue/TableQueue';
+import { NO_INDEX_SELECTED } from '../../../../global/constants';
 import { request, transactionStatusTypes } from '../../../../global/types';
 import { useBranchProducts } from '../../../../hooks/useBranchProducts';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
@@ -20,7 +22,13 @@ interface Props {
 
 const columns = [{ name: 'ID' }, { name: 'Date' }, { name: 'Amount' }];
 
-export const HoldModal = ({ visible, onClose }: Props) => {
+export const QueueModal = ({ visible, onClose }: Props) => {
+	// STATES
+	const [filteredTransactions, setFilteredTransactions] = useState([]);
+	const [queuedTransactions, setQueuedTransactions] = useState([]);
+	const [activeIndex, setActiveIndex] = useState(NO_INDEX_SELECTED);
+
+	// CUSTOM HOOKS
 	const { session } = useSession();
 	const {
 		transactionId,
@@ -34,13 +42,12 @@ export const HoldModal = ({ visible, onClose }: Props) => {
 	const { branchProducts } = useBranchProducts();
 	const { setMainLoading, setMainLoadingText } = useUI();
 
-	const [heldTransactions, setHeldTransctions] = useState([]);
-
+	// METHODS
 	// Effect: Fetch transactions
 	useEffect(() => {
 		if (visible) {
 			listTransactions({
-				status: transactionStatusTypes.HOLD,
+				status: transactionStatusTypes.QUEUE,
 				branchMachineId: session?.branch_machine?.id,
 				tellerId: session?.user_id,
 			});
@@ -49,18 +56,22 @@ export const HoldModal = ({ visible, onClose }: Props) => {
 
 	// Effect: Format transactions
 	useEffect(() => {
-		const formattedTransactions = transactions
-			.filter((transaction) => transaction.status === transactionStatusTypes.HOLD)
-			.map((transaction) => [
-				<ButtonLink text={transaction.id} onClick={() => checkCurrentTransaction(transaction)} />,
-				formatDateTime(transaction.datetime_created),
-				`₱${numberWithCommas(transaction.total_amount?.toFixed(2))}`,
-			]);
+		const filtredTransactions = transactions.filter(
+			(transaction) => transaction.status === transactionStatusTypes.QUEUE,
+		);
 
-		setHeldTransctions(formattedTransactions);
+		const formattedTransactions = filtredTransactions.map((transaction) => [
+			<ButtonLink text={transaction.id} onClick={() => checkCurrentTransaction(transaction)} />,
+			formatDateTime(transaction.datetime_created),
+			`₱${numberWithCommas(transaction.total_amount?.toFixed(2))}`,
+		]);
+
+		setActiveIndex(formattedTransactions.length > 0 ? 0 : NO_INDEX_SELECTED);
+		setQueuedTransactions(formattedTransactions);
+		setFilteredTransactions(filtredTransactions);
 	}, [transactions, transactionId, transactionProducts]);
 
-	const isHoldDisabled = useCallback(
+	const isQueueDisabled = useCallback(
 		() => transactionStatus !== null || !transactionProducts.length,
 		[transactionStatus, transactionProducts],
 	);
@@ -90,38 +101,76 @@ export const HoldModal = ({ visible, onClose }: Props) => {
 		setCurrentTransaction({ transaction, branchProducts });
 	};
 
-	const onHold = () => {
+	const onQueue = () => {
 		createCurrentTransaction(({ status }) => {
 			if (status === request.SUCCESS) {
-				message.success('Transaction successfully set to Hold');
+				message.success('Transaction successfully queued.');
 				onClose();
 			} else if (status === request.ERROR) {
-				message.error('An error occurred while holding the transaction');
+				message.error('An error occurred while queueing the transaction');
 			}
 		});
 	};
 
+	const handleKeyPress = (key, event) => {
+		event.preventDefault();
+		event.stopPropagation();
+
+		// Queue
+		if (key === 'f1' && !isQueueDisabled()) {
+			onQueue();
+			return;
+		}
+
+		// View queued transaction
+		if (
+			key === 'enter' &&
+			activeIndex !== NO_INDEX_SELECTED &&
+			queuedTransactions.length &&
+			filteredTransactions.length
+		) {
+			checkCurrentTransaction(filteredTransactions[activeIndex]);
+			return;
+		}
+
+		// Select queued transcation
+		if (key === 'up' && queuedTransactions.length) {
+			setActiveIndex((index) => (index > 0 ? index - 1 : index));
+			return;
+		}
+
+		if (key === 'down' && queuedTransactions.length) {
+			setActiveIndex((index) => (index < queuedTransactions.length - 1 ? index + 1 : index));
+			return;
+		}
+	};
+
 	return (
 		<Modal
-			title="Hold & Resume"
-			className="HoldModal"
+			title="Queue & Resume"
+			className="QueueModal"
 			visible={visible}
 			footer={null}
 			onCancel={onClose}
 			centered
 			closable
 		>
+			<KeyboardEventHandler
+				handleKeys={['f1', 'enter', 'up', 'down']}
+				onKeyEvent={handleKeyPress}
+				handleFocusableElements
+				isDisabled={!visible}
+			/>
+
 			<Spin size="large" spinning={transactionsRequestStatus === request.REQUESTING}>
-				<button
-					className={cn('other-button btn-cash-breakdown', { disabled: isHoldDisabled() })}
-					onClick={onHold}
-				>
-					Hold
+				<button className={cn('btn-queue', { disabled: isQueueDisabled() })} onClick={onQueue}>
+					Queue
 				</button>
 
-				<TableNormal
+				<TableQueue
+					activeRow={activeIndex}
 					columns={columns}
-					data={heldTransactions}
+					data={queuedTransactions}
 					loading={transactionsStatus === request.REQUESTING}
 				/>
 			</Spin>

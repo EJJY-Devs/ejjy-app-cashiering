@@ -2,11 +2,17 @@
 
 $spacing: 25px;
 
+.fullscreen-enabled .Main {
+	background-color: $color-main-background;
+}
+
 .Main {
+	background-color: $color-main-background;
 	.main-content {
 		display: flex;
 
-		.void-warning {
+		.void-warning,
+		.full-paid-reprint {
 			margin-top: 20px;
 		}
 
@@ -60,7 +66,6 @@ $spacing: 25px;
 	}
 
 	&.btn-end-session {
-		margin-top: 25px;
 		background-color: $color-red;
 		color: white;
 		box-shadow: 0px 4px 0px #ab363d !important;

@@ -118,7 +118,7 @@ export const DiscountModal = ({ product, visible, onClose }: Props) => {
 
 	return (
 		<Modal
-			title={`Discount - ${product?.productName}`}
+			title={`Discount - ${product?.data?.name}`}
 			className="DiscountModal"
 			visible={visible}
 			footer={null}

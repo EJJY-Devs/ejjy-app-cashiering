@@ -1,32 +1,62 @@
 @import '../../assets/styles/main';
 
-.VirtualTable {
-	.ant-table-thead {
-		.ant-table-cell {
-			padding: 25px;
-			@include font(1rem, bold);
-			color: $color-dark;
-			background-color: $color-main-background;
+.Table {
+	width: 100%;
+	overflow-y: auto;
+
+	table {
+		width: 100%;
+
+		thead {
+			th {
+				position: sticky;
+				top: 0;
+				padding: 25px 15px;
+				@include font(18px, bold);
+				color: $color-dark;
+				background-color: $color-main-background;
+			}
 		}
-	}
 
-	.virtual-grid {
-		.virtual-table-cell {
-			@include flex($align-items: center);
-			@include font(1rem, 600);
-			padding: 0 25px;
-			color: $color-dark-gray;
+		tbody {
+			tr {
+				border-bottom: 1px solid $color-gray;
 
-			a {
-				color: $color-link !important;
+				td {
+					@include font(18px, 600);
+					padding: 10px 15px;
+					color: $color-dark-gray;
+
+					a {
+						color: $color-link !important;
+					}
+				}
 			}
 		}
 	}
 
 	&.hasCustomHeaderComponent {
-		.ant-table-thead {
-			.ant-table-cell {
-				padding: 13px 25px;
+		thead {
+			th {
+				padding: 13px 15px;
+			}
+		}
+	}
+
+	&.page {
+		table {
+			thead {
+				th {
+					padding-left: 25px !important;
+					padding-right: 25px !important;
+				}
+			}
+
+			tbody {
+				td {
+					padding-left: 25px !important;
+					padding-right: 25px !important;
+				}
 			}
 		}
 	}

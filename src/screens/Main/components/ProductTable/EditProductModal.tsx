@@ -109,7 +109,7 @@ export const EditProductModal = ({ product, visible, onClose }: Props) => {
 						classNamesLabel="label"
 						classNamesValue="value"
 						label="Product Name:"
-						value={product?.productName}
+						value={product?.data?.name}
 					/>
 				</DetailsRow>
 

@@ -23,11 +23,11 @@ export const types = {
 };
 
 const initialState = {
+	transaction: null,
 	products: [],
 	transactionId: null,
 	isFullyPaid: false,
 	totalPaidAmount: 0,
-	invoiceId: null,
 	orNumber: null,
 	status: null,
 	previousVoidedTransactionId: null,
@@ -79,8 +79,9 @@ const reducer = handleActions(
 			});
 
 			const newData = {
+				transaction,
 				transactionId: transaction.id,
-				invoiceId: transaction?.invoice.id,
+				invoice: transaction?.invoice.id,
 				orNumber: transaction?.invoice.or_number,
 				clientId: transaction.client,
 				isFullyPaid: transaction.is_fully_paid,
@@ -96,15 +97,15 @@ const reducer = handleActions(
 		[types.SET_CURRENT_TRANSACTION]: (state, { payload }: any) => {
 			const { transaction, branchProducts } = payload;
 
+			// NOTE: Setting of product
 			const products = transaction.products.map((item) => {
 				const branchProduct = branchProducts.find(({ product }) => product?.id === item.product.id);
 
 				return {
+					data: item,
 					transactionProductId: item.id,
 					id: branchProduct?.id,
 					productId: item.product.id,
-					productName: item.product.name,
-					productDescription: item.product.description,
 					pricePerPiece: Number(item.price_per_piece),
 					discountPerPiece: Number(item.discount_per_piece),
 					quantity: item.quantity,
@@ -112,8 +113,8 @@ const reducer = handleActions(
 			});
 
 			const newData = {
+				transaction,
 				transactionId: transaction.id,
-				invoiceId: transaction?.invoice?.id,
 				orNumber: transaction?.invoice?.or_number,
 				client: transaction.client,
 				isFullyPaid: transaction.is_fully_paid,
@@ -135,8 +136,8 @@ const reducer = handleActions(
 			const { transaction } = payload;
 
 			const newData = {
+				transaction: null,
 				transactionId: null,
-				invoiceId: null,
 				orNumber: null,
 				isFullyPaid: false,
 				totalPaidAmount: transaction.total_paid_amount,
@@ -204,11 +205,11 @@ export const actions = {
 
 const selectState = (state: any) => state[key] || initialState;
 export const selectors = {
+	selectTransaction: () => createSelector(selectState, (state) => state.transaction),
 	selectProducts: () => createSelector(selectState, (state) => state.products),
 	selectIsFullyPaid: () => createSelector(selectState, (state) => state.isFullyPaid),
 	selectClient: () => createSelector(selectState, (state) => state.client),
 	selectTotalPaidAmount: () => createSelector(selectState, (state) => state.totalPaidAmount),
-	selectInvoiceId: () => createSelector(selectState, (state) => state.invoiceId),
 	selectOrNumber: () => createSelector(selectState, (state) => state.orNumber),
 	selectTransactionId: () => createSelector(selectState, (state) => state.transactionId),
 	selectTransactionStatus: () => createSelector(selectState, (state) => state.status),

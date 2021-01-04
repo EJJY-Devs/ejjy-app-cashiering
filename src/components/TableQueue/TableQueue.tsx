@@ -1,10 +1,8 @@
 import { Spin, Tooltip } from 'antd';
 import cn from 'classnames';
-import React, { ReactNode } from 'react';
-import { NO_INDEX_SELECTED, PRODUCT_LENGTH_PER_PAGE } from '../../global/constants';
-import { useCurrentTransaction } from '../../hooks/useCurrentTransaction';
+import React, { ReactNode, useEffect, useRef } from 'react';
+import { NO_INDEX_SELECTED, ROW_HEIGHT } from '../../global/constants';
 import { calculateTableHeight } from '../../utils/function';
-import { ROW_HEIGHT } from '../Table/Table';
 import './style.scss';
 
 interface Column {
@@ -19,27 +17,22 @@ interface Props {
 	columns: Column[];
 	data: any;
 	activeRow?: number;
-	onHover: any;
-	onExit: any;
 	loading?: any;
 }
 
-export const TableNormalProducts = ({
-	columns,
-	data,
-	activeRow,
-	onHover,
-	onExit,
-	loading,
-}: Props) => {
-	const { pageNumber } = useCurrentTransaction();
+export const TableQueue = ({ columns, data, activeRow, loading }: Props) => {
+	const itemRefs = useRef([]);
+
+	// Effect: Focus active item
+	useEffect(() => {
+		if (activeRow !== NO_INDEX_SELECTED) {
+			itemRefs.current?.[activeRow]?.focus();
+		}
+	}, [activeRow]);
 
 	return (
 		<Spin size="large" spinning={loading}>
-			<div
-				className="TableNormalProducts"
-				style={{ height: calculateTableHeight(data?.length + 1) + 25 }}
-			>
+			<div className="TableQueue" style={{ height: calculateTableHeight(data?.length + 1) + 25 }}>
 				{!data.length && (
 					<img src={require('../../assets/images/logo.jpg')} alt="logo" className="placeholder" />
 				)}
@@ -60,13 +53,11 @@ export const TableNormalProducts = ({
 					<tbody>
 						{data?.map((row, index) => (
 							<tr
-								className={cn({
-									active: activeRow === (pageNumber - 1) * PRODUCT_LENGTH_PER_PAGE + index,
-								})}
+								ref={(el) => (itemRefs.current[index] = el)}
+								tabIndex={index}
+								className={cn({ active: activeRow === index })}
 								key={`tr-${index}`}
 								style={{ height: `${ROW_HEIGHT}px` }}
-								onMouseEnter={() => onHover(index)}
-								onMouseLeave={() => onExit()}
 							>
 								{row.map((item, index) => (
 									<td
@@ -85,6 +76,6 @@ export const TableNormalProducts = ({
 	);
 };
 
-TableNormalProducts.defaultProps = {
+TableQueue.defaultProps = {
 	activeRow: NO_INDEX_SELECTED,
 };

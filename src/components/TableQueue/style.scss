@@ -1,6 +1,6 @@
 @import '../../assets/styles/main';
 
-.TableNormalProducts {
+.TableQueue {
 	width: 100%;
 	overflow-y: auto;
 	position: relative;
@@ -19,8 +19,8 @@
 
 		thead {
 			th {
-				position: sticky;
-				top: 0;
+				// position: sticky;
+				// top: 0;
 				padding: 25px 15px;
 				@include font(18px, bold);
 				color: $color-dark;
@@ -31,7 +31,7 @@
 		tbody {
 			tr {
 				border-bottom: 1px solid $color-gray;
-				cursor: pointer;
+				pointer-events: none;
 
 				&.active {
 					background-color: $color-primary-02;

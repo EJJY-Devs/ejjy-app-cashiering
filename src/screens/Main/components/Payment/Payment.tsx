@@ -79,10 +79,7 @@ export const Payment = () => {
 
 	return (
 		<div className="Payment">
-			<KeyboardEventHandler
-				handleKeys={tenderShortcutKeys}
-				onKeyEvent={(key, e) => handleKeyPress(key, e)}
-			/>
+			<KeyboardEventHandler handleKeys={tenderShortcutKeys} onKeyEvent={handleKeyPress} />
 
 			<div className="payment-content">
 				<div className="text-wrapper">
@@ -113,7 +110,6 @@ export const Payment = () => {
 			<ThankYouModal
 				onViewInvoice={onViewInvoice}
 				visible={thankYouModalVisible}
-				transaction={transaction}
 				onClose={() => setThankYouModalVisible(false)}
 			/>
 

@@ -46,10 +46,7 @@ export const NavigationButtons = () => {
 
 	return (
 		<div className="NavigationButtons">
-			<KeyboardEventHandler
-				handleKeys={editClientShortcutKeys}
-				onKeyEvent={(key, e) => handleKeyPress(key, e)}
-			/>
+			<KeyboardEventHandler handleKeys={editClientShortcutKeys} onKeyEvent={handleKeyPress} />
 
 			<div className="details">
 				<div className="item">

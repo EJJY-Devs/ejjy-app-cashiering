@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { actions, selectors, types } from '../ducks/cash-breakdowns';
 import { cashBreakdownTypes, request } from '../global/types';
-import { modifiedCallback } from '../utils/function';
+import { modifiedCallback, modifiedExtraCallback } from '../utils/function';
 import { useActionDispatch } from './useActionDispatch';
 
 const CREATE_SUCCESS_MESSAGE = 'Cash breakdown was submitted successfully';
@@ -31,14 +31,14 @@ export const useCashBreakdown = () => {
 		listCashBreakdown({ cashieringSessionId, callback });
 	};
 
-	const createCashBreakdownRequest = (data) => {
+	const createCashBreakdownRequest = (data, extraCallback = null) => {
 		setRecentRequest(types.CREATE_CASH_BREAKDOWN);
 		createCashBreakdown({
 			...data,
 			callback:
 				data?.type === cashBreakdownTypes.MID_SESSION
-					? modifiedCallback(callback, CREATE_SUCCESS_MESSAGE, CREATE_ERROR_MESSAGE)
-					: callback,
+					? modifiedCallback(callback, CREATE_SUCCESS_MESSAGE, CREATE_ERROR_MESSAGE, extraCallback)
+					: modifiedExtraCallback(callback, extraCallback),
 		});
 	};
 

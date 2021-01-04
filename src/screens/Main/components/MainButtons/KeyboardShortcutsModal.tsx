@@ -10,7 +10,7 @@ import {
 	editClientShortcutKeysDisplay,
 	editQuantityShortcutKeysDisplay,
 	endSessionShortcutKeysDisplay,
-	holdResumeShortcutKeysDisplay,
+	queueResumeShortcutKeysDisplay,
 	othersShortcutKeysDisplay,
 	resetShortcutKeysDisplay,
 	searchShortcutKeysDisplay,
@@ -129,8 +129,8 @@ export const KeyboardShortcutsModal = ({ visible, onClose }: Props) => {
 					classNamesValue="value"
 					labelSpan={12}
 					valueSpan={12}
-					label="Hold & Resume"
-					value={holdResumeShortcutKeysDisplay.map((key) => (
+					label="Queue & Resume"
+					value={queueResumeShortcutKeysDisplay.map((key) => (
 						<KeyboardButtonDisplay key={key} keyboardKey={key} />
 					))}
 				/>

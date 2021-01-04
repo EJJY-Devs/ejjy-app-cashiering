@@ -1,7 +1,7 @@
 import { Divider, Modal } from 'antd';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
-import { DetailsRow, DetailsSingle, TableNormal } from '../../../../components';
+import { DetailsRow, DetailsSingle, Table } from '../../../../components';
 import Button from '../../../../components/elements/Button/Button';
 import { EMPTY_CELL } from '../../../../global/constants';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
@@ -29,7 +29,7 @@ export const InvoiceModal = ({ visible, transaction, onClose }: Props) => {
 	// Effect: Format product data
 	useEffect(() => {
 		const formattedProducts = transactionProducts.map((item) => [
-			item.productName,
+			item.data.name,
 			item.quantity.toFixed(3),
 			`₱${item.pricePerPiece.toFixed(2)}`,
 			`₱${(item.quantity * item.pricePerPiece).toFixed(2)}`,
@@ -110,7 +110,7 @@ export const InvoiceModal = ({ visible, transaction, onClose }: Props) => {
 
 			<Divider />
 
-			<TableNormal columns={columns} data={data} />
+			<Table columns={columns} data={data} />
 
 			<Divider />
 
@@ -176,7 +176,7 @@ export const InvoiceModal = ({ visible, transaction, onClose }: Props) => {
 					label="Generated"
 					value={
 						transaction?.invoice?.datetime_created
-							? moment(transaction?.invoice?.datetime_created).format('YYYY-MM-DD')
+							? dayjs(transaction?.invoice?.datetime_created).format('YYYY-MM-DD')
 							: EMPTY_CELL
 					}
 				/>

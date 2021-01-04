@@ -13,7 +13,7 @@ function* register({ payload }: any) {
 	try {
 		const loginResponse = yield call(authService.login, { login, password });
 
-		if (loginResponse.data.user_type === userTypes.BRANCH_MANAGER) {
+		if (loginResponse.data.user_type === userTypes.ADMIN) {
 			const tokenResponse = yield call(authService.acquireToken, {
 				username: login,
 				password,
@@ -37,7 +37,7 @@ function* register({ payload }: any) {
 		} else {
 			callback({
 				status: request.ERROR,
-				errors: 'Only the branch manager can register a branch machine.',
+				errors: 'Only admin can register a branch machine.',
 			});
 		}
 	} catch (e) {

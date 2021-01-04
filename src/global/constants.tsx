@@ -13,3 +13,5 @@ export const EMPTY_CELL = '—';
 export const NO_INDEX_SELECTED = -1;
 
 export const PRODUCT_LENGTH_PER_PAGE = 5;
+
+export const ROW_HEIGHT = 65;

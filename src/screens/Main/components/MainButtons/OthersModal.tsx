@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Divider, Modal } from 'antd';
 import React from 'react';
+import { OthersReports } from './OthersReports';
 import { SearchTransaction } from './SearchTransaction';
 import './style.scss';
 
@@ -31,13 +32,17 @@ export const OthersModal = ({
 		>
 			<SearchTransaction visible={visible} closeModal={onClose} />
 
-			<button className="other-button btn-cash-breakdown" onClick={onCashCollection}>
+			<button className="other-button" onClick={onCashCollection}>
 				Cash Collection
 			</button>
 
-			<button className="other-button btn-end-session" onClick={onEndSession}>
+			<button className="other-button btn-end-session spacing-top" onClick={onEndSession}>
 				End Session
 			</button>
+
+			<Divider />
+
+			<OthersReports />
 
 			<Divider />
 

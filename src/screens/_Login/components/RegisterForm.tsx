@@ -60,12 +60,12 @@ export const RegisterForm = ({ loading, onSubmit }: IRegisterForm) => {
 			{({ errors, touched }) => (
 				<Form className="form">
 					<div className="input-field">
-						<FormInputLabel id="login" label="Manager's Username" />
+						<FormInputLabel id="login" label="Admin Username" />
 						{errors.login && touched.login ? <FieldError error={errors.login} /> : null}
 					</div>
 
 					<div className="input-field">
-						<FormInputLabel type="password" id="password" label="Manager's Password" />
+						<FormInputLabel type="password" id="password" label="Admin Password" />
 						{errors.password && touched.password ? <FieldError error={errors.password} /> : null}
 					</div>
 

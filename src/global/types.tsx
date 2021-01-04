@@ -37,7 +37,7 @@ export const navigationTypes = {
 
 export const transactionStatusTypes = {
 	FULLY_PAID: 'fully_paid',
-	HOLD: 'hold',
+	QUEUE: 'hold',
 	VOID_EDITED: 'void_edited',
 	VOID_CANCELLED: 'void_cancelled',
 };
@@ -45,4 +45,9 @@ export const transactionStatusTypes = {
 export const reportTypes = {
 	XREAD: 'XREAD',
 	ZREAD: 'ZREAD',
+};
+
+export const vatTypes = {
+	VATABLE: 'V',
+	VAT_EMPTY: 'VE',
 };
