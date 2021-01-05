@@ -184,16 +184,55 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 			</div>
 
 			<div className="buttons-wrapper">
-				<MainButton title="Queue" onClick={() => setQueueModalVisible(true)} />
-
-				<MainButton title="Discount" onClick={() => null} />
-
-				<MainButton title="Reset" onClick={onReset} disabled={isResetDisabled()} />
-
-				<MainButton title="Void" onClick={onVoid} disabled={isVoidDisabled()} />
+				<MainButton
+					title={
+						<>
+							<span>Queue</span>
+							<span className="shortcut-key">[F9]</span>
+						</>
+					}
+					onClick={() => setQueueModalVisible(true)}
+				/>
 
 				<MainButton
-					title="Others"
+					title={
+						<>
+							<span>Discount</span>
+							<span className="shortcut-key">[CTRL + Z]</span>
+						</>
+					}
+					onClick={() => null}
+				/>
+
+				<MainButton
+					title={
+						<>
+							<span>Reset</span>
+							<span className="shortcut-key">[F12]</span>
+						</>
+					}
+					onClick={onReset}
+					disabled={isResetDisabled()}
+				/>
+
+				<MainButton
+					title={
+						<>
+							<span>Void</span>
+							<span className="shortcut-key">[F11]</span>
+						</>
+					}
+					onClick={onVoid}
+					disabled={isVoidDisabled()}
+				/>
+
+				<MainButton
+					title={
+						<>
+							<span>Others</span>
+							<span className="shortcut-key">[F1]</span>
+						</>
+					}
 					classNames="btn-others"
 					onClick={() => setOthersModalVisible(true)}
 				/>

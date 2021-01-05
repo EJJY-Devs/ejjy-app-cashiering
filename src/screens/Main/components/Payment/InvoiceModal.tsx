@@ -5,7 +5,7 @@ import { DetailsRow, DetailsSingle, Table } from '../../../../components';
 import Button from '../../../../components/elements/Button/Button';
 import { EMPTY_CELL } from '../../../../global/constants';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
-import { numberWithCommas } from '../../../../utils/function';
+import { getProductQuantity, numberWithCommas } from '../../../../utils/function';
 import './style.scss';
 
 interface Props {
@@ -30,7 +30,7 @@ export const InvoiceModal = ({ visible, transaction, onClose }: Props) => {
 	useEffect(() => {
 		const formattedProducts = transactionProducts.map((item) => [
 			item.data.name,
-			item.quantity.toFixed(3),
+			getProductQuantity(item.quantity, item.data.unit_of_measurement),
 			`₱${item.pricePerPiece.toFixed(2)}`,
 			`₱${(item.quantity * item.pricePerPiece).toFixed(2)}`,
 		]);

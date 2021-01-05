@@ -11,7 +11,13 @@ import {
 } from '../components';
 import { UncontrolledInput } from '../components/elements';
 import { MACHINE_ID_KEY, ROW_HEIGHT } from '../global/constants';
-import { branchProductStatus, cashBreakdownTypes, request, userTypes } from '../global/types';
+import {
+	branchProductStatus,
+	cashBreakdownTypes,
+	request,
+	unitOfMeasurementTypes,
+	userTypes,
+} from '../global/types';
 
 export const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -167,3 +173,13 @@ export const getCashBreakdownTypeDescription = memoize((type) => {
 		}
 	}
 });
+
+export const getProductQuantity = (quantity, unitOfMeasurementType) => {
+	if (unitOfMeasurementType === unitOfMeasurementTypes.WEIGHING) {
+		return quantity.toFixed(3);
+	} else if (unitOfMeasurementType === unitOfMeasurementTypes.NON_WEIGHING) {
+		return quantity.toFixed(0);
+	}
+
+	return 0;
+};

@@ -88,11 +88,17 @@ export const Payment = () => {
 				</div>
 				<Button
 					classNames="btn-pay"
-					text="Advance"
+					text={
+						<>
+							<span>Advance</span>
+							<span className="shortcut-key">[F8]</span>
+						</>
+					}
 					size="lg"
 					variant="primary"
 					onClick={onPay}
 					disabled={isPaymentDisabled()}
+					hasShortcutKey
 				/>
 			</div>
 			<div className="pending-balance-wrapper">

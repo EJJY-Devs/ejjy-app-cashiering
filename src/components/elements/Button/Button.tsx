@@ -8,7 +8,7 @@ import { TooltipPlacement } from 'antd/lib/tooltip';
 const loadingIcon = <LoadingOutlined style={{ fontSize: 17, color: 'white' }} spin />;
 
 interface Props {
-	text: string;
+	text: string | React.ReactNode;
 	variant: 'primary' | 'secondary' | 'default' | 'dark-gray';
 	size: 'md' | 'lg';
 	onClick?: any;
@@ -21,6 +21,7 @@ interface Props {
 	classNames?: any;
 	tooltipPlacement?: TooltipPlacement;
 	tooltip?: string;
+	hasShortcutKey?: boolean;
 }
 
 const Button = ({
@@ -37,6 +38,7 @@ const Button = ({
 	tooltipPlacement,
 	tooltip,
 	size,
+	hasShortcutKey,
 }: Props) => (
 	<Tooltip placement={tooltipPlacement} title={tooltip} overlayClassName="button-tooltip">
 		<button
@@ -45,6 +47,7 @@ const Button = ({
 				[variant]: true,
 				[size]: true,
 				flex: !!icon,
+				hasShortcutKey,
 				block,
 				disabled,
 				loading,

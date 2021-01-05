@@ -8,12 +8,15 @@ import { userTypes } from '../../../../global/types';
 
 interface Props {
 	maxQuantity: number;
+	minQuantity: number;
 	onSubmit: any;
 }
 
-export const DiscountForm = ({ maxQuantity, onSubmit }: Props) => {
+export const DiscountForm = ({ minQuantity, maxQuantity, onSubmit }: Props) => {
+	// STATES
 	const [isSubmitting, setSubmitting] = useState(false);
 
+	// METHODS
 	const getFormDetails = useCallback(
 		() => ({
 			DefaultValues: {
@@ -27,7 +30,10 @@ export const DiscountForm = ({ maxQuantity, onSubmit }: Props) => {
 				password: Yup.string().required().label('Password'),
 				discount: Yup.number()
 					.required()
-					.min(1)
+					.moreThan(
+						minQuantity,
+						`Must be greater than the unit cost (₱${numberWithCommas(minQuantity?.toFixed(2))}).`,
+					)
 					.max(
 						maxQuantity,
 						`Must not be greater than the original price (₱${numberWithCommas(
@@ -37,7 +43,7 @@ export const DiscountForm = ({ maxQuantity, onSubmit }: Props) => {
 					.label('Discount'),
 			}),
 		}),
-		[maxQuantity],
+		[minQuantity, maxQuantity],
 	);
 
 	return (

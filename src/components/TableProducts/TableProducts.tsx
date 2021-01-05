@@ -12,6 +12,7 @@ interface Column {
 	rightAligned?: boolean;
 	tooltip?: string;
 	loading?: boolean;
+	alignment?: string;
 }
 
 interface Props {
@@ -24,7 +25,14 @@ interface Props {
 }
 
 export const TableProducts = ({ columns, data, activeRow, onHover, onExit, loading }: Props) => {
+	// CUSTOM HOOKS
 	const { pageNumber } = useCurrentTransaction();
+
+	// METHODS
+	const getStyleAlignment = (alignment) =>
+		({
+			textAlign: alignment || 'left',
+		} as React.CSSProperties);
 
 	return (
 		<Spin size="large" spinning={loading}>
@@ -39,11 +47,8 @@ export const TableProducts = ({ columns, data, activeRow, onHover, onExit, loadi
 				<table>
 					<thead>
 						<tr>
-							{columns.map(({ name, width, rightAligned = false, tooltip = null }, index) => (
-								<th
-									key={`th-${index}`}
-									style={{ width, textAlign: rightAligned ? 'right' : 'left' }}
-								>
+							{columns.map(({ name, width, alignment, tooltip = null }, index) => (
+								<th key={`th-${index}`} style={{ width, ...getStyleAlignment(alignment) }}>
 									{tooltip ? <Tooltip title={tooltip}>{name}</Tooltip> : name}
 								</th>
 							))}
@@ -61,10 +66,7 @@ export const TableProducts = ({ columns, data, activeRow, onHover, onExit, loadi
 								onMouseLeave={() => onExit()}
 							>
 								{row.map((item, index) => (
-									<td
-										key={`td-${index}`}
-										style={{ textAlign: columns?.[index].rightAligned ? 'right' : 'left' }}
-									>
+									<td key={`td-${index}`} style={getStyleAlignment(columns?.[index]?.alignment)}>
 										{item}
 									</td>
 								))}

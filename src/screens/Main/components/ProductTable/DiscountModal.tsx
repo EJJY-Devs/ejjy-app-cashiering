@@ -162,7 +162,11 @@ export const DiscountModal = ({ product, visible, onClose }: Props) => {
 				{isCustomFieldsVisible && (
 					<>
 						{!!errors.length && errors.map((error) => <FieldError error={error} />)}
-						<DiscountForm maxQuantity={getInitialPrice()} onSubmit={onSetCustomDiscount} />
+						<DiscountForm
+							minQuantity={Number(product?.data?.cost_per_piece) || 0}
+							maxQuantity={getInitialPrice()}
+							onSubmit={onSetCustomDiscount}
+						/>
 					</>
 				)}
 			</Spin>

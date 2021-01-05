@@ -20,6 +20,11 @@
 	&.lg {
 		@include font(2rem, 700);
 		padding: 15px 30px;
+
+		&.hasShortcutKey {
+			@include font(1.75rem, 700);
+			padding: 10px 25px;
+		}
 	}
 
 	&.flex {
@@ -74,6 +79,11 @@
 			transition: 300ms;
 			box-shadow: 0px 2px 10px 2px $color-secondary-08;
 		}
+	}
+
+	&.hasShortcutKey {
+		@include font(0.8rem, 700);
+		padding: 8px 15px;
 	}
 
 	.icon-left {

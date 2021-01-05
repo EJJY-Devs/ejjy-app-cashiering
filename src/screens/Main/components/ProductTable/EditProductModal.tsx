@@ -118,6 +118,7 @@ export const EditProductModal = ({ product, visible, onClose }: Props) => {
 				<EditProductForm
 					inputRef={(el) => (inputRef.current = el)}
 					maxQuantity={getMaxQuantity()}
+					unitOfMeasurementType={product?.data?.unit_of_measurement}
 					onSubmit={onSubmit}
 					onClose={onClose}
 				/>

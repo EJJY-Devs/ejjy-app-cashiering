@@ -144,10 +144,16 @@ export const CashBreakdownForm = ({ inputRef, required, onSubmit, onClose, loadi
 
 						<Button
 							type="submit"
-							text="Submit"
+							text={
+								<>
+									<span>Submit</span>
+									<span className="shortcut-key">[F1]</span>
+								</>
+							}
 							size="lg"
 							variant="primary"
 							loading={loading || isSubmitting}
+							hasShortcutKey
 						/>
 					</div>
 				</Form>

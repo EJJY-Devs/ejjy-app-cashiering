@@ -3,16 +3,24 @@ import { Form, Formik } from 'formik';
 import React, { useCallback, useState } from 'react';
 import * as Yup from 'yup';
 import { Button, FieldError, FormInput, Label } from '../../../../components/elements';
+import { unitOfMeasurementTypes } from '../../../../global/types';
 import { sleep } from '../../../../utils/function';
 
 interface Props {
 	maxQuantity: number;
 	inputRef?: any;
+	unitOfMeasurementType: string;
 	onSubmit: any;
 	onClose: any;
 }
 
-export const AddProductForm = ({ maxQuantity, inputRef, onSubmit, onClose }: Props) => {
+export const AddProductForm = ({
+	unitOfMeasurementType,
+	maxQuantity,
+	inputRef,
+	onSubmit,
+	onClose,
+}: Props) => {
 	const [isSubmitting, setSubmitting] = useState(false);
 
 	const getFormDetails = useCallback(
@@ -23,12 +31,19 @@ export const AddProductForm = ({ maxQuantity, inputRef, onSubmit, onClose }: Pro
 			Schema: Yup.object().shape({
 				quantity: Yup.number()
 					.required()
-					.min(1)
+					.moreThan(0)
 					.max(maxQuantity, 'Insufficient balance.')
+					.test('is-whole-number', 'Non-weighing items require whole number quantity.', (value) => {
+						if (unitOfMeasurementType === unitOfMeasurementTypes.NON_WEIGHING) {
+							return !(value % 1 > 0);
+						}
+
+						return true;
+					})
 					.label('Quantity'),
 			}),
 		}),
-		[maxQuantity],
+		[unitOfMeasurementType, maxQuantity],
 	);
 
 	return (
@@ -55,6 +70,7 @@ export const AddProductForm = ({ maxQuantity, inputRef, onSubmit, onClose }: Pro
 						type="number"
 						classNames="quantity-input"
 						id="quantity"
+						step=".001"
 						autoFocus
 					/>
 					{errors.quantity && touched.quantity ? <FieldError error={errors.quantity} /> : null}

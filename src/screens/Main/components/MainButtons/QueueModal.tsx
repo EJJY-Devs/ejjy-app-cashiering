@@ -164,7 +164,10 @@ export const QueueModal = ({ visible, onClose }: Props) => {
 
 			<Spin size="large" spinning={transactionsRequestStatus === request.REQUESTING}>
 				<button className={cn('btn-queue', { disabled: isQueueDisabled() })} onClick={onQueue}>
-					Queue
+					<>
+						<span>Queue</span>
+						<span className="shortcut-key">[F1]</span>
+					</>
 				</button>
 
 				<TableQueue

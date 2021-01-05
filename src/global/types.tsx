@@ -51,3 +51,8 @@ export const vatTypes = {
 	VATABLE: 'V',
 	VAT_EMPTY: 'VE',
 };
+
+export const unitOfMeasurementTypes = {
+	WEIGHING: 'weighing',
+	NON_WEIGHING: 'non_weighing',
+};
