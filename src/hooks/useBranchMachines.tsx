@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { actions, types } from '../ducks/branch-machines';
+import { useSelector } from 'react-redux';
+import { actions, selectors, types } from '../ducks/branch-machines';
 import { request } from '../global/types';
 import { modifiedExtraCallback } from '../utils/function';
 import { useActionDispatch } from './useActionDispatch';
@@ -9,6 +10,9 @@ export const useBranchMachines = () => {
 	const [errors, setErrors] = useState<any>([]);
 	const [recentRequest, setRecentRequest] = useState<any>();
 
+	const branchMachines = useSelector(selectors.selectBranchMachines());
+
+	const getBranchMachines = useActionDispatch(actions.getBranchMachines);
 	const getBranchMachine = useActionDispatch(actions.getBranchMachine);
 	const registerBranchMachine = useActionDispatch(actions.registerBranchMachine);
 
@@ -26,6 +30,11 @@ export const useBranchMachines = () => {
 		getBranchMachine({ ...data, callback });
 	};
 
+	const getBranchMachinesRequest = (data = {}) => {
+		setRecentRequest(types.GET_BRANCH_MACHINES);
+		getBranchMachines({ ...data, callback });
+	};
+
 	const registerBranchMachineRequest = (data, extraCallback = null) => {
 		setRecentRequest(types.REGISTER_BRANCH_MACHINE);
 		registerBranchMachine({ ...data, callback: modifiedExtraCallback(callback, extraCallback) });
@@ -37,6 +46,8 @@ export const useBranchMachines = () => {
 	};
 
 	return {
+		branchMachines,
+		getBranchMachines: getBranchMachinesRequest,
 		getBranchMachine: getBranchMachineRequest,
 		registerBranchMachine: registerBranchMachineRequest,
 		status,

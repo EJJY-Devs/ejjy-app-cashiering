@@ -29,10 +29,8 @@ const FormSelect = ({ id, options, placeholder, disabled }: ISelectProps) => (
 				{placeholder}
 			</option>
 		)}
-		{options.map(({ name, value, selected = false }) => (
-			<option selected={selected} value={value}>
-				{name}
-			</option>
+		{options.map(({ name, value }) => (
+			<option value={value}>{name}</option>
 		))}
 	</Field>
 );

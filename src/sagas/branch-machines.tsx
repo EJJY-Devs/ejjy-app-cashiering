@@ -1,9 +1,10 @@
-import { call, put, takeLatest } from 'redux-saga/effects';
+import { call, put, retry, takeLatest } from 'redux-saga/effects';
 import { actions as authActions } from '../ducks/auth';
-import { types as branchMachinesTypes } from '../ducks/branch-machines';
+import { actions, types } from '../ducks/branch-machines';
+import { MAX_PAGE_SIZE, MAX_RETRY, RETRY_INTERVAL_MS } from '../global/constants';
 import { request, userTypes } from '../global/types';
 import { service as authService } from '../services/auth';
-import { service as branchMachinesService } from '../services/branch-machines';
+import { service } from '../services/branch-machines';
 
 /* WORKERS */
 function* register({ payload }: any) {
@@ -27,7 +28,7 @@ function* register({ payload }: any) {
 				}),
 			);
 
-			const branchMachineResponse = yield call(branchMachinesService.create, {
+			const branchMachineResponse = yield call(service.create, {
 				name: machineName,
 				machine_id: machineId,
 				machine_printer_serial_number: machinePrinterSerialNumber,
@@ -45,9 +46,33 @@ function* register({ payload }: any) {
 	}
 }
 
+function* list({ payload }: any) {
+	const { branchId = null, callback } = payload;
+	callback({ status: request.REQUESTING });
+
+	try {
+		const response = yield retry(MAX_RETRY, RETRY_INTERVAL_MS, service.list, {
+			page: 1,
+			page_size: MAX_PAGE_SIZE,
+			branch_id: branchId,
+		});
+
+		yield put(
+			actions.save({ type: types.GET_BRANCH_MACHINES, branchMachines: response.data.results }),
+		);
+		callback({ status: request.SUCCESS });
+	} catch (e) {
+		callback({ status: request.ERROR, errors: e.errors });
+	}
+}
+
 /* WATCHERS */
-const registerWatcherSaga = function* registerWatcherSaga() {
-	yield takeLatest(branchMachinesTypes.REGISTER_BRANCH_MACHINE, register);
+const listWatcherSaga = function* listWatcherSaga() {
+	yield takeLatest(types.GET_BRANCH_MACHINES, list);
 };
 
-export default [registerWatcherSaga()];
+const registerWatcherSaga = function* registerWatcherSaga() {
+	yield takeLatest(types.REGISTER_BRANCH_MACHINE, register);
+};
+
+export default [listWatcherSaga(), registerWatcherSaga()];
