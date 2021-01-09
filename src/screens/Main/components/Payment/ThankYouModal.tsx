@@ -41,6 +41,7 @@ export const ThankYouModal = ({ visible, onViewInvoice, onClose }: Props) => {
 			onCancel={close}
 			centered
 			closable
+			destroyOnClose
 		>
 			<KeyboardEventHandler
 				handleKeys={['enter']}

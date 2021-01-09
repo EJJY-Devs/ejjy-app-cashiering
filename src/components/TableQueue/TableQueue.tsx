@@ -33,10 +33,6 @@ export const TableQueue = ({ columns, data, activeRow, loading }: Props) => {
 	return (
 		<Spin size="large" spinning={loading}>
 			<div className="TableQueue" style={{ height: calculateTableHeight(data?.length + 1) + 25 }}>
-				{!data.length && (
-					<img src={require('../../assets/images/logo.jpg')} alt="logo" className="placeholder" />
-				)}
-
 				<table>
 					<thead>
 						<tr>

@@ -102,7 +102,7 @@ const reducer = handleActions(
 				const branchProduct = branchProducts.find(({ product }) => product?.id === item.product.id);
 
 				return {
-					data: item,
+					data: item.product,
 					transactionProductId: item.id,
 					id: branchProduct?.id,
 					productId: item.product.id,

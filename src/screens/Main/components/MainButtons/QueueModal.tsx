@@ -154,6 +154,7 @@ export const QueueModal = ({ visible, onClose }: Props) => {
 			onCancel={onClose}
 			centered
 			closable
+			destroyOnClose
 		>
 			<KeyboardEventHandler
 				handleKeys={['f1', 'enter', 'up', 'down']}

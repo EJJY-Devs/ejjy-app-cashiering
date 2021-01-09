@@ -190,6 +190,7 @@ export const DiscountModal = ({ product, visible, onClose }: Props) => {
 			onCancel={closeModal}
 			centered
 			closable
+			destroyOnClose
 		>
 			<KeyboardEventHandler
 				handleKeys={['f1', 'f2', 'f3', 'f4', 'tab']}

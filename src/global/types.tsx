@@ -12,7 +12,7 @@ export const productNavigation = {
 };
 
 export const userTypes = {
-	ADMIN: 'ADMIN',
+	ADMIN: 'admin',
 	OFFICE_MANAGER: 'office_manager',
 	BRANCH_MANAGER: 'branch_manager',
 	BRANCH_PERSONNEL: 'branch_personnel',

@@ -39,6 +39,7 @@ export const AddProductModal = ({ product, visible, onClose, onSuccess }: Props)
 	}, [visible, inputRef]);
 
 	const onSubmit = (data) => {
+		console.log('submit');
 		const callback = () => {
 			message.success('Product sucessfully added.');
 			onSuccess();
