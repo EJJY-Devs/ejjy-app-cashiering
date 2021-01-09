@@ -9,11 +9,12 @@ import { useTransactions } from '../../../../hooks/useTransactions';
 import './style.scss';
 
 interface Props {
+	inputRef?: any;
 	visible: boolean;
 	closeModal: any;
 }
 
-export const SearchTransaction = ({ visible, closeModal }: Props) => {
+export const SearchTransaction = ({ inputRef, visible, closeModal }: Props) => {
 	const { getTransaction, status: transactionsStatus } = useTransactions();
 	const { setCurrentTransaction } = useCurrentTransaction();
 	const { branchProducts } = useBranchProducts();
@@ -52,6 +53,7 @@ export const SearchTransaction = ({ visible, closeModal }: Props) => {
 				isDisabled={!searchedKey.length}
 			>
 				<ControlledInput
+					ref={inputRef}
 					type="number"
 					classNames="transaction-search-input"
 					value={searchedKey}

@@ -1,16 +1,17 @@
 import { Divider, message, Modal, Spin } from 'antd';
 import cn from 'classnames';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
+import KeyboardEventHandler from 'react-keyboard-event-handler';
+import FieldError from '../../../../components/elements/FieldError/FieldError';
 import { EMPTY_CELL } from '../../../../global/constants';
 import { request } from '../../../../global/types';
+import { useAuth } from '../../../../hooks/useAuth';
 import { useBranchProducts } from '../../../../hooks/useBranchProducts';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import { useTransactions } from '../../../../hooks/useTransactions';
 import { numberWithCommas } from '../../../../utils/function';
 import { DiscountForm } from './DiscountForm';
 import './style.scss';
-import { useAuth } from '../../../../hooks/useAuth';
-import FieldError from '../../../../components/elements/FieldError/FieldError';
 
 interface Props {
 	product: any;
@@ -19,6 +20,15 @@ interface Props {
 }
 
 export const DiscountModal = ({ product, visible, onClose }: Props) => {
+	// STATES
+	const [isCustomFieldsVisible, setIsCustomFieldsVisible] = useState(false);
+
+	// REFS
+	const usernameRef = useRef(null);
+	const passwordRef = useRef(null);
+	const discountRef = useRef(null);
+
+	// CUSTOM HOOKS
 	const { branchProducts } = useBranchProducts();
 	const { validateUser, status: authStatus, errors, reset } = useAuth();
 	const { updateTransaction, status } = useTransactions();
@@ -29,8 +39,7 @@ export const DiscountModal = ({ product, visible, onClose }: Props) => {
 		setCurrentTransaction,
 	} = useCurrentTransaction();
 
-	const [isCustomFieldsVisible, setIsCustomFieldsVisible] = useState(false);
-
+	// METHODS
 	const getInitialPrice = useCallback(() => {
 		const { pricePerPiece, discountPerPiece } = product;
 		return discountPerPiece > 0 ? pricePerPiece + discountPerPiece : pricePerPiece;
@@ -116,6 +125,62 @@ export const DiscountModal = ({ product, visible, onClose }: Props) => {
 		onClose();
 	};
 
+	const onOpenCustomDiscount = () => {
+		setIsCustomFieldsVisible((value) => {
+			if (!value) {
+				setTimeout(() => {
+					usernameRef?.current?.focus();
+				}, 500);
+			}
+
+			return !value;
+		});
+	};
+
+	const handleKeyPress = (key, event) => {
+		event.preventDefault();
+		event.stopPropagation();
+
+		if (key === 'tab' && isCustomFieldsVisible) {
+			let inputRef = null;
+			let { activeElement } = document;
+
+			if (activeElement === usernameRef.current) {
+				inputRef = passwordRef;
+			} else if (activeElement === passwordRef.current) {
+				inputRef = discountRef;
+			} else if (activeElement === discountRef.current) {
+				inputRef = usernameRef;
+			}
+
+			inputRef?.current?.focus();
+		}
+
+		// No Discount
+		if (key === 'f1' && product?.discountPerPiece > 0) {
+			onSelect(0);
+			return;
+		}
+
+		// Discount 1
+		if (key === 'f2' && getDiscount().branchProduct) {
+			onSelect(getDiscount()?.discount1);
+			return;
+		}
+
+		// Discount 2
+		if (key === 'f3' && getDiscount().branchProduct) {
+			onSelect(getDiscount()?.discount2);
+			return;
+		}
+
+		// Custom Discount
+		if (key === 'f4') {
+			onOpenCustomDiscount();
+			return;
+		}
+	};
+
 	return (
 		<Modal
 			title={`Discount - ${product?.data?.name}`}
@@ -126,6 +191,13 @@ export const DiscountModal = ({ product, visible, onClose }: Props) => {
 			centered
 			closable
 		>
+			<KeyboardEventHandler
+				handleKeys={['f1', 'f2', 'f3', 'f4', 'tab']}
+				onKeyEvent={handleKeyPress}
+				handleFocusableElements
+				isDisabled={!visible}
+			/>
+
 			<Spin size="large" spinning={[status, authStatus].includes(request.REQUESTING)}>
 				<button
 					className={cn('other-button btn-no-discount spacing', {
@@ -133,7 +205,8 @@ export const DiscountModal = ({ product, visible, onClose }: Props) => {
 					})}
 					onClick={() => onSelect(0)}
 				>
-					No Discount
+					<span>No Discount</span>
+					<span className="shortcut-key position-right text-lg">[F1]</span>
 				</button>
 
 				<button
@@ -141,6 +214,7 @@ export const DiscountModal = ({ product, visible, onClose }: Props) => {
 					onClick={() => onSelect(getDiscount()?.discount1)}
 				>
 					{`₱${numberWithCommas(getDiscount()?.discount1?.toFixed(2) || EMPTY_CELL)}`}
+					<span className="shortcut-key position-right text-lg">[F2]</span>
 				</button>
 
 				<button
@@ -148,24 +222,26 @@ export const DiscountModal = ({ product, visible, onClose }: Props) => {
 					onClick={() => onSelect(getDiscount()?.discount2)}
 				>
 					{`₱${numberWithCommas(getDiscount()?.discount2?.toFixed(2) || EMPTY_CELL)}`}
+					<span className="shortcut-key position-right text-lg">[F3]</span>
 				</button>
 
-				<button
-					className="other-button"
-					onClick={() => setIsCustomFieldsVisible((value) => !value)}
-				>
+				<button className="other-button" onClick={onOpenCustomDiscount}>
 					Custom
+					<span className="shortcut-key position-right text-lg">[F4]</span>
 				</button>
-
-				<Divider dashed />
 
 				{isCustomFieldsVisible && (
 					<>
+						<Divider dashed />
+
 						{!!errors.length && errors.map((error) => <FieldError error={error} />)}
 						<DiscountForm
 							minQuantity={Number(product?.data?.cost_per_piece) || 0}
 							maxQuantity={getInitialPrice()}
 							onSubmit={onSetCustomDiscount}
+							usernameRef={usernameRef}
+							passwordRef={passwordRef}
+							discountRef={discountRef}
 						/>
 					</>
 				)}

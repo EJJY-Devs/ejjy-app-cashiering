@@ -10,9 +10,19 @@ interface Props {
 	maxQuantity: number;
 	minQuantity: number;
 	onSubmit: any;
+	usernameRef: any;
+	passwordRef: any;
+	discountRef: any;
 }
 
-export const DiscountForm = ({ minQuantity, maxQuantity, onSubmit }: Props) => {
+export const DiscountForm = ({
+	usernameRef,
+	passwordRef,
+	discountRef,
+	minQuantity,
+	maxQuantity,
+	onSubmit,
+}: Props) => {
 	// STATES
 	const [isSubmitting, setSubmitting] = useState(false);
 
@@ -64,6 +74,7 @@ export const DiscountForm = ({ minQuantity, maxQuantity, onSubmit }: Props) => {
 				<Form className="form">
 					<div className="input-field">
 						<FormInputLabel
+							inputRef={usernameRef}
 							id="login"
 							label="Manager's Username"
 							inputClassname="input-control"
@@ -73,6 +84,7 @@ export const DiscountForm = ({ minQuantity, maxQuantity, onSubmit }: Props) => {
 					</div>
 					<div className="input-field">
 						<FormInputLabel
+							inputRef={passwordRef}
 							type="password"
 							id="password"
 							label="Manager's Password"
@@ -83,6 +95,7 @@ export const DiscountForm = ({ minQuantity, maxQuantity, onSubmit }: Props) => {
 					</div>
 					<div className="input-field">
 						<FormInputLabel
+							inputRef={discountRef}
 							type="number"
 							id="discount"
 							label="Discount"
@@ -94,7 +107,19 @@ export const DiscountForm = ({ minQuantity, maxQuantity, onSubmit }: Props) => {
 
 					<Divider />
 
-					<Button type="submit" text="Submit" size="lg" variant="primary" loading={isSubmitting} />
+					<Button
+						type="submit"
+						text={
+							<>
+								<span>Submit</span>
+								<span className="shortcut-key">[ENTER]</span>
+							</>
+						}
+						size="lg"
+						variant="primary"
+						loading={isSubmitting}
+						hasShortcutKey
+					/>
 				</Form>
 			)}
 		</Formik>

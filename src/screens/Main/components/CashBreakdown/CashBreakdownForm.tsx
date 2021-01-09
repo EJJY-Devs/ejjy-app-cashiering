@@ -134,11 +134,17 @@ export const CashBreakdownForm = ({ inputRef, required, onSubmit, onClose, loadi
 						{!required && (
 							<Button
 								type="button"
-								text="Cancel"
+								text={
+									<>
+										<span>Cancel</span>
+										<span className="shortcut-key">[ESC]</span>
+									</>
+								}
 								size="lg"
 								onClick={onClose}
 								classNames="space-right"
 								disabled={loading || isSubmitting}
+								hasShortcutKey
 							/>
 						)}
 

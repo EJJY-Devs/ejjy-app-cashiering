@@ -2,12 +2,7 @@
 
 $spacing: 25px;
 
-.fullscreen-enabled .Main {
-	background-color: $color-main-background;
-}
-
 .Main {
-	background-color: $color-main-background;
 	.main-content {
 		display: flex;
 
@@ -40,6 +35,7 @@ $spacing: 25px;
 }
 
 .other-button {
+	position: relative;
 	display: block;
 	width: 100%;
 	background: $color-gray;
@@ -80,6 +76,17 @@ $spacing: 25px;
 
 .shortcut-key {
 	display: block;
-	font-size: 15px;
-	line-height: 100%;
+	@include font($size: 15px);
+
+	&.text-lg {
+		@include font($size: 18px);
+	}
+
+	&.position-right {
+		@include flex(center, center);
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		right: 15px;
+	}
 }
