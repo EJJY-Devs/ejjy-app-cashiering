@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Divider, Modal } from 'antd';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import { OthersReports } from './OthersReports';
 import { SearchTransaction } from './SearchTransaction';
 import './style.scss';
 
@@ -19,6 +20,19 @@ export const OthersModal = ({
 	visible,
 	onClose,
 }: Props) => {
+	// REFS
+	const inputRef = useRef(null);
+
+	// METHODS
+	useEffect(() => {
+		if (inputRef && inputRef.current) {
+			setTimeout(() => {
+				const input = inputRef.current;
+				input.focus();
+			}, 500);
+		}
+	}, [visible, inputRef]);
+
 	return (
 		<Modal
 			title="Others"
@@ -29,15 +43,19 @@ export const OthersModal = ({
 			centered
 			closable
 		>
-			<SearchTransaction visible={visible} closeModal={onClose} />
+			<SearchTransaction inputRef={inputRef} visible={visible} closeModal={onClose} />
 
-			<button className="other-button btn-cash-breakdown" onClick={onCashCollection}>
+			<button className="other-button" onClick={onCashCollection}>
 				Cash Collection
 			</button>
 
-			<button className="other-button btn-end-session" onClick={onEndSession}>
+			<button className="other-button btn-end-session spacing-top" onClick={onEndSession}>
 				End Session
 			</button>
+
+			<Divider />
+
+			<OthersReports />
 
 			<Divider />
 

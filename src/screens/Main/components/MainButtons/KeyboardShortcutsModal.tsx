@@ -6,16 +6,17 @@ import { KeyboardButtonDisplay } from '../../../../components/KeyboardButton/Key
 import {
 	cashCollectionShortcutKeysDisplay,
 	deleteItemShortcutKeysDisplay,
-	discountShortcutKeysDisplay,
+	discountItemShortcutKeysDisplay,
 	editClientShortcutKeysDisplay,
 	editQuantityShortcutKeysDisplay,
 	endSessionShortcutKeysDisplay,
-	holdResumeShortcutKeysDisplay,
+	queueResumeShortcutKeysDisplay,
 	othersShortcutKeysDisplay,
 	resetShortcutKeysDisplay,
 	searchShortcutKeysDisplay,
 	tenderShortcutKeysDisplay,
 	voidShortcutKeysDisplay,
+	discountAmountShortcutKeysDisplay,
 } from '../../../../global/options';
 import './style.scss';
 
@@ -85,8 +86,19 @@ export const KeyboardShortcutsModal = ({ visible, onClose }: Props) => {
 					classNamesValue="value"
 					labelSpan={12}
 					valueSpan={12}
-					label="Discount"
-					value={discountShortcutKeysDisplay.map((key) => (
+					label="Discount Item"
+					value={discountItemShortcutKeysDisplay.map((key) => (
+						<KeyboardButtonDisplay key={key} keyboardKey={key} />
+					))}
+				/>
+
+				<DetailsSingle
+					classNamesLabel="label"
+					classNamesValue="value"
+					labelSpan={12}
+					valueSpan={12}
+					label="Discount Amount"
+					value={discountAmountShortcutKeysDisplay.map((key) => (
 						<KeyboardButtonDisplay key={key} keyboardKey={key} />
 					))}
 				/>
@@ -129,8 +141,8 @@ export const KeyboardShortcutsModal = ({ visible, onClose }: Props) => {
 					classNamesValue="value"
 					labelSpan={12}
 					valueSpan={12}
-					label="Hold & Resume"
-					value={holdResumeShortcutKeysDisplay.map((key) => (
+					label="Queue"
+					value={queueResumeShortcutKeysDisplay.map((key) => (
 						<KeyboardButtonDisplay key={key} keyboardKey={key} />
 					))}
 				/>

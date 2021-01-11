@@ -12,7 +12,7 @@ export const productNavigation = {
 };
 
 export const userTypes = {
-	ADMIN: 'ADMIN',
+	ADMIN: 'admin',
 	OFFICE_MANAGER: 'office_manager',
 	BRANCH_MANAGER: 'branch_manager',
 	BRANCH_PERSONNEL: 'branch_personnel',
@@ -37,7 +37,7 @@ export const navigationTypes = {
 
 export const transactionStatusTypes = {
 	FULLY_PAID: 'fully_paid',
-	HOLD: 'hold',
+	QUEUE: 'hold',
 	VOID_EDITED: 'void_edited',
 	VOID_CANCELLED: 'void_cancelled',
 };
@@ -45,4 +45,14 @@ export const transactionStatusTypes = {
 export const reportTypes = {
 	XREAD: 'XREAD',
 	ZREAD: 'ZREAD',
+};
+
+export const vatTypes = {
+	VATABLE: 'V',
+	VAT_EMPTY: 'VE',
+};
+
+export const unitOfMeasurementTypes = {
+	WEIGHING: 'weighing',
+	NON_WEIGHING: 'non_weighing',
 };

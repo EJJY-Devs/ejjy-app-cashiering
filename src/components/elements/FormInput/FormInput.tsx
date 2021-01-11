@@ -13,6 +13,7 @@ export interface IInputProps {
 	classNames?: string;
 	autoFocus?: boolean;
 	inputRef?: any;
+	step?: string;
 }
 
 const FormInput = ({
@@ -25,6 +26,7 @@ const FormInput = ({
 	autoFocus,
 	classNames,
 	inputRef,
+	step,
 }: IInputProps) => (
 	<Field
 		innerRef={inputRef}
@@ -38,6 +40,7 @@ const FormInput = ({
 		disabled={disabled}
 		tabIndex={1}
 		autoFocus={autoFocus}
+		step={step}
 	/>
 );
 

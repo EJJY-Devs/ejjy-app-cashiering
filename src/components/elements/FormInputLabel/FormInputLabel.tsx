@@ -18,6 +18,7 @@ const FormInputLabel = ({
 	min,
 	placeholder,
 	disabled,
+	inputRef,
 }: Props) => (
 	<>
 		<Label id={id} label={inputLabel} classNames={labelClassname} spacing />
@@ -29,6 +30,7 @@ const FormInputLabel = ({
 			min={min}
 			placeholder={placeholder}
 			disabled={disabled}
+			inputRef={inputRef}
 		/>
 	</>
 );

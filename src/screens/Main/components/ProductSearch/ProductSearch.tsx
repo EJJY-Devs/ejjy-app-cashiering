@@ -16,17 +16,23 @@ import './style.scss';
 const SEARCH_DEBOUNCE_TIME = 300;
 
 export const ProductSearch = () => {
-	const { transactionProducts } = useCurrentTransaction();
-	const { branchProducts } = useBranchProducts();
-
-	const itemRefs = useRef([]);
-	const inputRef = useRef(null);
+	// STATES
 	const [searchableProducts, setSearchableProducts] = useState([]);
 	const [activeIndex, setActiveIndex] = useState(NO_INDEX_SELECTED);
 	const [products, setProducts] = useState([]);
 	const [searchedKey, setSearchedKey] = useState('');
 	const [searchedSpin, setSearchedSpin] = useState(false);
 	const [addProductModalVisible, setAddProductModalVisible] = useState(false);
+
+	// REFS
+	const itemRefs = useRef([]);
+	const inputRef = useRef(null);
+
+	// CUSTOM HOOKS
+	const { transactionProducts } = useCurrentTransaction();
+	const { branchProducts } = useBranchProducts();
+
+	//METHODS
 
 	// Effect: Set list of searchable products
 	useEffect(() => {
@@ -126,14 +132,11 @@ export const ProductSearch = () => {
 
 	return (
 		<div className="ProductSearch">
-			<KeyboardEventHandler
-				handleKeys={searchShortcutKeys}
-				onKeyEvent={(key, e) => handleKeyPress(key, e)}
-			/>
+			<KeyboardEventHandler handleKeys={searchShortcutKeys} onKeyEvent={handleKeyPress} />
 
 			<KeyboardEventHandler
 				handleKeys={['up', 'down', 'enter', 'esc']}
-				onKeyEvent={(key, e) => handleKeyPress(key, e)}
+				onKeyEvent={handleKeyPress}
 				isDisabled={!products.length}
 			>
 				<ControlledInput

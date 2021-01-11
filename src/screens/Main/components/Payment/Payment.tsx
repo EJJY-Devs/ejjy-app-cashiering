@@ -79,10 +79,7 @@ export const Payment = () => {
 
 	return (
 		<div className="Payment">
-			<KeyboardEventHandler
-				handleKeys={tenderShortcutKeys}
-				onKeyEvent={(key, e) => handleKeyPress(key, e)}
-			/>
+			<KeyboardEventHandler handleKeys={tenderShortcutKeys} onKeyEvent={handleKeyPress} />
 
 			<div className="payment-content">
 				<div className="text-wrapper">
@@ -91,11 +88,17 @@ export const Payment = () => {
 				</div>
 				<Button
 					classNames="btn-pay"
-					text="Advance"
+					text={
+						<>
+							<span>Advance</span>
+							<span className="shortcut-key">[F8]</span>
+						</>
+					}
 					size="lg"
 					variant="primary"
 					onClick={onPay}
 					disabled={isPaymentDisabled()}
+					hasShortcutKey
 				/>
 			</div>
 			<div className="pending-balance-wrapper">
@@ -113,7 +116,6 @@ export const Payment = () => {
 			<ThankYouModal
 				onViewInvoice={onViewInvoice}
 				visible={thankYouModalVisible}
-				transaction={transaction}
 				onClose={() => setThankYouModalVisible(false)}
 			/>
 

@@ -3,14 +3,23 @@ import { message, Tooltip } from 'antd';
 import { floor, throttle } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import KeyboardEventHandler from 'react-keyboard-event-handler';
-import { CancelButtonIcon, TableNormalProducts } from '../../../../components';
+import { CancelButtonIcon, TableProducts } from '../../../../components';
 import { NO_INDEX_SELECTED, PRODUCT_LENGTH_PER_PAGE } from '../../../../global/constants';
-import { deleteItemShortcutKeys, editQuantityShortcutKeys } from '../../../../global/options';
-import { productNavigation, request, transactionStatusTypes } from '../../../../global/types';
+import {
+	deleteItemShortcutKeys,
+	discountItemShortcutKeys,
+	editQuantityShortcutKeys,
+} from '../../../../global/options';
+import {
+	productNavigation,
+	request,
+	transactionStatusTypes,
+	vatTypes,
+} from '../../../../global/types';
 import { useBranchProducts } from '../../../../hooks/useBranchProducts';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import { useTransactions } from '../../../../hooks/useTransactions';
-import { numberWithCommas } from '../../../../utils/function';
+import { getProductQuantity, numberWithCommas } from '../../../../utils/function';
 import { DiscountModal } from './DiscountModal';
 import { EditProductModal } from './EditProductModal';
 import './style.scss';
@@ -20,9 +29,10 @@ import { ExclamationCircleOutlined } from '@ant-design/icons';
 const columns = [
 	{ name: '', width: '1px' },
 	{ name: 'Item', width: '40%' },
-	{ name: 'Qty', width: '15%', rightAligned: true },
-	{ name: 'Rate', width: '15%', rightAligned: true },
-	{ name: 'Amount', rightAligned: true },
+	{ name: 'Qty', width: '15%', alignment: 'center' },
+	{ name: 'Rate', width: '15%', alignment: 'end' },
+	{ name: 'Type', alignment: 'center' },
+	{ name: 'Amount', alignment: 'end' },
 ];
 
 const uneditableStatus = [transactionStatusTypes.FULLY_PAID, transactionStatusTypes.VOID_EDITED];
@@ -63,11 +73,11 @@ export const ProductTable = ({ isLoading }: Props) => {
 				uneditableStatus.includes(currentTransactionStatus) ? null : (
 					<CancelButtonIcon tooltip="Remove" onClick={() => onRemoveProductConfirmation(item)} />
 				),
-				<Tooltip placement="top" title={item.productDescription}>
-					{item.productName}
+				<Tooltip placement="top" title={item.data.description}>
+					{item.data.name}
 				</Tooltip>,
-				item.quantity.toFixed(3),
-				<div onClick={() => onClickRate(item)}>
+				getProductQuantity(item.quantity, item.data.unit_of_measurement),
+				<div onClick={() => onDiscountProduct(item)}>
 					{item?.discountPerPiece > 0 ? (
 						<>
 							{`₱${numberWithCommas(item.pricePerPiece.toFixed(2))}`}
@@ -79,6 +89,7 @@ export const ProductTable = ({ isLoading }: Props) => {
 						`₱${numberWithCommas(item.pricePerPiece.toFixed(2))}`
 					)}
 				</div>,
+				item.data.is_vat_exempted ? vatTypes.VATABLE : vatTypes.VAT_EMPTY,
 				`₱${numberWithCommas((item.quantity * item.pricePerPiece).toFixed(2))}`,
 			]);
 
@@ -124,7 +135,7 @@ export const ProductTable = ({ isLoading }: Props) => {
 		Modal.confirm({
 			title: 'Delete Confirmation',
 			icon: <ExclamationCircleOutlined />,
-			content: `Are you sure you want to delete ${product.productName}?`,
+			content: `Are you sure you want to delete ${product.data.name}?`,
 			okText: 'Delete',
 			cancelText: 'Cancel',
 			onOk: () => onRemoveProduct(product.id),
@@ -141,7 +152,7 @@ export const ProductTable = ({ isLoading }: Props) => {
 		// }
 	};
 
-	const onClickRate = (product) => {
+	const onDiscountProduct = (product) => {
 		if (currentTransactionStatus !== transactionStatusTypes.FULLY_PAID) {
 			setSelectedDiscountProduct(product);
 			setDiscountModalVisible(true);
@@ -169,8 +180,13 @@ export const ProductTable = ({ isLoading }: Props) => {
 			return;
 		}
 
-		// Select products
+		// Discount
+		if (discountItemShortcutKeys.includes(key)) {
+			onDiscountProduct(transactionProducts?.[selectedProductIndex]);
+			return;
+		}
 
+		// Select products
 		if ((key === 'up' || key === 'down') && selectedProductIndex === NO_INDEX_SELECTED) {
 			setSelectedProductIndex(0);
 			return;
@@ -211,8 +227,13 @@ export const ProductTable = ({ isLoading }: Props) => {
 	return (
 		<div className="ProductTable">
 			<KeyboardEventHandler
-				handleKeys={[...editQuantityShortcutKeys, ...deleteItemShortcutKeys, ...['up', 'down']]}
-				onKeyEvent={(key, e) => handleKeyPress(key, e)}
+				handleKeys={[
+					...editQuantityShortcutKeys,
+					...deleteItemShortcutKeys,
+					...discountItemShortcutKeys,
+					...['up', 'down'],
+				]}
+				onKeyEvent={handleKeyPress}
 				isDisabled={
 					selectedProductIndex === NO_INDEX_SELECTED ||
 					!transactionProducts.length ||
@@ -220,7 +241,7 @@ export const ProductTable = ({ isLoading }: Props) => {
 				}
 			/>
 
-			<TableNormalProducts
+			<TableProducts
 				columns={columns}
 				data={data}
 				activeRow={selectedProductIndex}

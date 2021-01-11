@@ -33,7 +33,7 @@ function* create({ payload }: any) {
 		const response = yield call(service.create, data);
 
 		yield put(actions.save({ type: types.CREATE_CASH_BREAKDOWN, cashBreakdown: response.data }));
-		callback({ status: request.SUCCESS });
+		callback({ status: request.SUCCESS, response: response.data });
 	} catch (e) {
 		callback({ status: request.ERROR, errors: e.errors });
 	}

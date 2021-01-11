@@ -2,7 +2,7 @@
 @import '../../style.scss';
 
 .MainButtons {
-	margin-top: 64px;
+	margin-top: 55px;
 
 	.store-info-wrapper {
 		display: grid;
@@ -36,9 +36,9 @@
 	box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
 	border: 0;
 	border-radius: 10px;
-	@include font(30px, bold);
+	@include font(25px, bold);
 	color: #858585;
-	padding: 35px 10px;
+	padding: 29px 10px;
 	cursor: pointer;
 	outline: 0;
 
@@ -62,6 +62,10 @@
 	.spinner {
 		line-height: 100%;
 	}
+
+	.shortcut-key {
+		margin-top: 3px;
+	}
 }
 
 .OthersModal {
@@ -69,11 +73,46 @@
 		font-size: 20px;
 		margin-bottom: 20px;
 	}
+
+	.spacing-top {
+		margin-top: 15px;
+	}
 }
 
-.HoldModal {
-	.TableNormal {
+.QueueModal {
+	.TableQueue {
 		margin-top: 10px;
+	}
+
+	.btn-queue {
+		background-color: $color-primary;
+		display: block;
+		width: 100%;
+		box-shadow: 0px 4px 0px #17af5e;
+		border: 0;
+		border-radius: 10px;
+		@include font(25px, bold);
+		color: white;
+		padding: 10px;
+		cursor: pointer;
+		outline: 0;
+
+		&.disabled {
+			opacity: 0.3 !important;
+			color: #858585 !important;
+			background: white !important;
+			border: 3px solid #b2b2b2 !important;
+			pointer-events: none !important;
+			box-shadow: none !important;
+		}
+
+		&:hover {
+			opacity: 0.7;
+		}
+
+		.shortcut-key {
+			margin-top: 3px;
+		}
 	}
 }
 

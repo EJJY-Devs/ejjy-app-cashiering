@@ -10,9 +10,12 @@ import { sleep } from '../../../../utils/function';
 interface Props {
 	onSubmit: any;
 	onClose: any;
+	nameRef: any;
+	addressRef: any;
+	tinRef: any;
 }
 
-export const ClientDetailsForm = ({ onSubmit, onClose }: Props) => {
+export const ClientDetailsForm = ({ nameRef, addressRef, tinRef, onSubmit, onClose }: Props) => {
 	const { client } = useCurrentTransaction();
 	const [isSubmitting, setSubmitting] = useState(false);
 
@@ -51,6 +54,7 @@ export const ClientDetailsForm = ({ onSubmit, onClose }: Props) => {
 				<Form className="form">
 					<div className="input-field">
 						<FormInputLabel
+							inputRef={nameRef}
 							id="name"
 							label="Name"
 							inputClassname="input-control"
@@ -60,6 +64,7 @@ export const ClientDetailsForm = ({ onSubmit, onClose }: Props) => {
 					</div>
 					<div className="input-field">
 						<FormInputLabel
+							inputRef={addressRef}
 							id="address"
 							label="Address"
 							inputClassname="input-control"
@@ -69,6 +74,7 @@ export const ClientDetailsForm = ({ onSubmit, onClose }: Props) => {
 					</div>
 					<div className="input-field">
 						<FormInputLabel
+							inputRef={tinRef}
 							id="tin"
 							label="TIN"
 							inputClassname="input-control"
@@ -82,19 +88,30 @@ export const ClientDetailsForm = ({ onSubmit, onClose }: Props) => {
 					<div className="custom-footer">
 						<Button
 							type="button"
-							text="Cancel"
+							text={
+								<>
+									<span>Cancel</span>
+									<span className="shortcut-key">[ESC]</span>
+								</>
+							}
 							size="lg"
 							onClick={onClose}
 							classNames="btn-cancel"
 							disabled={isSubmitting}
+							hasShortcutKey
 						/>
-
 						<Button
 							type="submit"
-							text="Submit"
+							text={
+								<>
+									<span>Submit</span>
+									<span className="shortcut-key">[ENTER]</span>
+								</>
+							}
 							size="lg"
 							variant="primary"
 							loading={isSubmitting}
+							hasShortcutKey
 						/>
 					</div>
 				</Form>

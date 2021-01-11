@@ -5,6 +5,12 @@ import { Button, FieldError, FormInputLabel } from '../../../components/elements
 import { sleep } from '../../../utils/function';
 import '../style.scss';
 
+declare global {
+	interface Window {
+		epson: any;
+	}
+}
+
 export interface ILoginValues {
 	login: string;
 	password: string;
@@ -16,9 +22,17 @@ interface ILoginForm {
 	loading: boolean;
 	submitText?: string;
 	isManager?: boolean;
+	shouldFullScreen?: boolean;
 }
 
-export const LoginForm = ({ loading, errors, onSubmit, submitText, isManager }: ILoginForm) => {
+export const LoginForm = ({
+	shouldFullScreen,
+	loading,
+	errors,
+	onSubmit,
+	submitText,
+	isManager,
+}: ILoginForm) => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const getFormDetails = useCallback(
@@ -77,6 +91,11 @@ export const LoginForm = ({ loading, errors, onSubmit, submitText, isManager }: 
 							variant="secondary"
 							loading={loading || isSubmitting}
 							block
+							onClick={() => {
+								if (shouldFullScreen) {
+									document.documentElement?.requestFullscreen();
+								}
+							}}
 						/>
 					</Form>
 				)}
@@ -87,4 +106,5 @@ export const LoginForm = ({ loading, errors, onSubmit, submitText, isManager }: 
 
 LoginForm.defaultProps = {
 	submitText: 'Start Session',
+	shouldFullScreen: false,
 };

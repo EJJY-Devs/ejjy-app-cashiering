@@ -5,7 +5,7 @@ import { EMPTY_CELL } from '../../../../global/constants';
 import {
 	cashCollectionShortcutKeys,
 	endSessionShortcutKeys,
-	holdResumeShortcutKeys,
+	queueResumeShortcutKeys,
 	othersShortcutKeys,
 	resetShortcutKeys,
 	voidShortcutKeys,
@@ -15,7 +15,7 @@ import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import { useSession } from '../../../../hooks/useSession';
 import { useTransactions } from '../../../../hooks/useTransactions';
 import { useUI } from '../../../../hooks/useUI';
-import { HoldModal } from './HoldModal';
+import { QueueModal } from './QueueModal';
 import { KeyboardShortcutsModal } from './KeyboardShortcutsModal';
 import { MainButton } from './MainButton';
 import { OthersModal } from './OthersModal';
@@ -29,7 +29,7 @@ interface Props {
 export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 	// STATES
 	const [othersModalVisible, setOthersModalVisible] = useState(false);
-	const [holdModalVisible, setHoldModalVisible] = useState(false);
+	const [queueModalVisible, setQueueModalVisible] = useState(false);
 	const [keyboardShortcutsVisible, setKeyboardShortcutsVisible] = useState(false);
 
 	// CUSTOM HOOKS
@@ -115,9 +115,9 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 		event.preventDefault();
 		event.stopPropagation();
 
-		// Hold and Resume
-		if (holdResumeShortcutKeys.includes(key)) {
-			setHoldModalVisible(true);
+		// Queue and Resume
+		if (queueResumeShortcutKeys.includes(key)) {
+			setQueueModalVisible(true);
 			return;
 		}
 
@@ -164,11 +164,11 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 					...othersShortcutKeys,
 					...cashCollectionShortcutKeys,
 					...endSessionShortcutKeys,
-					...holdResumeShortcutKeys,
+					...queueResumeShortcutKeys,
 					...voidShortcutKeys,
 					...resetShortcutKeys,
 				]}
-				onKeyEvent={(key, e) => handleKeyPress(key, e)}
+				onKeyEvent={handleKeyPress}
 			/>
 
 			<div className="store-info-wrapper">
@@ -184,16 +184,55 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 			</div>
 
 			<div className="buttons-wrapper">
-				<MainButton title="Hold" classNames="btn-hold" onClick={() => setHoldModalVisible(true)} />
-
-				<MainButton title="Discount" onClick={() => null} />
-
-				<MainButton title="Reset" onClick={onReset} disabled={isResetDisabled()} />
-
-				<MainButton title="Void" onClick={onVoid} disabled={isVoidDisabled()} />
+				<MainButton
+					title={
+						<>
+							<span>Queue</span>
+							<span className="shortcut-key">[F9]</span>
+						</>
+					}
+					onClick={() => setQueueModalVisible(true)}
+				/>
 
 				<MainButton
-					title="Others"
+					title={
+						<>
+							<span>Discount</span>
+							<span className="shortcut-key">[CTRL + Z]</span>
+						</>
+					}
+					onClick={() => null}
+				/>
+
+				<MainButton
+					title={
+						<>
+							<span>Reset</span>
+							<span className="shortcut-key">[F12]</span>
+						</>
+					}
+					onClick={onReset}
+					disabled={isResetDisabled()}
+				/>
+
+				<MainButton
+					title={
+						<>
+							<span>Void</span>
+							<span className="shortcut-key">[F11]</span>
+						</>
+					}
+					onClick={onVoid}
+					disabled={isVoidDisabled()}
+				/>
+
+				<MainButton
+					title={
+						<>
+							<span>Others</span>
+							<span className="shortcut-key">[F1]</span>
+						</>
+					}
 					classNames="btn-others"
 					onClick={() => setOthersModalVisible(true)}
 				/>
@@ -212,7 +251,7 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 				onClose={() => setKeyboardShortcutsVisible(false)}
 			/>
 
-			<HoldModal visible={holdModalVisible} onClose={() => setHoldModalVisible(false)} />
+			<QueueModal visible={queueModalVisible} onClose={() => setQueueModalVisible(false)} />
 		</div>
 	);
 };

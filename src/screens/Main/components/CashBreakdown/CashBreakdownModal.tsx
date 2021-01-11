@@ -1,11 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { message, Modal } from 'antd';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { FieldError } from '../../../../components/elements';
 import { printCashBreakdown } from '../../../../configurePrinter';
 import { types as cashBreakdownsRequestTypes } from '../../../../ducks/cash-breakdowns';
-import { cashBreakdownTypes, request } from '../../../../global/types';
+import { request } from '../../../../global/types';
 import { useCashBreakdown } from '../../../../hooks/useCashBreakdown';
+import { useSession } from '../../../../hooks/useSession';
+import { getCashBreakdownTypeDescription } from '../../../../utils/function';
 import { CashBreakdownForm } from './CashBreakdownForm';
 import './style.scss';
 
@@ -26,37 +28,22 @@ export const CashBreakdownModal = ({
 	onSuccess,
 	onClose,
 }: Props) => {
-	// STATES
-	const [cashBreakdown, setCashBreakdown] = useState([]);
-
 	// REFS
 	const inputRef = useRef(null);
 
 	// CUSTOM HOOKS
+	const { session } = useSession();
 	const { createCashBreakdown, status, recentRequest, errors, reset } = useCashBreakdown();
 
 	useEffect(() => {
-		if (inputRef && inputRef.current) {
+		if (visible && inputRef && inputRef.current) {
 			setTimeout(() => {
-				const input = inputRef.current;
-				input.focus();
+				inputRef.current?.focus();
 			}, 500);
 		}
 	}, [visible, inputRef]);
 
-	const getTitle = useCallback(() => {
-		switch (type) {
-			case cashBreakdownTypes.START_SESSION: {
-				return 'Cash Breakdown - Start Session';
-			}
-			case cashBreakdownTypes.MID_SESSION: {
-				return 'Cash Collection';
-			}
-			case cashBreakdownTypes.END_SESSION: {
-				return 'Cash Breakdown - End Session';
-			}
-		}
-	}, [type]);
+	const getTitle = useCallback(() => getCashBreakdownTypeDescription(type), [type]);
 
 	const close = () => {
 		if (
@@ -77,20 +64,22 @@ export const CashBreakdownModal = ({
 
 	const onSubmit = (data) => {
 		if (sessionId && type) {
-			createCashBreakdown({
-				...data,
-				type,
-				cashiering_session_id: sessionId,
-			});
-			setCashBreakdown(data);
+			createCashBreakdown(
+				{
+					...data,
+					type,
+					cashiering_session_id: sessionId,
+				},
+				({ status, response }) => {
+					if (status === request.SUCCESS && response) {
+						printCashBreakdown(response, session, type);
+						reset();
+						onSuccess();
+					}
+				},
+			);
 		} else {
 			message.error('An error occured before submitting the cash breakdown.');
-		}
-	};
-
-	const onPrint = () => {
-		if (cashBreakdown) {
-			printCashBreakdown(cashBreakdown);
 		}
 	};
 
@@ -114,11 +103,6 @@ export const CashBreakdownModal = ({
 				onSubmit={onSubmit}
 				onClose={close}
 				loading={status === request.REQUESTING}
-				onPrint={onPrint}
-				forPrinting={
-					status === request.SUCCESS &&
-					recentRequest === cashBreakdownsRequestTypes.CREATE_CASH_BREAKDOWN
-				}
 			/>
 		</Modal>
 	);

@@ -6,13 +6,18 @@ import { request } from '../../../../global/types';
 import { useBranchProducts } from '../../../../hooks/useBranchProducts';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import { useTransactions } from '../../../../hooks/useTransactions';
+import { useUI } from '../../../../hooks/useUI';
 
 interface Props {
 	setLoading: any;
 }
 
 export const BarcodeScanner = ({ setLoading }: Props) => {
+	// STATES
 	const { branchProducts } = useBranchProducts();
+
+	// CUSTOM HOOKS
+	const { barcodeScanningEnabled } = useUI();
 	const {
 		transactionId,
 		transactionProducts,
@@ -22,6 +27,7 @@ export const BarcodeScanner = ({ setLoading }: Props) => {
 	} = useCurrentTransaction();
 	const { updateTransaction } = useTransactions();
 
+	// METHODS
 	const addBarcodeProduct = (branchProduct, quantity) => {
 		setLoading(true);
 
@@ -56,12 +62,12 @@ export const BarcodeScanner = ({ setLoading }: Props) => {
 				},
 			);
 		} else {
+			// NOTE: Setting of product
 			addProduct({
 				product: {
+					data: branchProduct.product,
 					id: branchProduct.id,
 					productId: branchProduct.product.id,
-					productName: branchProduct.product.name,
-					productDescription: branchProduct.product.description,
 					pricePerPiece: branchProduct.price_per_piece,
 					quantity,
 				},
@@ -150,5 +156,7 @@ export const BarcodeScanner = ({ setLoading }: Props) => {
 
 	const handleError = (err) => console.error(err);
 
-	return <BarcodeReader onError={handleError} onScan={handleScan} />;
+	return barcodeScanningEnabled ? (
+		<BarcodeReader onError={handleError} onScan={handleScan} />
+	) : null;
 };

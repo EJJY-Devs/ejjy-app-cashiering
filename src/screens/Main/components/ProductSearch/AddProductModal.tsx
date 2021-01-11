@@ -15,17 +15,20 @@ interface Props {
 }
 
 export const AddProductModal = ({ product, visible, onClose, onSuccess }: Props) => {
+	// REFS
+	const inputRef = useRef(null);
+
+	// CUSTOM HOOKS
 	const { branchProducts } = useBranchProducts();
+	const { updateTransaction, status } = useTransactions();
 	const {
 		transactionId,
 		transactionProducts,
 		addProduct,
 		setCurrentTransaction,
 	} = useCurrentTransaction();
-	const { updateTransaction, status } = useTransactions();
 
-	const inputRef = useRef(null);
-
+	// METHODS
 	useEffect(() => {
 		if (inputRef && inputRef.current) {
 			setTimeout(() => {
@@ -36,6 +39,7 @@ export const AddProductModal = ({ product, visible, onClose, onSuccess }: Props)
 	}, [visible, inputRef]);
 
 	const onSubmit = (data) => {
+		console.log('submit');
 		const callback = () => {
 			message.success('Product sucessfully added.');
 			onSuccess();
@@ -68,12 +72,12 @@ export const AddProductModal = ({ product, visible, onClose, onSuccess }: Props)
 				},
 			);
 		} else {
+			// NOTE: Setting of product
 			addProduct({
 				product: {
+					data: product.product,
 					id: product.id,
 					productId: product.product.id,
-					productName: product.product.name,
-					productDescription: product.product.description,
 					pricePerPiece: product.price_per_piece,
 					quantity: data.quantity,
 				},
@@ -96,6 +100,7 @@ export const AddProductModal = ({ product, visible, onClose, onSuccess }: Props)
 				<AddProductForm
 					inputRef={(el) => (inputRef.current = el)}
 					maxQuantity={product?.current_balance}
+					unitOfMeasurementType={product?.product?.unit_of_measurement}
 					onSubmit={onSubmit}
 					onClose={onClose}
 				/>

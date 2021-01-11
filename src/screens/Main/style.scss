@@ -6,7 +6,8 @@ $spacing: 25px;
 	.main-content {
 		display: flex;
 
-		.void-warning {
+		.void-warning,
+		.full-paid-reprint {
 			margin-top: 20px;
 		}
 
@@ -34,6 +35,7 @@ $spacing: 25px;
 }
 
 .other-button {
+	position: relative;
 	display: block;
 	width: 100%;
 	background: $color-gray;
@@ -60,7 +62,6 @@ $spacing: 25px;
 	}
 
 	&.btn-end-session {
-		margin-top: 25px;
 		background-color: $color-red;
 		color: white;
 		box-shadow: 0px 4px 0px #ab363d !important;
@@ -70,5 +71,22 @@ $spacing: 25px;
 		background-color: $color-red;
 		color: white;
 		box-shadow: 0px 4px 0px #ab363d;
+	}
+}
+
+.shortcut-key {
+	display: block;
+	@include font($size: 15px);
+
+	&.text-lg {
+		@include font($size: 18px);
+	}
+
+	&.position-right {
+		@include flex(center, center);
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		right: 15px;
 	}
 }

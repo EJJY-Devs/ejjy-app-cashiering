@@ -1,11 +1,11 @@
 import { LoadingOutlined } from '@ant-design/icons';
 import { Spin } from 'antd';
 import cn from 'classnames';
-import React from 'react';
+import React, { ReactNode } from 'react';
 import './style.scss';
 
 interface Props {
-	title: string;
+	title: string | ReactNode;
 	onClick: any;
 	classNames?: string;
 	disabled?: boolean;

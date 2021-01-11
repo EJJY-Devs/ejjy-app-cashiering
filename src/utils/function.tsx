@@ -8,11 +8,16 @@ import {
 	coloredTextType,
 	OutOfStocksBadgePill,
 	ReorderBadgePill,
-	ROW_HEIGHT,
 } from '../components';
 import { UncontrolledInput } from '../components/elements';
-import { MACHINE_ID_KEY } from '../global/constants';
-import { branchProductStatus, request, userTypes } from '../global/types';
+import { MACHINE_ID_KEY, ROW_HEIGHT } from '../global/constants';
+import {
+	branchProductStatus,
+	cashBreakdownTypes,
+	request,
+	unitOfMeasurementTypes,
+	userTypes,
+} from '../global/types';
 
 export const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -154,3 +159,27 @@ export const getBranchProductStatus = memoize((status) => {
 		}
 	}
 });
+
+export const getCashBreakdownTypeDescription = memoize((type) => {
+	switch (type) {
+		case cashBreakdownTypes.START_SESSION: {
+			return 'Cash Breakdown - Start Session';
+		}
+		case cashBreakdownTypes.MID_SESSION: {
+			return 'Cash Collection';
+		}
+		case cashBreakdownTypes.END_SESSION: {
+			return 'Cash Breakdown - End Session';
+		}
+	}
+});
+
+export const getProductQuantity = (quantity, unitOfMeasurementType) => {
+	if (unitOfMeasurementType === unitOfMeasurementTypes.WEIGHING) {
+		return quantity.toFixed(3);
+	} else if (unitOfMeasurementType === unitOfMeasurementTypes.NON_WEIGHING) {
+		return quantity.toFixed(0);
+	}
+
+	return 0;
+};

@@ -30,6 +30,12 @@ export const ViewXreadReportModal = ({ report, visible, onClose }: Props) => {
 				<DetailsSingle
 					labelSpan={12}
 					valueSpan={12}
+					label="Is Machined Used?"
+					value={report?.total_sales === 0 ? 'Not Used' : 'Used'}
+				/>
+				<DetailsSingle
+					labelSpan={12}
+					valueSpan={12}
 					label="Location"
 					value={report?.location || EMPTY_CELL}
 				/>

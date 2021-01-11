@@ -1,7 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Alert } from 'antd';
+import { Alert, Button, Space } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Container } from '../../components';
+import { printSalesInvoice } from '../../configurePrinter';
 import { types as cashBreakdownsRequestTypes } from '../../ducks/cash-breakdowns';
 import { types as sessionTypes } from '../../ducks/sessions';
 import { cashBreakdownTypes, request, transactionStatusTypes } from '../../global/types';
@@ -41,7 +42,14 @@ const Main = () => {
 		status: sessionStatus,
 		recentRequest: sessionRecentRequest,
 	} = useSession();
-	const { transactionId, transactionStatus, resetTransaction } = useCurrentTransaction();
+	const {
+		transaction,
+		transactionId,
+		transactionStatus,
+		transactionProducts,
+		previousSukli,
+		resetTransaction,
+	} = useCurrentTransaction();
 	const {
 		cashBreakdowns,
 		listCashBreakdown,
@@ -58,10 +66,7 @@ const Main = () => {
 		if (transactionId) {
 			resetTransaction();
 		}
-	}, []);
 
-	// Effect: Fetch needed data
-	useEffect(() => {
 		validateSession(({ status, response }) => {
 			if (status === request.SUCCESS) {
 				if (response) {
@@ -157,8 +162,14 @@ const Main = () => {
 		}
 	};
 
+	const reprintInvoice = () => {
+		printSalesInvoice(transaction, transactionProducts, previousSukli);
+	};
+
 	return (
 		<Container loading={isLoading()} loadingText={getLoadingText()}>
+			<BarcodeScanner setLoading={setBarcodeScanLoading} />
+
 			<section className="Main">
 				<div className="main-content">
 					<div className="left">
@@ -174,6 +185,21 @@ const Main = () => {
 							/>
 						)}
 
+						{transactionStatus === transactionStatusTypes.FULLY_PAID && (
+							<Alert
+								className="full-paid-reprint"
+								message="This transaction is fully paid."
+								type="info"
+								action={
+									<Space>
+										<Button size="large" type="primary" onClick={reprintInvoice}>
+											REPRINT INVOICE
+										</Button>
+									</Space>
+								}
+							/>
+						)}
+
 						<ProductTable isLoading={barcodeScanLoading} />
 						<NavigationButtons />
 					</div>
@@ -184,8 +210,6 @@ const Main = () => {
 				</div>
 
 				<h1 className="store-title">EJ & JY WET MARKET AND ENTERPRISES</h1>
-
-				<BarcodeScanner setLoading={setBarcodeScanLoading} />
 
 				<CashBreakdownModal
 					sessionId={session?.id}

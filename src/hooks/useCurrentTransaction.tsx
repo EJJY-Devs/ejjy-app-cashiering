@@ -6,13 +6,14 @@ import { useSession } from './useSession';
 import { useTransactions } from './useTransactions';
 
 export const useCurrentTransaction = () => {
+	const transaction = useSelector(selectors.selectTransaction());
 	const transactionId = useSelector(selectors.selectTransactionId());
 	const transactionProducts = useSelector(selectors.selectProducts());
 	const transactionStatus = useSelector(selectors.selectTransactionStatus());
 	const isFullyPaid = useSelector(selectors.selectIsFullyPaid());
 	const client = useSelector(selectors.selectClient());
 	const totalPaidAmount = useSelector(selectors.selectTotalPaidAmount());
-	const invoiceId = useSelector(selectors.selectInvoiceId());
+
 	const orNumber = useSelector(selectors.selectOrNumber());
 	const previousVoidedTransactionId = useSelector(selectors.selectPreviousVoidedTransactionId());
 	const pageNumber = useSelector(selectors.selectPageNumber());
@@ -56,13 +57,13 @@ export const useCurrentTransaction = () => {
 	};
 
 	return {
+		transaction,
 		transactionId,
 		transactionStatus,
 		transactionProducts,
 		isFullyPaid,
 		client,
 		totalPaidAmount,
-		invoiceId,
 		orNumber,
 		previousVoidedTransactionId,
 		pageNumber,

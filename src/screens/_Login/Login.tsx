@@ -40,6 +40,7 @@ const Login = () => {
 					onSubmit={onStartSession}
 					loading={status === request.REQUESTING}
 					errors={errors}
+					shouldFullScreen
 				/>
 
 				<Divider />

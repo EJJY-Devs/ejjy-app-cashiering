@@ -1,25 +1,32 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Modal, Result } from 'antd';
-import React from 'react';
+import React, { useEffect } from 'react';
+import KeyboardEventHandler from 'react-keyboard-event-handler';
 import Button from '../../../../components/elements/Button/Button';
 import { EMPTY_CELL } from '../../../../global/constants';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import { useSiteSettings } from '../../../../hooks/useSiteSettings';
 import { numberWithCommas } from '../../../../utils/function';
 import './style.scss';
+import { useUI } from '../../../../hooks/useUI';
 
 interface Props {
 	visible: boolean;
 	onViewInvoice: any;
-	transaction: any;
 	onClose: any;
 }
 
-export const ThankYouModal = ({ visible, transaction, onViewInvoice, onClose }: Props) => {
+export const ThankYouModal = ({ visible, onViewInvoice, onClose }: Props) => {
 	// CUSTOM HOOKS
+	const { setBarcodeScanningEnabled } = useUI();
 	const { siteSettings } = useSiteSettings();
 	const { previousSukli, orNumber, resetTransaction } = useCurrentTransaction();
 
 	// METHODS
+	useEffect(() => {
+		setBarcodeScanningEnabled(!visible);
+	}, [visible]);
+
 	const close = () => {
 		resetTransaction();
 		onClose();
@@ -34,7 +41,19 @@ export const ThankYouModal = ({ visible, transaction, onViewInvoice, onClose }: 
 			onCancel={close}
 			centered
 			closable
+			destroyOnClose
 		>
+			<KeyboardEventHandler
+				handleKeys={['enter']}
+				onKeyEvent={(key, e) => {
+					if (key === 'enter') {
+						close();
+					}
+				}}
+				handleFocusableElements
+				isDisabled={!visible}
+			/>
+
 			<Result
 				status="success"
 				title={siteSettings?.thank_you_message || 'Thank you for shopping!'}
