@@ -100,7 +100,7 @@ export const AddProductModal = ({ product, visible, onClose, onSuccess }: Props)
 				<AddProductForm
 					inputRef={(el) => (inputRef.current = el)}
 					maxQuantity={product?.current_balance}
-					unitOfMeasurementType={product?.data?.unit_of_measurement}
+					unitOfMeasurementType={product?.product?.unit_of_measurement}
 					onSubmit={onSubmit}
 					onClose={onClose}
 				/>

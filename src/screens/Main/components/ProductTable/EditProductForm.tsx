@@ -1,5 +1,6 @@
 import { Divider } from 'antd';
 import { Form, Formik } from 'formik';
+import { isInteger } from 'lodash';
 import React, { useCallback, useState } from 'react';
 import * as Yup from 'yup';
 import { Button, FieldError, FormInput, Label } from '../../../../components/elements';
@@ -35,7 +36,7 @@ export const EditProductForm = ({
 					.max(maxQuantity, 'Insufficient balance.')
 					.test('is-whole-number', 'Non-weighing items require whole number quantity.', (value) => {
 						if (unitOfMeasurementType === unitOfMeasurementTypes.NON_WEIGHING) {
-							return !(value % 1 > 0);
+							return isInteger(Number(value));
 						}
 
 						return true;
