@@ -1,7 +1,7 @@
 @import '../../assets/styles/main';
 
 .Login {
-	height: 100vh;
+	height: 100%;
 	background-color: $color-main-background;
 	@include flex(center, center);
 
