@@ -1,4 +1,4 @@
-import { message } from 'antd';
+import { message, Modal } from 'antd';
 import React, { useCallback, useState } from 'react';
 import KeyboardEventHandler from 'react-keyboard-event-handler';
 import { EMPTY_CELL } from '../../../../global/constants';
@@ -20,6 +20,7 @@ import { KeyboardShortcutsModal } from './KeyboardShortcutsModal';
 import { MainButton } from './MainButton';
 import { OthersModal } from './OthersModal';
 import './style.scss';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 interface Props {
 	onCashCollection: any;
@@ -62,6 +63,17 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 		setOthersModalVisible(false);
 	};
 
+	const onResetConfirmation = () => {
+		Modal.confirm({
+			title: 'Reset Confirmation',
+			icon: <ExclamationCircleOutlined />,
+			content: 'Are you sure you want to reset the transaction?',
+			okText: 'Reset',
+			cancelText: 'Cancel',
+			onOk: onReset,
+		});
+	};
+
 	const onReset = () => {
 		if (previousVoidedTransactionId) {
 			setMainLoading(true);
@@ -93,6 +105,17 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 		} else {
 			resetTransaction();
 		}
+	};
+
+	const onVoidConfirmation = () => {
+		Modal.confirm({
+			title: 'Void Confirmation',
+			icon: <ExclamationCircleOutlined />,
+			content: 'Are you sure you want to void the transaction?',
+			okText: 'Void',
+			cancelText: 'Cancel',
+			onOk: onVoid,
+		});
 	};
 
 	const onVoid = () => {
@@ -141,13 +164,13 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 
 		// Void
 		if (voidShortcutKeys.includes(key) && !isVoidDisabled()) {
-			onVoid();
+			onVoidConfirmation();
 			return;
 		}
 
 		// Reset
 		if (resetShortcutKeys.includes(key) && !isResetDisabled()) {
-			onReset();
+			onResetConfirmation();
 			return;
 		}
 	};
@@ -211,7 +234,7 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 							<span className="shortcut-key">[F12]</span>
 						</>
 					}
-					onClick={onReset}
+					onClick={onResetConfirmation}
 					disabled={isResetDisabled()}
 				/>
 
@@ -222,7 +245,7 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 							<span className="shortcut-key">[F11]</span>
 						</>
 					}
-					onClick={onVoid}
+					onClick={onVoidConfirmation}
 					disabled={isVoidDisabled()}
 				/>
 
