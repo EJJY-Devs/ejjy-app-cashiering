@@ -11,14 +11,26 @@ interface Props {
 	onSubmit: any;
 	onClose: any;
 	nameRef: any;
+	btnSubmitRef: any;
+	btnCancelRef: any;
 	addressRef: any;
 	tinRef: any;
 }
 
-export const ClientDetailsForm = ({ nameRef, addressRef, tinRef, onSubmit, onClose }: Props) => {
+export const ClientDetailsForm = ({
+	nameRef,
+	addressRef,
+	tinRef,
+	btnSubmitRef,
+	btnCancelRef,
+	onSubmit,
+	onClose,
+}: Props) => {
+	// STATES
 	const { client } = useCurrentTransaction();
 	const [isSubmitting, setSubmitting] = useState(false);
 
+	// METHODS
 	const getFormDetails = useCallback(
 		() => ({
 			DefaultValues: {
@@ -87,6 +99,7 @@ export const ClientDetailsForm = ({ nameRef, addressRef, tinRef, onSubmit, onClo
 
 					<div className="custom-footer">
 						<Button
+							ref={btnCancelRef}
 							type="button"
 							text={
 								<>
@@ -101,6 +114,7 @@ export const ClientDetailsForm = ({ nameRef, addressRef, tinRef, onSubmit, onClo
 							hasShortcutKey
 						/>
 						<Button
+							ref={btnSubmitRef}
 							type="submit"
 							text={
 								<>

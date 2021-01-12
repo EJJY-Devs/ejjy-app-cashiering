@@ -13,12 +13,14 @@ interface Props {
 	usernameRef: any;
 	passwordRef: any;
 	discountRef: any;
+	btnSubmitRef: any;
 }
 
 export const DiscountForm = ({
 	usernameRef,
 	passwordRef,
 	discountRef,
+	btnSubmitRef,
 	minQuantity,
 	maxQuantity,
 	onSubmit,
@@ -108,6 +110,7 @@ export const DiscountForm = ({
 					<Divider />
 
 					<Button
+						ref={btnSubmitRef}
 						type="submit"
 						text={
 							<>

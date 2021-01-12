@@ -6,14 +6,26 @@ import { Button, FieldError, FormInput, Label } from '../../../../components/ele
 import { sleep } from '../../../../utils/function';
 
 interface Props {
-	inputRef?: any;
+	firstInputRef: any;
+	lastInputRef: any;
+	btnSubmitRef: any;
+	btnCancelRef: any;
 	required: boolean;
 	onSubmit: any;
 	onClose: any;
 	loading: boolean;
 }
 
-export const CashBreakdownForm = ({ inputRef, required, onSubmit, onClose, loading }: Props) => {
+export const CashBreakdownForm = ({
+	firstInputRef,
+	lastInputRef,
+	btnSubmitRef,
+	btnCancelRef,
+	required,
+	onSubmit,
+	onClose,
+	loading,
+}: Props) => {
 	// STATES
 	const [isSubmitting, setSubmitting] = useState(false);
 
@@ -53,14 +65,14 @@ export const CashBreakdownForm = ({ inputRef, required, onSubmit, onClose, loadi
 		[],
 	);
 
-	const getFieldInput = (id, label, errors, touched) => (
+	const getFieldInput = (id, label, errors, touched, ref = undefined) => (
 		<div className="breakdown-field">
 			<Row gutter={[15, 0]} align="middle">
 				<Col md={14} xs={12}>
 					<Label classNames="breakdown-label" id={id} label={label} spacing />
 				</Col>
 				<Col md={10} xs={12}>
-					<FormInput type="number" classNames="breakdown-input" id={id} />
+					<FormInput inputRef={ref} type="number" classNames="breakdown-input" id={id} />
 				</Col>
 			</Row>
 			{errors?.[id] && touched?.[id] ? <FieldError error={errors?.[id]} /> : null}
@@ -96,23 +108,8 @@ export const CashBreakdownForm = ({ inputRef, required, onSubmit, onClose, loadi
 			{({ errors, touched }) => (
 				<Form className="form" onKeyDown={onKeyDown}>
 					<p className="title">Coins</p>
-					<div className="breakdown-field">
-						<Row gutter={[15, 0]} align="middle">
-							<Col md={14} xs={12}>
-								<Label classNames="breakdown-label" id="coins_25" label="₱0.25" spacing />
-							</Col>
-							<Col md={10} xs={12}>
-								<FormInput
-									inputRef={inputRef}
-									type="number"
-									classNames="breakdown-input"
-									id="coins_25"
-								/>
-							</Col>
-						</Row>
-						{errors?.coins_25 && touched?.coins_25 ? <FieldError error={errors?.coins_25} /> : null}
-					</div>
 
+					{getFieldInput('coins_50', '₱0.50', errors, touched, firstInputRef)}
 					{getFieldInput('coins_50', '₱0.50', errors, touched)}
 					{getFieldInput('coins_1', '₱1.00', errors, touched)}
 					{getFieldInput('coins_5', '₱5.00', errors, touched)}
@@ -126,13 +123,14 @@ export const CashBreakdownForm = ({ inputRef, required, onSubmit, onClose, loadi
 					{getFieldInput('bills_100', '₱100', errors, touched)}
 					{getFieldInput('bills_200', '₱200', errors, touched)}
 					{getFieldInput('bills_500', '₱500', errors, touched)}
-					{getFieldInput('bills_1000', '₱1000', errors, touched)}
+					{getFieldInput('bills_1000', '₱1000', errors, touched, lastInputRef)}
 
 					<Divider />
 
 					<div className="custom-footer">
 						{!required && (
 							<Button
+								ref={btnCancelRef}
 								type="button"
 								text={
 									<>
@@ -149,6 +147,7 @@ export const CashBreakdownForm = ({ inputRef, required, onSubmit, onClose, loadi
 						)}
 
 						<Button
+							ref={btnSubmitRef}
 							type="submit"
 							text={
 								<>

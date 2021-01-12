@@ -94,18 +94,30 @@ export const PaymentForm = ({ inputRef, amountDue, onSubmit, onClose }: Props) =
 					<div className="custom-footer">
 						<Button
 							type="button"
-							text="Cancel"
+							text={
+								<>
+									<span>Cancel</span>
+									<span className="shortcut-key">[ESC]</span>
+								</>
+							}
 							size="lg"
 							onClick={onClose}
 							classNames="btn-cancel"
 							disabled={isSubmitting}
+							hasShortcutKey
 						/>
 						<Button
 							type="submit"
-							text="Submit"
+							text={
+								<>
+									<span>Submit</span>
+									<span className="shortcut-key">[ENTER]</span>
+								</>
+							}
 							size="lg"
 							variant="primary"
 							loading={isSubmitting}
+							hasShortcutKey
 						/>
 					</div>
 				</Form>

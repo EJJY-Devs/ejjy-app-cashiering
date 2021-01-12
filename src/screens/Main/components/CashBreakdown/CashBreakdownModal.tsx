@@ -10,6 +10,7 @@ import { useSession } from '../../../../hooks/useSession';
 import { getCashBreakdownTypeDescription } from '../../../../utils/function';
 import { CashBreakdownForm } from './CashBreakdownForm';
 import './style.scss';
+import KeyboardEventHandler from 'react-keyboard-event-handler';
 
 interface Props {
 	type: string;
@@ -29,19 +30,22 @@ export const CashBreakdownModal = ({
 	onClose,
 }: Props) => {
 	// REFS
-	const inputRef = useRef(null);
+	const firstInputRef = useRef(null);
+	const lastInputRef = useRef(null);
+	const btnSubmitRef = useRef(null);
+	const btnCancelRef = useRef(null);
 
 	// CUSTOM HOOKS
 	const { session } = useSession();
 	const { createCashBreakdown, status, recentRequest, errors, reset } = useCashBreakdown();
 
 	useEffect(() => {
-		if (visible && inputRef && inputRef.current) {
+		if (visible && firstInputRef?.current) {
 			setTimeout(() => {
-				inputRef.current?.focus();
+				firstInputRef.current?.focus();
 			}, 500);
 		}
-	}, [visible, inputRef]);
+	}, [visible, firstInputRef]);
 
 	const getTitle = useCallback(() => getCashBreakdownTypeDescription(type), [type]);
 
@@ -83,6 +87,28 @@ export const CashBreakdownModal = ({
 		}
 	};
 
+	const handleKeyPress = (key, event) => {
+		if (key === 'tab') {
+			let inputRef = null;
+			let { activeElement } = document;
+
+			if (activeElement === lastInputRef.current) {
+				inputRef = btnSubmitRef;
+			} else if (activeElement === btnSubmitRef.current) {
+				inputRef = required ? firstInputRef : btnCancelRef;
+			} else if (activeElement === btnCancelRef.current) {
+				inputRef = firstInputRef;
+			}
+
+			if (inputRef?.current) {
+				event.preventDefault();
+				event.stopPropagation();
+
+				inputRef.current?.focus();
+			}
+		}
+	};
+
 	return (
 		<Modal
 			title={getTitle()}
@@ -97,8 +123,18 @@ export const CashBreakdownModal = ({
 				<FieldError key={index} error={error} />
 			))}
 
+			<KeyboardEventHandler
+				handleKeys={['f1', 'f2', 'f3', 'f4', 'tab']}
+				onKeyEvent={handleKeyPress}
+				handleFocusableElements
+				isDisabled={!visible}
+			/>
+
 			<CashBreakdownForm
-				inputRef={(el) => (inputRef.current = el)}
+				firstInputRef={firstInputRef}
+				lastInputRef={lastInputRef}
+				btnSubmitRef={btnSubmitRef}
+				btnCancelRef={btnCancelRef}
 				required={required}
 				onSubmit={onSubmit}
 				onClose={close}
