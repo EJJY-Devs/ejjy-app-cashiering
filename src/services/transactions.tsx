@@ -30,6 +30,7 @@ interface ICreateTransaction {
 
 interface IUpdateTransaction {
 	products: ITransactionProduct[];
+	overall_discount?: number;
 	status?: string;
 }
 

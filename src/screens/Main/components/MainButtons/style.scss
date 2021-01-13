@@ -126,3 +126,48 @@
 		margin-right: 10px;
 	}
 }
+
+.DiscountAmountModal {
+	.label {
+		@include font(20px, bold);
+	}
+
+	.value {
+		@include font(20px);
+	}
+
+	.other-button {
+		&.spacing {
+			margin-bottom: 15px;
+		}
+	}
+
+	.form {
+		.input-field {
+			margin-bottom: 20px;
+
+			.input-label {
+				font-size: 20px;
+			}
+
+			.input-control {
+				font-size: 18px;
+
+				&.input-quantity {
+					@include font(75px, bold);
+					text-align: center;
+				}
+			}
+		}
+
+		.custom-footer {
+			display: flex;
+			align-items: center !important;
+			justify-content: center !important;
+
+			.space-right {
+				margin-right: 20px;
+			}
+		}
+	}
+}

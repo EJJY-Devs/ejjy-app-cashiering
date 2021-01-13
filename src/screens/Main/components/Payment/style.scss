@@ -11,9 +11,16 @@
 			border: 1px solid $color-gray;
 
 			.label {
-				@include font(16px, bold);
+				@include flex(space-between, flex-start);
+				@include font(18px, bold);
 				color: $color-dark-gray;
 				margin-bottom: 5px;
+
+				.original-price {
+					color: $color-dark;
+					font-weight: 400;
+					text-decoration: line-through;
+				}
 			}
 
 			.value {

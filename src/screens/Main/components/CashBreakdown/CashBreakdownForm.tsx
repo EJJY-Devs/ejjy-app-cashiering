@@ -110,7 +110,6 @@ export const CashBreakdownForm = ({
 					<p className="title">Coins</p>
 
 					{getFieldInput('coins_50', '₱0.50', errors, touched, firstInputRef)}
-					{getFieldInput('coins_50', '₱0.50', errors, touched)}
 					{getFieldInput('coins_1', '₱1.00', errors, touched)}
 					{getFieldInput('coins_5', '₱5.00', errors, touched)}
 					{getFieldInput('coins_10', '₱10.00', errors, touched)}

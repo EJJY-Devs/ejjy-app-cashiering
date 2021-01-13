@@ -78,6 +78,8 @@ const Main = () => {
 				}
 			}
 		});
+
+		document.body.style.backgroundColor = 'white';
 	}, []);
 
 	// Effect: Check if there is already a start session's cash breakdown

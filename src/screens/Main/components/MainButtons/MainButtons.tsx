@@ -1,12 +1,14 @@
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { message, Modal } from 'antd';
 import React, { useCallback, useState } from 'react';
 import KeyboardEventHandler from 'react-keyboard-event-handler';
 import { EMPTY_CELL } from '../../../../global/constants';
 import {
 	cashCollectionShortcutKeys,
+	discountAmountShortcutKeys,
 	endSessionShortcutKeys,
-	queueResumeShortcutKeys,
 	othersShortcutKeys,
+	queueResumeShortcutKeys,
 	resetShortcutKeys,
 	voidShortcutKeys,
 } from '../../../../global/options';
@@ -15,12 +17,12 @@ import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import { useSession } from '../../../../hooks/useSession';
 import { useTransactions } from '../../../../hooks/useTransactions';
 import { useUI } from '../../../../hooks/useUI';
-import { QueueModal } from './QueueModal';
+import { DiscountAmountModal } from './DiscountAmountModal';
 import { KeyboardShortcutsModal } from './KeyboardShortcutsModal';
 import { MainButton } from './MainButton';
 import { OthersModal } from './OthersModal';
+import { QueueModal } from './QueueModal';
 import './style.scss';
-import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 interface Props {
 	onCashCollection: any;
@@ -32,6 +34,7 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 	const [othersModalVisible, setOthersModalVisible] = useState(false);
 	const [queueModalVisible, setQueueModalVisible] = useState(false);
 	const [keyboardShortcutsVisible, setKeyboardShortcutsVisible] = useState(false);
+	const [discountAmountVisible, setDiscountAmountVisible] = useState(false);
 
 	// CUSTOM HOOKS
 	const { session } = useSession();
@@ -134,6 +137,15 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 		});
 	};
 
+	const onSetDiscountAmount = () => {
+		if (transactionProducts.length === 0) {
+			message.error('Please add a product first.');
+			return;
+		}
+
+		setDiscountAmountVisible(true);
+	};
+
 	const handleKeyPress = (key, event) => {
 		event.preventDefault();
 		event.stopPropagation();
@@ -173,6 +185,12 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 			onResetConfirmation();
 			return;
 		}
+
+		// Reset
+		if (discountAmountShortcutKeys.includes(key)) {
+			onSetDiscountAmount();
+			return;
+		}
 	};
 
 	const onKeyboardShortcuts = () => {
@@ -190,6 +208,7 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 					...queueResumeShortcutKeys,
 					...voidShortcutKeys,
 					...resetShortcutKeys,
+					...discountAmountShortcutKeys,
 				]}
 				onKeyEvent={handleKeyPress}
 			/>
@@ -224,7 +243,7 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 							<span className="shortcut-key">[CTRL + Z]</span>
 						</>
 					}
-					onClick={() => null}
+					onClick={onSetDiscountAmount}
 				/>
 
 				<MainButton
@@ -275,6 +294,11 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 			/>
 
 			<QueueModal visible={queueModalVisible} onClose={() => setQueueModalVisible(false)} />
+
+			<DiscountAmountModal
+				visible={discountAmountVisible}
+				onClose={() => setDiscountAmountVisible(false)}
+			/>
 		</div>
 	);
 };

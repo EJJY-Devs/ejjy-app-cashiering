@@ -20,6 +20,7 @@ export const types = {
 	NAVIGATE_PRODUCT: `${key}/NAVIGATE_PRODUCT`,
 	SET_PREVIOUS_SUKLI: `${key}/SET_PREVIOUS_SUKLI`,
 	SET_CLIENT: `${key}/SET_CLIENT`,
+	SET_DISCOUNT: `${key}/SET_DISCOUNT`,
 };
 
 const initialState = {
@@ -32,6 +33,7 @@ const initialState = {
 	status: null,
 	previousVoidedTransactionId: null,
 	client: null,
+	overallDiscount: 0,
 
 	pageNumber: 1,
 	previousSukli: null,
@@ -88,6 +90,7 @@ const reducer = handleActions(
 				totalPaidAmount: transaction.total_paid_amount,
 				status: transaction.status,
 				previousVoidedTransactionId: transaction.previous_voided_transaction_id,
+				overallDiscount: transaction.overall_discount,
 				products,
 			};
 
@@ -120,6 +123,7 @@ const reducer = handleActions(
 				isFullyPaid: transaction.is_fully_paid,
 				totalPaidAmount: transaction.total_paid_amount,
 				status: transaction.status,
+				overallDiscount: transaction.overall_discount,
 				// TODO:: CHECK IF WORKING
 				previousVoidedTransactionId:
 					transaction.status === transactionStatusTypes.VOID_CANCELLED
@@ -143,6 +147,7 @@ const reducer = handleActions(
 				totalPaidAmount: transaction.total_paid_amount,
 				status: transaction.status,
 				previousVoidedTransactionId: transaction.id,
+				overallDiscount: transaction.overall_discount,
 				client: null,
 				pageNumber: 1,
 			};
@@ -184,6 +189,10 @@ const reducer = handleActions(
 		[types.SET_CLIENT]: (state, { payload }: any) => {
 			return { ...state, client: payload };
 		},
+
+		[types.SET_DISCOUNT]: (state, { payload }: any) => {
+			return { ...state, overallDiscount: payload };
+		},
 	},
 	initialState,
 );
@@ -201,6 +210,7 @@ export const actions = {
 	navigateProduct: createAction(types.NAVIGATE_PRODUCT),
 	setPreviousSukli: createAction(types.SET_PREVIOUS_SUKLI),
 	setClient: createAction(types.SET_CLIENT),
+	setDiscount: createAction(types.SET_DISCOUNT),
 };
 
 const selectState = (state: any) => state[key] || initialState;
@@ -211,6 +221,7 @@ export const selectors = {
 	selectClient: () => createSelector(selectState, (state) => state.client),
 	selectTotalPaidAmount: () => createSelector(selectState, (state) => state.totalPaidAmount),
 	selectOrNumber: () => createSelector(selectState, (state) => state.orNumber),
+	selectOverallDiscount: () => createSelector(selectState, (state) => state.overallDiscount),
 	selectTransactionId: () => createSelector(selectState, (state) => state.transactionId),
 	selectTransactionStatus: () => createSelector(selectState, (state) => state.status),
 	selectPreviousVoidedTransactionId: () =>

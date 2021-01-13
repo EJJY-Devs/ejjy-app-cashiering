@@ -24,7 +24,12 @@ export const PaymentModal = ({ amountDue, visible, onClose, onSuccess }: Props) 
 
 	// CUSTOM HOOKS
 	const { session } = useSession();
-	const { setPreviousSukli, createCurrentTransaction } = useCurrentTransaction();
+	const {
+		transactionProducts,
+		overallDiscount,
+		setPreviousSukli,
+		createCurrentTransaction,
+	} = useCurrentTransaction();
 	const { payTransaction, status } = useTransactions();
 
 	// METHODS
@@ -58,6 +63,13 @@ export const PaymentModal = ({ amountDue, visible, onClose, onSuccess }: Props) 
 			transactionId,
 			amountTendered: removeCommas(formData.amountTendered),
 			cashierUserId: session.user.id,
+			overallDiscount,
+			products: transactionProducts.map((item) => ({
+				transaction_product_id: item.transactionProductId,
+				product_id: item.productId,
+				price_per_piece: item.pricePerPiece,
+				quantity: item.quantity,
+			})),
 		};
 
 		const sukli = removeCommas(formData.amountTendered) - amountDue;

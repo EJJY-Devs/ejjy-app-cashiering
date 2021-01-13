@@ -40,10 +40,19 @@ function* get({ payload }: any) {
 }
 
 function* pay({ payload }: any) {
-	const { transactionId, amountTendered, cashierUserId, callback } = payload;
+	const {
+		transactionId,
+		amountTendered,
+		cashierUserId,
+		products,
+		overallDiscount,
+		callback,
+	} = payload;
 	callback({ status: request.REQUESTING });
 
 	try {
+		yield call(service.update, transactionId, { products, overall_discount: overallDiscount });
+
 		const response = yield call(service.pay, {
 			transaction_id: transactionId,
 			amount_tendered: amountTendered,

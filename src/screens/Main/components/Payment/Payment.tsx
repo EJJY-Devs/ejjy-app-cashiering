@@ -15,15 +15,23 @@ import './style.scss';
 import { ThankYouModal } from './ThankYouModal';
 
 export const Payment = () => {
-	const { transactionProducts, transactionStatus, previousSukli } = useCurrentTransaction();
-	const { listBranchProducts } = useBranchProducts();
-	const { session } = useSession();
-
+	// STATES
 	const [paymentModalVisible, setPaymentModalVisible] = useState(false);
 	const [thankYouModalVisible, setThankYouModalVisible] = useState(false);
 	const [invoiceModalVisible, setInvoiceModalVisible] = useState(false);
 	const [transaction, setTransaction] = useState(null);
 
+	// CUSTOM HOOKS
+	const {
+		transactionProducts,
+		transactionStatus,
+		previousSukli,
+		overallDiscount,
+	} = useCurrentTransaction();
+	const { listBranchProducts } = useBranchProducts();
+	const { session } = useSession();
+
+	//METHODS
 	const getTotal = useCallback(
 		() =>
 			Number(
@@ -83,8 +91,17 @@ export const Payment = () => {
 
 			<div className="payment-content">
 				<div className="text-wrapper">
-					<p className="label">Total</p>
-					<p className="value">{`₱${numberWithCommas(getTotal()?.toFixed(2))}`}</p>
+					<p className="label">
+						Total
+						{overallDiscount > 0 && (
+							<span className="original-price">
+								{`₱${numberWithCommas(getTotal()?.toFixed(2))}`}
+							</span>
+						)}
+					</p>
+					<p className="value">{`₱${numberWithCommas(
+						(overallDiscount > 0 ? overallDiscount : getTotal())?.toFixed(2),
+					)}`}</p>
 				</div>
 				<Button
 					classNames="btn-pay"
@@ -107,7 +124,7 @@ export const Payment = () => {
 			</div>
 
 			<PaymentModal
-				amountDue={getTotal()}
+				amountDue={overallDiscount > 0 ? overallDiscount : getTotal()}
 				visible={paymentModalVisible}
 				onSuccess={onPaymentSuccess}
 				onClose={() => setPaymentModalVisible(false)}

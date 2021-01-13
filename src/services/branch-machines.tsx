@@ -22,4 +22,5 @@ export const service = {
 	create: async (body: ICreateBranchMachine) => axios.post('/branches-machines/', body),
 	update: async (id: number, body: IUpdateBranchMachine) =>
 		axios.patch(`/branches-machines/${id}/`, body),
+	register: async (id: number) => axios.post(`/branches-machines/${id}/register/`),
 };
