@@ -23,6 +23,7 @@ export const PaymentModal = ({ amountDue, visible, onClose, onSuccess }: Props) 
 	// CUSTOM HOOKS
 	const { session } = useSession();
 	const {
+		transactionId: currentTransactionId,
 		setPreviousSukli,
 		createCurrentTransaction,
 		requestStatus: createTransactionStatus,
@@ -40,13 +41,19 @@ export const PaymentModal = ({ amountDue, visible, onClose, onSuccess }: Props) 
 	}, [visible, inputRef]);
 
 	const onSubmit = (formData) => {
-		createCurrentTransaction(({ status, response }) => {
-			if (status === request.SUCCESS) {
-				onPayTransaction(response.id, formData.amountTendered);
-			} else if (status === request.ERROR) {
-				message.error('An error occurred while creating transaction');
-			}
-		});
+		if (currentTransactionId) {
+			onPayTransaction(currentTransactionId, formData.amountTendered);
+		} else {
+			createCurrentTransaction({
+				callback: ({ status, response }) => {
+					if (status === request.SUCCESS) {
+						onPayTransaction(response.id, formData.amountTendered);
+					} else if (status === request.ERROR) {
+						message.error('An error occurred while creating transaction');
+					}
+				},
+			});
+		}
 	};
 
 	const onPayTransaction = (transactionId, amountTendered) => {

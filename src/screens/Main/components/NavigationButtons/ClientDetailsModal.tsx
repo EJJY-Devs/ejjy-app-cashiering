@@ -37,9 +37,6 @@ export const ClientDetailsModal = ({ visible, onClose }: Props) => {
 	};
 
 	const handleKeyPress = (key, event) => {
-		event.preventDefault();
-		event.stopPropagation();
-
 		if (key === 'tab') {
 			let inputRef = null;
 			let { activeElement } = document;
@@ -56,7 +53,11 @@ export const ClientDetailsModal = ({ visible, onClose }: Props) => {
 				inputRef = nameRef;
 			}
 
-			inputRef?.current?.focus();
+			if (inputRef) {
+				event.preventDefault();
+				event.stopPropagation();
+				inputRef?.current?.focus();
+			}
 		}
 	};
 

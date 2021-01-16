@@ -39,7 +39,7 @@ export const DiscountAmountForm = ({
 				userType: userTypes.BRANCH_MANAGER,
 				login: '',
 				password: '',
-				discount: overallDiscount || 0,
+				discount: overallDiscount || '',
 			},
 			Schema: Yup.object().shape({
 				login: Yup.string().required().label('Username'),

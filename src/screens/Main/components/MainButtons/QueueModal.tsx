@@ -82,15 +82,18 @@ export const QueueModal = ({ visible, onClose }: Props) => {
 		if (!transactionId && transactionProducts?.length > 0) {
 			setMainLoading(true);
 			setMainLoadingText('Saving current transaction...');
-			createCurrentTransaction(({ status }) => {
-				if (status === request.SUCCESS) {
-					onViewTransaction(transaction);
-				} else if (status === request.ERROR) {
-					message.error('An error occurred while creating transaction');
-				}
+			createCurrentTransaction({
+				status: transactionStatusTypes.QUEUE,
+				callback: ({ status }) => {
+					if (status === request.SUCCESS) {
+						onViewTransaction(transaction);
+					} else if (status === request.ERROR) {
+						message.error('An error occurred while creating transaction');
+					}
 
-				setMainLoading(false);
-				setMainLoadingText(null);
+					setMainLoading(false);
+					setMainLoadingText(null);
+				},
 			});
 		} else {
 			onViewTransaction(transaction);
@@ -102,13 +105,16 @@ export const QueueModal = ({ visible, onClose }: Props) => {
 	};
 
 	const onQueue = () => {
-		createCurrentTransaction(({ status }) => {
-			if (status === request.SUCCESS) {
-				message.success('Transaction successfully queued.');
-				onClose();
-			} else if (status === request.ERROR) {
-				message.error('An error occurred while queueing the transaction');
-			}
+		createCurrentTransaction({
+			status: transactionStatusTypes.QUEUE,
+			callback: ({ status }) => {
+				if (status === request.SUCCESS) {
+					message.success('Transaction successfully queued.');
+					onClose();
+				} else if (status === request.ERROR) {
+					message.error('An error occurred while queueing the transaction');
+				}
+			},
 		});
 	};
 

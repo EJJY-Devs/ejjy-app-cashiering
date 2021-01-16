@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { message, Modal } from 'antd';
 import React, { useCallback, useEffect, useRef } from 'react';
+import KeyboardEventHandler from 'react-keyboard-event-handler';
 import { FieldError } from '../../../../components/elements';
 import { printCashBreakdown } from '../../../../configurePrinter';
 import { types as cashBreakdownsRequestTypes } from '../../../../ducks/cash-breakdowns';
@@ -10,7 +11,6 @@ import { useSession } from '../../../../hooks/useSession';
 import { getCashBreakdownTypeDescription } from '../../../../utils/function';
 import { CashBreakdownForm } from './CashBreakdownForm';
 import './style.scss';
-import KeyboardEventHandler from 'react-keyboard-event-handler';
 
 interface Props {
 	type: string;

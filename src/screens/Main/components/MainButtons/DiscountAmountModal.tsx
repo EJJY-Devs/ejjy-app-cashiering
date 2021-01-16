@@ -1,5 +1,5 @@
 import { message, Modal, Spin } from 'antd';
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import KeyboardEventHandler from 'react-keyboard-event-handler';
 import FieldError from '../../../../components/elements/FieldError/FieldError';
 import { request } from '../../../../global/types';
@@ -26,6 +26,14 @@ export const DiscountAmountModal = ({ visible, onClose }: Props) => {
 	const { transactionProducts, overallDiscount, setDiscount } = useCurrentTransaction();
 
 	// METHODS
+	useEffect(() => {
+		if (visible && discountRef && discountRef.current) {
+			setTimeout(() => {
+				discountRef.current?.focus();
+			}, 500);
+		}
+	}, [visible, discountRef]);
+
 	const getTotal = useCallback(
 		() =>
 			Number(
@@ -50,9 +58,6 @@ export const DiscountAmountModal = ({ visible, onClose }: Props) => {
 	};
 
 	const handleKeyPress = (key, event) => {
-		event.preventDefault();
-		event.stopPropagation();
-
 		if (key === 'tab') {
 			let inputRef = null;
 			let { activeElement } = document;
@@ -69,7 +74,11 @@ export const DiscountAmountModal = ({ visible, onClose }: Props) => {
 				inputRef = discountRef;
 			}
 
-			inputRef?.current?.focus();
+			if (inputRef) {
+				event.preventDefault();
+				event.stopPropagation();
+				inputRef?.current?.focus();
+			}
 		}
 	};
 
@@ -82,7 +91,6 @@ export const DiscountAmountModal = ({ visible, onClose }: Props) => {
 			onCancel={onClose}
 			centered
 			closable
-			destroyOnClose
 		>
 			<KeyboardEventHandler
 				handleKeys={['tab']}

@@ -100,7 +100,7 @@ export const Payment = () => {
 						)}
 					</p>
 					<p className="value">{`₱${numberWithCommas(
-						(overallDiscount > 0 ? overallDiscount : getTotal())?.toFixed(2),
+						(overallDiscount > 0 ? getTotal() - overallDiscount : getTotal())?.toFixed(2),
 					)}`}</p>
 				</div>
 				<Button
@@ -124,7 +124,7 @@ export const Payment = () => {
 			</div>
 
 			<PaymentModal
-				amountDue={overallDiscount > 0 ? overallDiscount : getTotal()}
+				amountDue={overallDiscount > 0 ? getTotal() - overallDiscount : getTotal()}
 				visible={paymentModalVisible}
 				onSuccess={onPaymentSuccess}
 				onClose={() => setPaymentModalVisible(false)}

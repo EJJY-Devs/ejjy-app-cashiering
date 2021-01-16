@@ -51,10 +51,10 @@ export const SearchTransaction = ({ inputRef, visible, closeModal }: Props) => {
 					}
 				}}
 				isDisabled={!searchedKey.length}
+				handleFocusableElements
 			>
 				<ControlledInput
 					ref={inputRef}
-					type="number"
 					classNames="transaction-search-input"
 					value={searchedKey}
 					onChange={(value) => setSearchedKey(value)}

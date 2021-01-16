@@ -32,7 +32,11 @@ export const useCurrentTransaction = () => {
 
 	const { session } = useSession();
 	const { createTransaction, status: transactionsRequestStatus } = useTransactions();
-	const createCurrentTransaction = (callback = null, shouldResetTransaction = true) => {
+	const createCurrentTransaction = ({
+		status = undefined,
+		callback = null,
+		shouldResetTransaction = true,
+	}) => {
 		const data = {
 			branchId: session.branch_machine?.branch_id,
 			branchMachineId: session.branch_machine.id,
@@ -46,6 +50,7 @@ export const useCurrentTransaction = () => {
 				discount_per_piece: product?.discountPerPiece || undefined,
 			})),
 			overallDiscount,
+			status,
 		};
 
 		createTransaction(data, (response) => {
