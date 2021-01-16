@@ -4,13 +4,20 @@
 
 html,
 body {
-	max-width: 100%;
 	overflow-x: hidden;
 }
 
 body {
+	background-color: $color-main-background;
 	font-family: $font-primary;
 	color: $color-dark;
+
+	@include flex(center, center);
+}
+
+#root {
+	width: 1366px;
+	height: 768px;
 }
 
 .ml-10 {

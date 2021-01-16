@@ -60,7 +60,15 @@ function* pay({ payload }: any) {
 }
 
 function* create({ payload }: any) {
-	const { branchMachineId, tellerId, client, products, callback } = payload;
+	const {
+		branchMachineId,
+		tellerId,
+		client,
+		products,
+		callback,
+		overallDiscount = 0,
+		status,
+	} = payload;
 	callback({ status: request.REQUESTING });
 
 	try {
@@ -69,6 +77,8 @@ function* create({ payload }: any) {
 			teller_id: tellerId,
 			client,
 			products,
+			overall_discount: overallDiscount,
+			status,
 		});
 		yield put(actions.save({ type: types.CREATE_TRANSACTION, transaction: response.data }));
 

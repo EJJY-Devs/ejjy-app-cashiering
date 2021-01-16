@@ -13,6 +13,7 @@ export const useCurrentTransaction = () => {
 	const isFullyPaid = useSelector(selectors.selectIsFullyPaid());
 	const client = useSelector(selectors.selectClient());
 	const totalPaidAmount = useSelector(selectors.selectTotalPaidAmount());
+	const overallDiscount = useSelector(selectors.selectOverallDiscount());
 
 	const orNumber = useSelector(selectors.selectOrNumber());
 	const previousVoidedTransactionId = useSelector(selectors.selectPreviousVoidedTransactionId());
@@ -27,10 +28,15 @@ export const useCurrentTransaction = () => {
 	const navigateProduct = useActionDispatch(actions.navigateProduct);
 	const setPreviousSukli = useActionDispatch(actions.setPreviousSukli);
 	const setClient = useActionDispatch(actions.setClient);
+	const setDiscount = useActionDispatch(actions.setDiscount);
 
 	const { session } = useSession();
 	const { createTransaction, status: transactionsRequestStatus } = useTransactions();
-	const createCurrentTransaction = (callback = null, shouldResetTransaction = true) => {
+	const createCurrentTransaction = ({
+		status = undefined,
+		callback = null,
+		shouldResetTransaction = true,
+	}) => {
 		const data = {
 			branchId: session.branch_machine?.branch_id,
 			branchMachineId: session.branch_machine.id,
@@ -43,6 +49,8 @@ export const useCurrentTransaction = () => {
 				price_per_piece: product.pricePerPiece,
 				discount_per_piece: product?.discountPerPiece || undefined,
 			})),
+			overallDiscount,
+			status,
 		};
 
 		createTransaction(data, (response) => {
@@ -62,6 +70,7 @@ export const useCurrentTransaction = () => {
 		transactionStatus,
 		transactionProducts,
 		isFullyPaid,
+		overallDiscount,
 		client,
 		totalPaidAmount,
 		orNumber,
@@ -77,6 +86,7 @@ export const useCurrentTransaction = () => {
 		navigateProduct,
 		setPreviousSukli,
 		setClient,
+		setDiscount,
 		requestStatus: transactionsRequestStatus,
 	};
 };

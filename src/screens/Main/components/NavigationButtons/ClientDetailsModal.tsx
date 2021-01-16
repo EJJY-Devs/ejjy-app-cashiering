@@ -16,6 +16,8 @@ export const ClientDetailsModal = ({ visible, onClose }: Props) => {
 	const nameRef = useRef(null);
 	const addressRef = useRef(null);
 	const tinRef = useRef(null);
+	const btnSubmitRef = useRef(null);
+	const btnCancelRef = useRef(null);
 
 	// CUSTOM HOOKS
 	const { setClient } = useCurrentTransaction();
@@ -35,9 +37,6 @@ export const ClientDetailsModal = ({ visible, onClose }: Props) => {
 	};
 
 	const handleKeyPress = (key, event) => {
-		event.preventDefault();
-		event.stopPropagation();
-
 		if (key === 'tab') {
 			let inputRef = null;
 			let { activeElement } = document;
@@ -47,10 +46,18 @@ export const ClientDetailsModal = ({ visible, onClose }: Props) => {
 			} else if (activeElement === addressRef.current) {
 				inputRef = tinRef;
 			} else if (activeElement === tinRef.current) {
+				inputRef = btnSubmitRef;
+			} else if (activeElement === btnSubmitRef.current) {
+				inputRef = btnCancelRef;
+			} else if (activeElement === btnCancelRef.current) {
 				inputRef = nameRef;
 			}
 
-			inputRef?.current?.focus();
+			if (inputRef) {
+				event.preventDefault();
+				event.stopPropagation();
+				inputRef?.current?.focus();
+			}
 		}
 	};
 
@@ -75,6 +82,8 @@ export const ClientDetailsModal = ({ visible, onClose }: Props) => {
 				nameRef={nameRef}
 				addressRef={addressRef}
 				tinRef={tinRef}
+				btnSubmitRef={btnSubmitRef}
+				btnCancelRef={btnCancelRef}
 				onSubmit={onSubmit}
 				onClose={onClose}
 			/>

@@ -7,14 +7,15 @@ import { service } from '../services/branch-machines';
 
 /* WORKERS */
 function* register({ payload }: any) {
-	const { login, password, callback } = payload;
+	const { login, password, branchMachineId, callback } = payload;
 	callback({ status: request.REQUESTING });
 
 	try {
 		const loginResponse = yield call(authService.login, { login, password });
 
 		if (loginResponse.data.user_type === userTypes.ADMIN) {
-			callback({ status: request.SUCCESS });
+			const registerResponse = yield call(service.register, branchMachineId);
+			callback({ status: request.SUCCESS, response: registerResponse.data });
 		} else {
 			callback({
 				status: request.ERROR,

@@ -2,63 +2,64 @@ import { Divider } from 'antd';
 import { Form, Formik } from 'formik';
 import React, { useCallback, useState } from 'react';
 import * as Yup from 'yup';
-import { FieldError, FormInputLabel } from '../../../../components/elements';
-import Button from '../../../../components/elements/Button/Button';
-import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
+import { Button, FieldError, FormInputLabel } from '../../../../components/elements';
+import { userTypes } from '../../../../global/types';
 import { sleep } from '../../../../utils/function';
 
 interface Props {
-	onSubmit: any;
-	onClose: any;
-	nameRef: any;
+	currentPrice: number;
+	overallDiscount: number;
+	usernameRef: any;
+	passwordRef: any;
+	discountRef: any;
 	btnSubmitRef: any;
 	btnCancelRef: any;
-	addressRef: any;
-	tinRef: any;
+	onSubmit: any;
+	onClose: any;
 }
 
-export const ClientDetailsForm = ({
-	nameRef,
-	addressRef,
-	tinRef,
+export const DiscountAmountForm = ({
+	currentPrice,
+	overallDiscount,
+	usernameRef,
+	passwordRef,
+	discountRef,
 	btnSubmitRef,
 	btnCancelRef,
 	onSubmit,
 	onClose,
 }: Props) => {
 	// STATES
-	const { client } = useCurrentTransaction();
 	const [isSubmitting, setSubmitting] = useState(false);
 
 	// METHODS
 	const getFormDetails = useCallback(
 		() => ({
 			DefaultValues: {
-				id: client?.id || '',
-				name: client?.name || '',
-				address: client?.address || '',
-				tin: client?.tin || '',
+				userType: userTypes.BRANCH_MANAGER,
+				login: '',
+				password: '',
+				discount: overallDiscount || '',
 			},
 			Schema: Yup.object().shape({
-				name: Yup.string().required().max(100).label('Client Name'),
-				address: Yup.string().required().max(150).label('Client Address'),
-				tin: Yup.string().required().max(50).label('Client TIN'),
+				login: Yup.string().required().label('Username'),
+				password: Yup.string().required().label('Password'),
+				discount: Yup.number().required().moreThan(0).lessThan(currentPrice).label('Discount'),
 			}),
 		}),
-		[client],
+		[currentPrice, overallDiscount],
 	);
 
 	return (
 		<Formik
 			initialValues={getFormDetails().DefaultValues}
 			validationSchema={getFormDetails().Schema}
-			onSubmit={async (values, { resetForm }) => {
+			onSubmit={async (values) => {
 				setSubmitting(true);
 				await sleep(500);
 				setSubmitting(false);
 
 				onSubmit(values);
-				resetForm();
 			}}
 			enableReinitialize
 		>
@@ -66,33 +67,36 @@ export const ClientDetailsForm = ({
 				<Form className="form">
 					<div className="input-field">
 						<FormInputLabel
-							inputRef={nameRef}
-							id="name"
-							label="Name"
+							inputRef={discountRef}
+							type="number"
+							id="discount"
+							label="Discount"
+							inputClassname="input-control input-quantity"
+							labelClassname="input-label"
+						/>
+						{errors.discount && touched.discount ? <FieldError error={errors.discount} /> : null}
+					</div>
+
+					<div className="input-field">
+						<FormInputLabel
+							inputRef={usernameRef}
+							id="login"
+							label="Manager's Username"
 							inputClassname="input-control"
 							labelClassname="input-label"
 						/>
-						{errors.name && touched.name ? <FieldError error={errors.name} /> : null}
+						{errors.login && touched.login ? <FieldError error={errors.login} /> : null}
 					</div>
 					<div className="input-field">
 						<FormInputLabel
-							inputRef={addressRef}
-							id="address"
-							label="Address"
+							inputRef={passwordRef}
+							type="password"
+							id="password"
+							label="Manager's Password"
 							inputClassname="input-control"
 							labelClassname="input-label"
 						/>
-						{errors.address && touched.address ? <FieldError error={errors.address} /> : null}
-					</div>
-					<div className="input-field">
-						<FormInputLabel
-							inputRef={tinRef}
-							id="tin"
-							label="TIN"
-							inputClassname="input-control"
-							labelClassname="input-label"
-						/>
-						{errors.tin && touched.tin ? <FieldError error={errors.tin} /> : null}
+						{errors.password && touched.password ? <FieldError error={errors.password} /> : null}
 					</div>
 
 					<Divider />
@@ -109,7 +113,7 @@ export const ClientDetailsForm = ({
 							}
 							size="lg"
 							onClick={onClose}
-							classNames="btn-cancel"
+							classNames="space-right"
 							disabled={isSubmitting}
 							hasShortcutKey
 						/>

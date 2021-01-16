@@ -27,6 +27,7 @@ export const DiscountModal = ({ product, visible, onClose }: Props) => {
 	const usernameRef = useRef(null);
 	const passwordRef = useRef(null);
 	const discountRef = useRef(null);
+	const btnSubmitRef = useRef(null);
 
 	// CUSTOM HOOKS
 	const { branchProducts } = useBranchProducts();
@@ -150,6 +151,8 @@ export const DiscountModal = ({ product, visible, onClose }: Props) => {
 			} else if (activeElement === passwordRef.current) {
 				inputRef = discountRef;
 			} else if (activeElement === discountRef.current) {
+				inputRef = btnSubmitRef;
+			} else if (activeElement === btnSubmitRef.current) {
 				inputRef = usernameRef;
 			}
 
@@ -243,6 +246,7 @@ export const DiscountModal = ({ product, visible, onClose }: Props) => {
 							usernameRef={usernameRef}
 							passwordRef={passwordRef}
 							discountRef={discountRef}
+							btnSubmitRef={btnSubmitRef}
 						/>
 					</>
 				)}

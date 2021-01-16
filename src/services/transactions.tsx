@@ -26,10 +26,13 @@ interface ICreateTransaction {
 	client?: ICreateTransactionClient;
 	products: ITransactionProduct[];
 	previous_voided_transaction_id?: number;
+	overall_discount?: number;
+	status?: string;
 }
 
 interface IUpdateTransaction {
 	products: ITransactionProduct[];
+	overall_discount?: number;
 	status?: string;
 }
 

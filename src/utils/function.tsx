@@ -10,7 +10,7 @@ import {
 	ReorderBadgePill,
 } from '../components';
 import { UncontrolledInput } from '../components/elements';
-import { MACHINE_ID_KEY, ROW_HEIGHT } from '../global/constants';
+import { MACHINE_COUNT_KEY, MACHINE_ID_KEY, ROW_HEIGHT } from '../global/constants';
 import {
 	branchProductStatus,
 	cashBreakdownTypes,
@@ -58,6 +58,8 @@ export const showMessage = (status, successMessage, errorMessage) => {
 };
 
 export const getBranchMachineId = () => localStorage.getItem(MACHINE_ID_KEY);
+
+export const getBranchMachineCount = () => localStorage.getItem(MACHINE_COUNT_KEY);
 
 interface ConfirmPassword {
 	title?: string;

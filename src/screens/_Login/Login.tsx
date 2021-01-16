@@ -5,7 +5,7 @@ import { Box, Button } from '../../components/elements';
 import { request } from '../../global/types';
 import { useCurrentTransaction } from '../../hooks/useCurrentTransaction';
 import { useSession } from '../../hooks/useSession';
-import { getBranchMachineId } from '../../utils/function';
+import { getBranchMachineCount, getBranchMachineId } from '../../utils/function';
 import { ILoginValues, LoginForm } from './components/LoginForm';
 import { RegisterModal } from './components/RegisterModal';
 import './style.scss';
@@ -18,6 +18,8 @@ const Login = () => {
 
 	const onStartSession = (data: ILoginValues) => {
 		const branchMachineId = getBranchMachineId();
+		const branchMachineCount = getBranchMachineCount();
+
 		if (data.login !== 'specialpersonnel' && !branchMachineId) {
 			message.error('Machine is not yet registered.');
 			return;
@@ -26,6 +28,7 @@ const Login = () => {
 		startSession({
 			...data,
 			branch_machine_id: data.login === 'specialpersonnel' ? 1 : branchMachineId,
+			branch_machine_registration_count: data.login === 'specialpersonnel' ? 1 : branchMachineCount,
 		});
 
 		setPreviousSukli(null);

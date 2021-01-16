@@ -2,7 +2,7 @@
 import { message, Modal, Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { types } from '../../../ducks/branch-machines';
-import { MACHINE_ID_KEY } from '../../../global/constants';
+import { MACHINE_COUNT_KEY, MACHINE_ID_KEY } from '../../../global/constants';
 import { request } from '../../../global/types';
 import { useBranchMachines } from '../../../hooks/useBranchMachines';
 import { RegisterForm } from './RegisterForm';
@@ -17,7 +17,13 @@ export const RegisterModal = ({ visible, onClose }: Props) => {
 	const [branchMachinesOptions, setBranchMachinesOptions] = useState([]);
 
 	// CUSTOM HOOKS
-	const { branchMachines, getBranchMachines, status, recentRequest } = useBranchMachines();
+	const {
+		branchMachines,
+		registerBranchMachine,
+		getBranchMachines,
+		status,
+		recentRequest,
+	} = useBranchMachines();
 
 	// METHODS
 	useEffect(() => {
@@ -35,17 +41,18 @@ export const RegisterModal = ({ visible, onClose }: Props) => {
 		}
 	}, [branchMachines, status, recentRequest]);
 
-	const { registerBranchMachine, status: registerRequestStatus } = useBranchMachines();
 	const onRegister = (data) => {
 		const branchMachineId = branchMachines.find(
 			(branchMachine) => branchMachine.name === data.machineName,
 		)?.id;
 
-		registerBranchMachine(data, ({ status, errors }) => {
+		registerBranchMachine({ ...data, branchMachineId }, ({ status, errors, response }) => {
 			if (status === request.ERROR) {
 				message.error(errors);
 			} else if (status === request.SUCCESS) {
 				localStorage.setItem(MACHINE_ID_KEY, branchMachineId);
+				localStorage.setItem(MACHINE_COUNT_KEY, response);
+
 				message.success('This machine is successfully registered.');
 				onClose();
 			}
@@ -65,7 +72,7 @@ export const RegisterModal = ({ visible, onClose }: Props) => {
 				<RegisterForm
 					branchMachinesOptions={branchMachinesOptions}
 					onSubmit={onRegister}
-					loading={registerRequestStatus === request.REQUESTING}
+					loading={status === request.REQUESTING}
 				/>
 			</Spin>
 		</Modal>

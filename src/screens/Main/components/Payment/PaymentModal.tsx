@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { message, Modal, Spin } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { request } from '../../../../global/types';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import { useSession } from '../../../../hooks/useSession';
@@ -19,13 +19,16 @@ interface Props {
 export const PaymentModal = ({ amountDue, visible, onClose, onSuccess }: Props) => {
 	// STATES
 	const inputRef = useRef(null);
-	const [loading, setLoading] = useState(false);
-	const [transactionId, setTransactionId] = useState(null);
 
 	// CUSTOM HOOKS
 	const { session } = useSession();
-	const { setPreviousSukli, createCurrentTransaction } = useCurrentTransaction();
-	const { payTransaction, status } = useTransactions();
+	const {
+		transactionId: currentTransactionId,
+		setPreviousSukli,
+		createCurrentTransaction,
+		requestStatus: createTransactionStatus,
+	} = useCurrentTransaction();
+	const { payTransaction, status: paymentStatus } = useTransactions();
 
 	// METHODS
 	useEffect(() => {
@@ -37,34 +40,35 @@ export const PaymentModal = ({ amountDue, visible, onClose, onSuccess }: Props) 
 		}
 	}, [visible, inputRef]);
 
-	useEffect(() => {
-		if (visible && !transactionId) {
-			setLoading(true);
-			createCurrentTransaction(({ status, response }) => {
-				if (status === request.SUCCESS) {
-					setTransactionId(response.id);
-					setLoading(false);
-				} else if (status === request.ERROR) {
-					message.error('An error occurred while setting up payment.');
-					setLoading(false);
-					onClose();
-				}
-			}, false);
-		}
-	}, [visible]);
-
 	const onSubmit = (formData) => {
+		if (currentTransactionId) {
+			onPayTransaction(currentTransactionId, formData.amountTendered);
+		} else {
+			createCurrentTransaction({
+				callback: ({ status, response }) => {
+					if (status === request.SUCCESS) {
+						onPayTransaction(response.id, formData.amountTendered);
+					} else if (status === request.ERROR) {
+						message.error('An error occurred while creating transaction');
+					}
+				},
+			});
+		}
+	};
+
+	const onPayTransaction = (transactionId, amountTendered) => {
+		let amountTenderedNumber = removeCommas(amountTendered);
+
 		const data = {
 			transactionId,
-			amountTendered: removeCommas(formData.amountTendered),
+			amountTendered: amountTenderedNumber,
 			cashierUserId: session.user.id,
 		};
 
-		const sukli = removeCommas(formData.amountTendered) - amountDue;
+		const sukli = amountTenderedNumber - amountDue;
 		payTransaction(data, ({ status, response }) => {
 			if (status === request.SUCCESS) {
 				if (response.is_fully_paid && response?.invoice.id) {
-					setTransactionId(null);
 					setPreviousSukli(sukli);
 					onSuccess(response);
 				}
@@ -85,7 +89,10 @@ export const PaymentModal = ({ amountDue, visible, onClose, onSuccess }: Props) 
 			centered
 			closable
 		>
-			<Spin size="large" spinning={loading || status === request.REQUESTING}>
+			<Spin
+				size="large"
+				spinning={[createTransactionStatus, paymentStatus].includes(request.REQUESTING)}
+			>
 				<PaymentForm
 					amountDue={amountDue}
 					inputRef={(el) => (inputRef.current = el)}
