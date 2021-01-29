@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { StringNullableChain } from 'lodash';
-import { IGetRequest } from './interfaces';
+import { IGetRequest } from '.';
 
 interface IPayTransaction {
 	transaction_id: number;

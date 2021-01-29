@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { IGetRequest } from './interfaces';
+import { IGetRequest } from '.';
 
 interface ICreateCashBreakdownSlip {
 	cashiering_session_id: number;
