@@ -2,6 +2,8 @@
 	"name": "ejjy-cashiering",
 	"version": "0.1.1",
 	"private": true,
+	"homepage": "./",
+	"main": "./electron/main.js",
 	"dependencies": {
 		"@ant-design/icons": "^4.2.2",
 		"antd": "^4.10.0",
@@ -40,6 +42,7 @@
 		"test": "react-scripts test",
 		"eject": "react-scripts eject",
 		"dev": "concurrently \"npm start\" \"wait-on http://localhost:3000 && electron .\"",
+		"electron": "wait-on http://localhost:3000 && electron .",
 		"ebuild": "npm run build && node_modules/.bin/build",
 		"pack": "electron-packager ./ EJJY-Cashiering --platform=win32"
 	},
