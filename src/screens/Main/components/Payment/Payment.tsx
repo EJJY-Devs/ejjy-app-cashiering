@@ -7,7 +7,6 @@ import { tenderShortcutKeys } from '../../../../global/options';
 import { transactionStatusTypes } from '../../../../global/types';
 import { useBranchProducts } from '../../../../hooks/useBranchProducts';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
-import { useSession } from '../../../../hooks/useSession';
 import { numberWithCommas } from '../../../../utils/function';
 import { InvoiceModal } from './InvoiceModal';
 import { PaymentModal } from './PaymentModal';
@@ -29,7 +28,6 @@ export const Payment = () => {
 		overallDiscount,
 	} = useCurrentTransaction();
 	const { listBranchProducts } = useBranchProducts();
-	const { session } = useSession();
 
 	//METHODS
 	const getTotal = useCallback(
@@ -52,7 +50,7 @@ export const Payment = () => {
 	);
 
 	const onPaymentSuccess = (transaction) => {
-		listBranchProducts(session?.user?.branch?.id);
+		listBranchProducts();
 		setPaymentModalVisible(false);
 		setThankYouModalVisible(true);
 		setTransaction(transaction);

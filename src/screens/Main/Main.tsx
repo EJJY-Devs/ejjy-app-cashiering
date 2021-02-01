@@ -71,7 +71,7 @@ const Main = () => {
 			if (status === request.SUCCESS) {
 				if (response) {
 					listCashBreakdown(session?.id);
-					listBranchProducts(session?.user?.branch?.id);
+					listBranchProducts();
 					getSiteSettings();
 				} else {
 					invalidSession();

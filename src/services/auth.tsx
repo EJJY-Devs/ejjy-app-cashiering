@@ -12,7 +12,9 @@ interface IAcquireToken {
 }
 
 export const service = {
-	login: async (body: ILogin) => axios.post('users/login/', body, NO_VERIFICATION_CONFIG),
+	login: async (body: ILogin, baseURL) =>
+		axios.post('users/login/', body, { baseURL, ...NO_VERIFICATION_CONFIG }),
+
 	acquireToken: async (body: IAcquireToken) =>
 		axios.post('tokens/acquire/', body, NO_VERIFICATION_CONFIG),
 };

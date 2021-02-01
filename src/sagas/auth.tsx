@@ -1,6 +1,7 @@
 import { call, takeLatest } from 'redux-saga/effects';
 import { types as branchMachinesTypes } from '../ducks/auth';
 import { request } from '../global/types';
+import { LOCAL_API_URL } from '../services';
 import { service } from '../services/auth';
 import { getUserTypeDescription } from '../utils/function';
 
@@ -10,7 +11,7 @@ function* validateUser({ payload }: any) {
 	callback({ status: request.REQUESTING });
 
 	try {
-		const response = yield call(service.login, { login, password });
+		const response = yield call(service.login, { login, password }, LOCAL_API_URL);
 
 		if (response.data.user_type === userType) {
 			callback({ status: request.SUCCESS });

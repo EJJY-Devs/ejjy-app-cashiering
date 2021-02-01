@@ -56,6 +56,14 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 
 	const isResetDisabled = useCallback(() => !transactionProducts?.length, [transactionProducts]);
 
+	const isDiscountDisabled = useCallback(
+		() =>
+			[transactionStatusTypes.FULLY_PAID, transactionStatusTypes.VOID_EDITED].includes(
+				currentTransactionStatus,
+			),
+		[currentTransactionStatus],
+	);
+
 	const onCashCollectionModified = () => {
 		onCashCollection();
 		setOthersModalVisible(false);
@@ -186,8 +194,8 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 			return;
 		}
 
-		// Reset
-		if (discountAmountShortcutKeys.includes(key)) {
+		// Discount
+		if (discountAmountShortcutKeys.includes(key) && !isDiscountDisabled()) {
 			onSetDiscountAmount();
 			return;
 		}
@@ -244,6 +252,7 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 						</>
 					}
 					onClick={onSetDiscountAmount}
+					disabled={isDiscountDisabled()}
 				/>
 
 				<MainButton

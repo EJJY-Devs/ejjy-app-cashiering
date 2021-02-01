@@ -14,7 +14,7 @@ import { service } from '../services/transactions';
 function* firstTimePayment({ payload }: any) {
 	const { branchMachineId, tellerId, client, previousVoidedTransactionId, products } = payload;
 	const { amountTendered, cashierUserId } = payload;
-	const { callback, branchId = null, shouldUpdateBranchProducts = true } = payload;
+	const { callback, shouldUpdateBranchProducts = true } = payload;
 
 	callback({ status: request.REQUESTING });
 
@@ -35,7 +35,7 @@ function* firstTimePayment({ payload }: any) {
 
 		yield put(currentTransactionActions.updateTransaction({ transaction: response.data }));
 
-		if (shouldUpdateBranchProducts && branchId) {
+		if (shouldUpdateBranchProducts) {
 			const response = yield retry(
 				MAX_RETRY,
 				RETRY_INTERVAL_MS,
@@ -43,7 +43,6 @@ function* firstTimePayment({ payload }: any) {
 				{
 					page: 1,
 					page_size: MAX_PAGE_SIZE,
-					branch_id: branchId,
 					fields: 'id,product,price_per_piece,product_status',
 				},
 			);
@@ -64,7 +63,7 @@ function* firstTimePayment({ payload }: any) {
 
 function* cancelVoidedTransaction({ payload }: any) {
 	const { transactionId, status, products } = payload;
-	const { callback, branchId = null, shouldUpdateBranchProducts = true } = payload;
+	const { callback, shouldUpdateBranchProducts = true } = payload;
 
 	callback({ status: request.REQUESTING });
 
@@ -74,7 +73,7 @@ function* cancelVoidedTransaction({ payload }: any) {
 			status,
 		});
 
-		if (shouldUpdateBranchProducts && branchId) {
+		if (shouldUpdateBranchProducts) {
 			const response = yield retry(
 				MAX_RETRY,
 				RETRY_INTERVAL_MS,
@@ -82,7 +81,6 @@ function* cancelVoidedTransaction({ payload }: any) {
 				{
 					page: 1,
 					page_size: MAX_PAGE_SIZE,
-					branch_id: branchId,
 					fields: 'id,product,price_per_piece,product_status',
 				},
 			);

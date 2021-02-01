@@ -6,14 +6,13 @@ import { service } from '../services/branch-products';
 
 /* WORKERS */
 function* list({ payload }: any) {
-	const { branchId, callback } = payload;
+	const { callback } = payload;
 	callback({ status: request.REQUESTING });
 
 	try {
 		const response = yield retry(MAX_RETRY, RETRY_INTERVAL_MS, service.listByBranch, {
 			page: 1,
 			page_size: MAX_PAGE_SIZE,
-			branch_id: branchId,
 			fields: 'id,product,price_per_piece,product_status',
 		});
 

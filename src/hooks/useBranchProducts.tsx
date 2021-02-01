@@ -21,9 +21,9 @@ export const useBranchProducts = () => {
 
 	const resetStatus = () => setStatus(request.NONE);
 
-	const listBranchProductsRequest = (branchId) => {
+	const listBranchProductsRequest = () => {
 		setRecentRequest(types.LIST_BRANCH_PRODUCTS);
-		listBranchProducts({ branchId, callback });
+		listBranchProducts({ callback });
 	};
 
 	const callback = ({ status, errors = [] }) => {
