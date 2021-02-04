@@ -4,6 +4,13 @@
 	"private": true,
 	"homepage": "./",
 	"main": "./electron/main.js",
+	"scripts": {
+		"start": "react-scripts start",
+		"build": "react-scripts build",
+		"dev:electron": "concurrently \"npm start\" \"wait-on http://localhost:3000 && electron .\"",
+		"electron": "wait-on http://localhost:3000 && electron .",
+		"pack": "npm run build && electron-packager . EJJY-Cashiering --no-prune --platform=win32 --ignore=/.vscode --ignore=/deployment --ignore=/node_modules --ignore=/public --ignore=/src --overwrite"
+	},
 	"dependencies": {
 		"@ant-design/icons": "^4.2.2",
 		"antd": "^4.10.0",
@@ -20,6 +27,7 @@
 		"react": "^16.13.1",
 		"react-barcode-reader": "0.0.2",
 		"react-dom": "^16.13.1",
+		"react-helmet": "^6.1.0",
 		"react-keyboard-event-handler": "^1.5.4",
 		"react-redux": "^7.2.1",
 		"react-router-dom": "^5.2.0",
@@ -34,17 +42,6 @@
 		"validator": "^13.1.17",
 		"ws": "^7.4.2",
 		"yup": "^0.29.3"
-	},
-	"scripts": {
-		"start": "react-scripts start",
-		"build": "react-scripts build",
-		"deploy": "python3 deploy.py",
-		"test": "react-scripts test",
-		"eject": "react-scripts eject",
-		"dev": "concurrently \"npm start\" \"wait-on http://localhost:3000 && electron .\"",
-		"electron": "wait-on http://localhost:3000 && electron .",
-		"ebuild": "npm run build && node_modules/.bin/build",
-		"pack": "electron-packager ./ EJJY-Cashiering --platform=win32"
 	},
 	"eslintConfig": {
 		"extends": "react-app"
