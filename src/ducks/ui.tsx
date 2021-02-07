@@ -52,7 +52,7 @@ export const selectors = {
 	selectMainLoading: () => createSelector(selectState, (state) => state.mainLoading),
 	selectMainLoadingText: () => createSelector(selectState, (state) => state.mainLoadingText),
 	selectBarcodeScanningEnabled: () =>
-		createSelector(selectState, (state) => state.setBarcodeScanningEnabled),
+		createSelector(selectState, (state) => state.isBarcodeScanningEnabled),
 };
 
 export default reducer;

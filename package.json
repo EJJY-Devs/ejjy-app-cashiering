@@ -5,10 +5,10 @@
 	"homepage": "./",
 	"main": "./electron/main.js",
 	"scripts": {
-		"start": "react-scripts start",
+		"start": "PORT=3004 react-scripts start",
 		"build": "react-scripts build",
-		"dev:electron": "concurrently \"npm start\" \"wait-on http://localhost:3000 && electron .\"",
-		"electron": "wait-on http://localhost:3000 && electron .",
+		"dev:electron": "concurrently \"npm start\" \"wait-on http://localhost:3004 && electron .\"",
+		"electron": "wait-on http://localhost:3004 && electron .",
 		"pack": "npm run build && electron-packager . EJJY-Cashiering --no-prune --platform=win32 --ignore=/.vscode --ignore=/deployment --ignore=/node_modules --ignore=/public --ignore=/src --overwrite"
 	},
 	"dependencies": {
