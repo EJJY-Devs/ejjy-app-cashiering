@@ -155,7 +155,7 @@ export const BarcodeScanner = ({ setLoading }: Props) => {
 	};
 
 	const handleError = (err) => console.error(err);
-
+	console.log('barcodeScanningEnabled', barcodeScanningEnabled);
 	return barcodeScanningEnabled ? (
 		<BarcodeReader onError={handleError} onScan={handleScan} />
 	) : null;
