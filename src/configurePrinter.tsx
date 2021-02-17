@@ -14,11 +14,11 @@ export const configurePrinter2 = () => {
 	const PRINTER_MESSAGE_KEY = 'configurePrinter';
 	const epson = window.epson;
 	const ipAddress = 'localhost';
-	const port = '8008';
 	const ePosDev = new epson.ePOSDevice();
 	let printer = null;
+	let isConnected = false;
 
-	const ports = [ '8182', '8283','8384','8485' ]
+	const ports = ['8008', '8182', '8283','8384','8485']
 
 	const onCreateDevice = (deviceObj, errorCode) => {
 		if (deviceObj === null) {
@@ -78,7 +78,10 @@ export const configurePrinter2 = () => {
 		key: PRINTER_MESSAGE_KEY,
 		duration: 0,
 	});
-	ePosDev.connect(ipAddress, port, onConnect);
+	
+	ports.forEach(port => {
+		ePosDev.connect(ipAddress, port, onConnect);	
+	});
 }
 
 const PAPER_MARGIN = 0.2; // inches
