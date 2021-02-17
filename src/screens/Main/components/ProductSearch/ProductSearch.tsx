@@ -1,8 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { message, Spin } from 'antd';
 import cn from 'classnames';
 import { debounce } from 'lodash';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import KeyboardEventHandler from 'react-keyboard-event-handler';
+import { Scrollbars } from 'react-custom-scrollbars';
 import { ControlledInput } from '../../../../components/elements';
 import { NO_INDEX_SELECTED } from '../../../../global/constants';
 import { searchShortcutKeys } from '../../../../global/options';
@@ -11,9 +12,11 @@ import { useBranchProducts } from '../../../../hooks/useBranchProducts';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import { getBranchProductStatus, searchProductInfo } from '../../../../utils/function';
 import { AddProductModal } from './AddProductModal';
+import KeyboardEventHandler from 'react-keyboard-event-handler';
 import './style.scss';
 
-const SEARCH_DEBOUNCE_TIME = 300;
+const SEARCH_DEBOUNCE_TIME = 500;
+const PRODUCT_LIST_HEIGHT = 450;
 
 export const ProductSearch = () => {
 	// STATES
@@ -27,12 +30,13 @@ export const ProductSearch = () => {
 	// REFS
 	const itemRefs = useRef([]);
 	const inputRef = useRef(null);
+	const scrollbarRef = useRef(null);
 
 	// CUSTOM HOOKS
 	const { transactionProducts } = useCurrentTransaction();
 	const { branchProducts } = useBranchProducts();
 
-	//METHODS
+	// METHODS
 
 	// Effect: Set list of searchable products
 	useEffect(() => {
@@ -43,9 +47,15 @@ export const ProductSearch = () => {
 	// Effect: Focus active item
 	useEffect(() => {
 		if (activeIndex !== NO_INDEX_SELECTED) {
-			itemRefs.current?.[activeIndex]?.focus();
+			const scrollTop = itemRefs.current?.[activeIndex]?.offsetTop || 0;
+
+			if (scrollTop > PRODUCT_LIST_HEIGHT) {
+				scrollbarRef.current?.scrollTop(scrollTop);
+			} else {
+				scrollbarRef.current?.scrollTop(0);
+			}
 		}
-	}, [activeIndex]);
+	}, [activeIndex, scrollbarRef]);
 
 	const onSearch = (value) => {
 		let filteredProducts = [];
@@ -57,7 +67,7 @@ export const ProductSearch = () => {
 		}
 
 		setProducts(filteredProducts);
-		setActiveIndex(NO_INDEX_SELECTED);
+		setActiveIndex(0);
 		setSearchedSpin(false);
 	};
 
@@ -155,25 +165,32 @@ export const ProductSearch = () => {
 				{!!searchedKey.length && (
 					<div className="product-search-suggestion">
 						<Spin size="large" spinning={searchedSpin}>
-							{products.map((item, index) => (
-								<div
-									ref={(el) => (itemRefs.current[index] = el)}
-									tabIndex={index}
-									key={index}
-									className={cn('item', { active: activeIndex === index })}
-									onMouseEnter={() => handleHover(index)}
-									onClick={onSelectProduct}
-								>
-									<div className="name-wrapper">
-										<p className="product-name">{item?.product?.name}</p>
-										<p className="barcode-textcode">
-											{item?.product?.barcode || item?.product?.textcode}
-										</p>
-									</div>
+							<Scrollbars
+								ref={scrollbarRef}
+								autoHeight
+								autoHeightMin="100%"
+								autoHeightMax={PRODUCT_LIST_HEIGHT}
+								style={{ height: '100%', paddingBottom: 10 }}
+							>
+								{products.map((item, index) => (
+									<div
+										ref={(el) => (itemRefs.current[index] = el)}
+										key={index}
+										className={cn('item', { active: activeIndex === index })}
+										onMouseEnter={() => handleHover(index)}
+										onClick={onSelectProduct}
+									>
+										<div className="name-wrapper">
+											<p className="product-name">{item?.product?.name}</p>
+											<p className="barcode-textcode">
+												{item?.product?.barcode || item?.product?.textcode}
+											</p>
+										</div>
 
-									{getBranchProductStatus(item?.product_status)}
-								</div>
-							))}
+										{getBranchProductStatus(item?.product_status)}
+									</div>
+								))}
+							</Scrollbars>
 						</Spin>
 					</div>
 				)}

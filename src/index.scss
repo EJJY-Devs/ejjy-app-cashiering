@@ -13,6 +13,10 @@ body {
 	color: $color-dark;
 
 	@include flex(center, center);
+
+	*:focus {
+		background-color: yellow !important;
+	}
 }
 
 #root {

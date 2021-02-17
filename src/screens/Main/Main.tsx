@@ -211,7 +211,7 @@ const Main = () => {
 					</div>
 				</div>
 
-				<h1 className="store-title">EJ & JY WET MARKET AND ENTERPRISES</h1>
+				<h1 className="store-title">EJ &amp; JY WET MARKET AND ENTERPRISES</h1>
 
 				<CashBreakdownModal
 					sessionId={session?.id}

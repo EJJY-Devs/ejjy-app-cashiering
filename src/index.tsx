@@ -10,7 +10,7 @@ import { persistStore } from 'redux-persist';
 import { PersistGate } from 'redux-persist/integration/react';
 import App from './App';
 import configureAxios from './configureAxios';
-import configurePrinter from './configurePrinter';
+import configurePrinter, { configurePrinter2 } from './configurePrinter';
 import configureStore from './configureStore';
 import './index.scss';
 import * as serviceWorker from './serviceWorker';
@@ -26,6 +26,7 @@ dayjs.tz.setDefault('Asia/Manila');
 const store = configureStore({}, history);
 configureAxios(store);
 configurePrinter();
+configurePrinter2();
 
 ReactDOM.render(
 	<React.StrictMode>
