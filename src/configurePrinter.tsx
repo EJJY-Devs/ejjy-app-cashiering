@@ -11,77 +11,111 @@ declare global {
 }
 
 export const configurePrinter2 = () => {
-	const PRINTER_MESSAGE_KEY = 'configurePrinter2';
-	const epson = window.epson;
-	const ipAddress = 'localhost';
-	const ePosDev = new epson.ePOSDevice();
-	let printer = null;
-	let isConnected = false;
+	const escpos = require('escpos');
+// install escpos-usb adapter module manually
+escpos.USB = require('escpos-usb');
+// Select the adapter based on your printer type
+const device  = new escpos.USB();
+// const device  = new escpos.Network('localhost');
+// const device  = new escpos.Serial('/dev/usb/lp0');
 
-	const ports = ['8008', '8182', '8283','8384','8485']
+const options = { encoding: "GB18030" /* default */ }
+// encoding is optional
 
-	const onCreateDevice = (deviceObj, errorCode) => {
-		if (deviceObj === null) {
-			// Displays an error message if the system fails to retrieve the Printer object
-			message.error({
-				content: 'Cannot retrieve printer.',
-				key: PRINTER_MESSAGE_KEY,
-			});
-			return;
-		}
+const printer = new escpos.Printer(device, options);
 
-		console.log('onCreateDevice: deviceObj', deviceObj);
-		printer = deviceObj;
+device.open(function(error){
+  printer
+  .font('a')
+  .align('ct')
+  .style('bu')
+  .size(1, 1)
+  .text('The quick brown fox jumps over the lazy dog')
+  .text('敏捷的棕色狐狸跳过懒狗')
+  .barcode('1234567', 'EAN8')
+  .table(["One", "Two", "Three"])
+  .tableCustom([
+    { text:"Left", align:"LEFT", width:0.33 },
+    { text:"Center", align:"CENTER", width:0.33},
+    { text:"Right", align:"RIGHT", width:0.33 }
+  ])
+  .qrimage('https://github.com/song940/node-escpos', function(err){
+    this.cut();
+    this.close();
+  });
+});
 
-		// Registers the print complete event
-		printer.onreceive = function (response) {
-			console.log('onCreateDevice: onreceive: response', deviceObj);
-			if (response.success) {
-				//Displays the successful print message
-				message.success({
-					content: 'Successfully registered the printer.',
-					key: PRINTER_MESSAGE_KEY,
-				});
-			} else {
-				//Displays error messages
-				message.error({
-					content: 'Cannot register the printer.',
-					key: PRINTER_MESSAGE_KEY,
-				});
-			}
-		};
-	};
+	// const PRINTER_MESSAGE_KEY = 'configurePrinter2';
+	// const epson = window.epson;
+	// const ipAddress = 'localhost';
+	// const ePosDev = new epson.ePOSDevice();
+	// let printer = null;
+	// let isConnected = false;
 
-	const onConnect = (resultConnect) => {
-		console.log('onConnect: resultConnect', resultConnect);
-		var deviceId = 'local_printer';
-		var options = { crypto: false, buffer: false };
+	// const ports = ['8008', '8182', '8283','8384','8485']
 
-		if (resultConnect === 'OK' || resultConnect === 'SSL_CONNECT_OK') {
-			// Retrieves the Printer object
-			message.loading({
-				content: 'Setting up printer...',
-				key: PRINTER_MESSAGE_KEY,
-				duration: 0,
-			});
-			ePosDev.createDevice(deviceId, ePosDev.DEVICE_TYPE_PRINTER, options, onCreateDevice);
-		} else {
-			message.error({
-				content: 'Cannot initialize printer. Please make sure to connect the printer.',
-				key: PRINTER_MESSAGE_KEY,
-			});
-		}
-	};
+	// const onCreateDevice = (deviceObj, errorCode) => {
+	// 	if (deviceObj === null) {
+	// 		// Displays an error message if the system fails to retrieve the Printer object
+	// 		message.error({
+	// 			content: 'Cannot retrieve printer.',
+	// 			key: PRINTER_MESSAGE_KEY,
+	// 		});
+	// 		return;
+	// 	}
 
-	message.loading({
-		content: 'Connecting to printer...',
-		key: PRINTER_MESSAGE_KEY,
-		duration: 0,
-	});
+	// 	console.log('onCreateDevice: deviceObj', deviceObj);
+	// 	printer = deviceObj;
+
+	// 	// Registers the print complete event
+	// 	printer.onreceive = function (response) {
+	// 		console.log('onCreateDevice: onreceive: response', deviceObj);
+	// 		if (response.success) {
+	// 			//Displays the successful print message
+	// 			message.success({
+	// 				content: 'Successfully registered the printer.',
+	// 				key: PRINTER_MESSAGE_KEY,
+	// 			});
+	// 		} else {
+	// 			//Displays error messages
+	// 			message.error({
+	// 				content: 'Cannot register the printer.',
+	// 				key: PRINTER_MESSAGE_KEY,
+	// 			});
+	// 		}
+	// 	};
+	// };
+
+	// const onConnect = (resultConnect) => {
+	// 	console.log('onConnect: resultConnect', resultConnect);
+	// 	var deviceId = 'local_printer';
+	// 	var options = { crypto: false, buffer: false };
+
+	// 	if (resultConnect === 'OK' || resultConnect === 'SSL_CONNECT_OK') {
+	// 		// Retrieves the Printer object
+	// 		message.loading({
+	// 			content: 'Setting up printer...',
+	// 			key: PRINTER_MESSAGE_KEY,
+	// 			duration: 0,
+	// 		});
+	// 		ePosDev.createDevice(deviceId, ePosDev.DEVICE_TYPE_PRINTER, options, onCreateDevice);
+	// 	} else {
+	// 		message.error({
+	// 			content: 'Cannot initialize printer. Please make sure to connect the printer.',
+	// 			key: PRINTER_MESSAGE_KEY,
+	// 		});
+	// 	}
+	// };
+
+	// message.loading({
+	// 	content: 'Connecting to printer...',
+	// 	key: PRINTER_MESSAGE_KEY,
+	// 	duration: 0,
+	// });
 	
-	ports.forEach(port => {
-		ePosDev.connect(ipAddress, port, onConnect);	
-	});
+	// ports.forEach(port => {
+	// 	ePosDev.connect(ipAddress, port, onConnect);	
+	// });
 }
 
 const PAPER_MARGIN = 0.2; // inches
