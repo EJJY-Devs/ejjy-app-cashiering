@@ -11,7 +11,7 @@ declare global {
 }
 
 export const configurePrinter2 = () => {
-	const PRINTER_MESSAGE_KEY = 'configurePrinter';
+	const PRINTER_MESSAGE_KEY = 'configurePrinter2';
 	const epson = window.epson;
 	const ipAddress = 'localhost';
 	const ePosDev = new epson.ePOSDevice();
@@ -37,11 +37,11 @@ export const configurePrinter2 = () => {
 		printer.onreceive = function (response) {
 			console.log('onCreateDevice: onreceive: response', deviceObj);
 			if (response.success) {
+				//Displays the successful print message
 				message.success({
 					content: 'Successfully registered the printer.',
 					key: PRINTER_MESSAGE_KEY,
 				});
-				//Displays the successful print message
 			} else {
 				//Displays error messages
 				message.error({

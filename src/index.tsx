@@ -25,7 +25,7 @@ dayjs.tz.setDefault('Asia/Manila');
 // Start Interceptor
 const store = configureStore({}, history);
 configureAxios(store);
-configurePrinter();
+// configurePrinter();
 configurePrinter2();
 
 ReactDOM.render(
