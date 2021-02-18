@@ -4,120 +4,6 @@ import qz from 'qz-tray';
 import { EMPTY_CELL } from './global/constants';
 import { getCashBreakdownTypeDescription, getProductQuantity, numberWithCommas } from './utils/function';
 
-declare global {
-	interface Window {
-		epson: any;
-	}
-}
-
-export const configurePrinter2 = () => {
-	const escpos = require('escpos');
-// install escpos-usb adapter module manually
-escpos.USB = require('escpos-usb');
-// Select the adapter based on your printer type
-const device  = new escpos.USB();
-// const device  = new escpos.Network('localhost');
-// const device  = new escpos.Serial('/dev/usb/lp0');
-
-const options = { encoding: "GB18030" /* default */ }
-// encoding is optional
-
-const printer = new escpos.Printer(device, options);
-
-device.open(function(error){
-  printer
-  .font('a')
-  .align('ct')
-  .style('bu')
-  .size(1, 1)
-  .text('The quick brown fox jumps over the lazy dog')
-  .text('敏捷的棕色狐狸跳过懒狗')
-  .barcode('1234567', 'EAN8')
-  .table(["One", "Two", "Three"])
-  .tableCustom([
-    { text:"Left", align:"LEFT", width:0.33 },
-    { text:"Center", align:"CENTER", width:0.33},
-    { text:"Right", align:"RIGHT", width:0.33 }
-  ])
-  .qrimage('https://github.com/song940/node-escpos', function(err){
-    this.cut();
-    this.close();
-  });
-});
-
-	// const PRINTER_MESSAGE_KEY = 'configurePrinter2';
-	// const epson = window.epson;
-	// const ipAddress = 'localhost';
-	// const ePosDev = new epson.ePOSDevice();
-	// let printer = null;
-	// let isConnected = false;
-
-	// const ports = ['8008', '8182', '8283','8384','8485']
-
-	// const onCreateDevice = (deviceObj, errorCode) => {
-	// 	if (deviceObj === null) {
-	// 		// Displays an error message if the system fails to retrieve the Printer object
-	// 		message.error({
-	// 			content: 'Cannot retrieve printer.',
-	// 			key: PRINTER_MESSAGE_KEY,
-	// 		});
-	// 		return;
-	// 	}
-
-	// 	console.log('onCreateDevice: deviceObj', deviceObj);
-	// 	printer = deviceObj;
-
-	// 	// Registers the print complete event
-	// 	printer.onreceive = function (response) {
-	// 		console.log('onCreateDevice: onreceive: response', deviceObj);
-	// 		if (response.success) {
-	// 			//Displays the successful print message
-	// 			message.success({
-	// 				content: 'Successfully registered the printer.',
-	// 				key: PRINTER_MESSAGE_KEY,
-	// 			});
-	// 		} else {
-	// 			//Displays error messages
-	// 			message.error({
-	// 				content: 'Cannot register the printer.',
-	// 				key: PRINTER_MESSAGE_KEY,
-	// 			});
-	// 		}
-	// 	};
-	// };
-
-	// const onConnect = (resultConnect) => {
-	// 	console.log('onConnect: resultConnect', resultConnect);
-	// 	var deviceId = 'local_printer';
-	// 	var options = { crypto: false, buffer: false };
-
-	// 	if (resultConnect === 'OK' || resultConnect === 'SSL_CONNECT_OK') {
-	// 		// Retrieves the Printer object
-	// 		message.loading({
-	// 			content: 'Setting up printer...',
-	// 			key: PRINTER_MESSAGE_KEY,
-	// 			duration: 0,
-	// 		});
-	// 		ePosDev.createDevice(deviceId, ePosDev.DEVICE_TYPE_PRINTER, options, onCreateDevice);
-	// 	} else {
-	// 		message.error({
-	// 			content: 'Cannot initialize printer. Please make sure to connect the printer.',
-	// 			key: PRINTER_MESSAGE_KEY,
-	// 		});
-	// 	}
-	// };
-
-	// message.loading({
-	// 	content: 'Connecting to printer...',
-	// 	key: PRINTER_MESSAGE_KEY,
-	// 	duration: 0,
-	// });
-	
-	// ports.forEach(port => {
-	// 	ePosDev.connect(ipAddress, port, onConnect);	
-	// });
-}
-
 const PAPER_MARGIN = 0.2; // inches
 const PAPER_WIDTH = 3; // inches
 const PRINTER_MESSAGE_KEY = 'configurePrinter';
@@ -125,10 +11,33 @@ const SI_MESSAGE_KEY = 'SI_MESSAGE_KEY';
 const PRINTER_NAME = 'EPSON TM-U220 Receipt';
 // const PRINTER_NAME = 'Microsoft Print to PDF';
 
-
-
 const configurePrinter = (callback = null) => {
 	if (!qz.websocket.isActive()) {
+		// Authentication setup
+		qz.security.setCertificatePromise(function (resolve, reject) {
+			//Alternate method 2 - direct
+			resolve("-----BEGIN CERTIFICATE-----\n" + 
+				"MIIC2DCCAcACCQDbsDMxRWeypzANBgkqhkiG9w0BAQsFADAtMQ0wCwYDVQQKDARF\n" + 
+				"SkpZMQ0wCwYDVQQLDARFSkpZMQ0wCwYDVQQDDARFSkpZMCAXDTIxMDIxODA3MzEx\n" + 
+				"MFoYDzIwNTIwODEzMDczMTEwWjAtMQ0wCwYDVQQKDARFSkpZMQ0wCwYDVQQLDARF\n" + 
+				"SkpZMQ0wCwYDVQQDDARFSkpZMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC\n" + 
+				"AQEAx1weEomPtIi4ETBWqcSjzolUQVtsOz1mp8K91tVSImZslXG7t0mplVarc4pN\n" + 
+				"w7o1hD4hmn7rag3JhLOJrkkZ04WQUzKpRrkUnuVf26hxjqoKjSP3gUk22j3xuYMR\n" + 
+				"DfBN9Qvy7qs9XqR9JT7KCce3bgxZpUdoOfK2N6scZjCkNsH1zqM1so/aDEkAF2He\n" + 
+				"2BpMg9xorWbmDA0Qe2HF3fslCbTyzAa9qq7y3Rw/yDhaQ7F0l/7D4hBRg/3WGrjv\n" + 
+				"wUcm7OLaC8hAcP8V/Y1is2+M8TxQZ5BMZR95CSw3qyGN++Mw2lvOKBE/cKmTs64x\n" + 
+				"oMn6wE66EGsJJkxGOaZy3Aq+jwIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQCRRS9H\n" + 
+				"M1g+nOarunY+MrnjBwtnUFdCZKJDzetgPwDfTTIuY7k0mx4Mm0aNjyfz2OKcnJoi\n" + 
+				"GcnqjzPjbv3I2+3sbc4muItLkV5PyRP8SVUcjUWD/ql30DXLpAmmxD2JvVtu0xv5\n" + 
+				"+CMF/mrkGmU7/Oos4D7AS5lHx4P/73JCcyeVOwIj4JKzCrZPJ/ot4ECdtQRUKHP6\n" + 
+				"JU34uiv9UeGP5hwPh6/an9YkmBQNtLNBOYgBg33OCkYEsosJxIeYHgZ/hP01beOr\n" + 
+				"vVdcs+Swa/Q6nLkclLl53/r3sX3ypKzORuLo+F7I/Z8zbtm1c6jfmyCn5qNNygVe\n" + 
+				"jl3kpz8ugDyp9FyV\n" + 
+				"-----END CERTIFICATE-----"
+			);
+		});
+		qz.security.setSignatureAlgorithm('SHA512'); // Since 2.1
+
 		message.loading({
 			content: 'Connecting to printer...',
 			key: PRINTER_MESSAGE_KEY,
