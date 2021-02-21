@@ -14,9 +14,9 @@ body {
 
 	@include flex(center, center);
 
-	*:focus {
-		background-color: yellow !important;
-	}
+	// *:focus {
+	// 	background-color: yellow !important;
+	// }
 }
 
 #root {
