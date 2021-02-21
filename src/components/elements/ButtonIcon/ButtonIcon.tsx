@@ -17,7 +17,11 @@ interface Props {
 
 const ButtonIcon = ({ onClick, icon, tooltip, loading, disabled, classNames }: Props) => (
 	<Tooltip placement="top" title={tooltip}>
-		<button onClick={onClick} className={cn('ButtonIcon', classNames, { disabled, loading })}>
+		<button
+			onClick={onClick}
+			className={cn('ButtonIcon', classNames, { disabled, loading })}
+			tabIndex={-1}
+		>
 			{loading ? <Spin indicator={loadingIcon} /> : <>{icon}</>}
 		</button>
 	</Tooltip>

@@ -18,6 +18,7 @@ const loadingIcon = (
 
 export const NavigationButton = ({ icon, onClick, disabled, classNames, loading }: Props) => (
 	<button
+		tabIndex={-1}
 		className={cn('NavigationButton', classNames, { disabled: disabled || loading })}
 		onClick={onClick}
 	>
