@@ -47,7 +47,7 @@ const Main = () => {
 		transactionId,
 		transactionStatus,
 		transactionProducts,
-		previousSukli,
+		previousChange,
 		resetTransaction,
 	} = useCurrentTransaction();
 	const {
@@ -165,7 +165,7 @@ const Main = () => {
 	};
 
 	const reprintInvoice = () => {
-		printSalesInvoice(transaction, transactionProducts, previousSukli, true);
+		printSalesInvoice(transaction, transactionProducts, previousChange, true);
 	};
 
 	return (

@@ -18,7 +18,7 @@ export const useCurrentTransaction = () => {
 	const orNumber = useSelector(selectors.selectOrNumber());
 	const previousVoidedTransactionId = useSelector(selectors.selectPreviousVoidedTransactionId());
 	const pageNumber = useSelector(selectors.selectPageNumber());
-	const previousSukli = useSelector(selectors.selectPreviousSukli());
+	const previousChange = useSelector(selectors.selectPreviousChange());
 
 	const addProduct = useActionDispatch(actions.addProduct);
 	const removeProduct = useActionDispatch(actions.removeProduct);
@@ -26,7 +26,7 @@ export const useCurrentTransaction = () => {
 	const setCurrentTransaction = useActionDispatch(actions.setCurrentTransaction);
 	const resetTransaction = useActionDispatch(actions.resetTransaction);
 	const navigateProduct = useActionDispatch(actions.navigateProduct);
-	const setPreviousSukli = useActionDispatch(actions.setPreviousSukli);
+	const setPreviousChange = useActionDispatch(actions.setPreviousChange);
 	const setClient = useActionDispatch(actions.setClient);
 	const setDiscount = useActionDispatch(actions.setDiscount);
 
@@ -76,7 +76,7 @@ export const useCurrentTransaction = () => {
 		orNumber,
 		previousVoidedTransactionId,
 		pageNumber,
-		previousSukli,
+		previousChange,
 		addProduct,
 		removeProduct,
 		editProduct,
@@ -84,7 +84,7 @@ export const useCurrentTransaction = () => {
 		setCurrentTransaction,
 		createCurrentTransaction,
 		navigateProduct,
-		setPreviousSukli,
+		setPreviousChange,
 		setClient,
 		setDiscount,
 		requestStatus: transactionsRequestStatus,

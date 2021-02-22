@@ -24,7 +24,7 @@ export const Payment = () => {
 	const {
 		transactionProducts,
 		transactionStatus,
-		previousSukli,
+		previousChange,
 		overallDiscount,
 	} = useCurrentTransaction();
 	const { listBranchProducts } = useBranchProducts();
@@ -54,7 +54,7 @@ export const Payment = () => {
 		setPaymentModalVisible(false);
 		setThankYouModalVisible(true);
 		setTransaction(transaction);
-		printSalesInvoice(transaction, transactionProducts, previousSukli);
+		printSalesInvoice(transaction, transactionProducts, previousChange);
 	};
 
 	const onPay = () => {

@@ -24,7 +24,7 @@ export const PaymentModal = ({ amountDue, visible, onClose, onSuccess }: Props) 
 	const { session } = useSession();
 	const {
 		transactionId: currentTransactionId,
-		setPreviousSukli,
+		setPreviousChange,
 		createCurrentTransaction,
 		requestStatus: createTransactionStatus,
 	} = useCurrentTransaction();
@@ -65,11 +65,11 @@ export const PaymentModal = ({ amountDue, visible, onClose, onSuccess }: Props) 
 			cashierUserId: session.user.id,
 		};
 
-		const sukli = amountTenderedNumber - amountDue;
+		const change = amountTenderedNumber - amountDue;
 		payTransaction(data, ({ status, response }) => {
 			if (status === request.SUCCESS) {
 				if (response.is_fully_paid && response?.invoice.id) {
-					setPreviousSukli(sukli);
+					setPreviousChange(change);
 					onSuccess(response);
 				}
 				onClose();

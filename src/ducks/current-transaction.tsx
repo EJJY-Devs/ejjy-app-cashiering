@@ -18,7 +18,7 @@ export const types = {
 	TRANSACTION_VOIDED: `${key}/TRANSACTION_VOIDED`,
 
 	NAVIGATE_PRODUCT: `${key}/NAVIGATE_PRODUCT`,
-	SET_PREVIOUS_SUKLI: `${key}/SET_PREVIOUS_SUKLI`,
+	SET_PREVIOUS_CHANGE: `${key}/SET_PREVIOUS_CHANGE`,
 	SET_CLIENT: `${key}/SET_CLIENT`,
 	SET_DISCOUNT: `${key}/SET_DISCOUNT`,
 };
@@ -36,7 +36,7 @@ const initialState = {
 	overallDiscount: 0,
 
 	pageNumber: 1,
-	previousSukli: null,
+	previousChange: null,
 };
 
 const reducer = handleActions(
@@ -156,7 +156,7 @@ const reducer = handleActions(
 		},
 
 		[types.RESET_TRANSACTION]: (state) => {
-			const { previousSukli, ...initialData } = initialState;
+			const { previousChange, ...initialData } = initialState;
 			return { ...state, ...initialData };
 		},
 
@@ -182,8 +182,8 @@ const reducer = handleActions(
 			return { ...state, pageNumber };
 		},
 
-		[types.SET_PREVIOUS_SUKLI]: (state, { payload }: any) => {
-			return { ...state, previousSukli: payload };
+		[types.SET_PREVIOUS_CHANGE]: (state, { payload }: any) => {
+			return { ...state, previousChange: payload };
 		},
 
 		[types.SET_CLIENT]: (state, { payload }: any) => {
@@ -208,7 +208,7 @@ export const actions = {
 
 	transactionVoided: createAction(types.TRANSACTION_VOIDED),
 	navigateProduct: createAction(types.NAVIGATE_PRODUCT),
-	setPreviousSukli: createAction(types.SET_PREVIOUS_SUKLI),
+	setPreviousChange: createAction(types.SET_PREVIOUS_CHANGE),
 	setClient: createAction(types.SET_CLIENT),
 	setDiscount: createAction(types.SET_DISCOUNT),
 };
@@ -227,7 +227,7 @@ export const selectors = {
 	selectPreviousVoidedTransactionId: () =>
 		createSelector(selectState, (state) => state.previousVoidedTransactionId),
 	selectPageNumber: () => createSelector(selectState, (state) => state.pageNumber),
-	selectPreviousSukli: () => createSelector(selectState, (state) => state.previousSukli),
+	selectPreviousChange: () => createSelector(selectState, (state) => state.previousChange),
 };
 
 export default reducer;

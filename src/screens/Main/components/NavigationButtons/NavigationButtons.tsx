@@ -23,7 +23,7 @@ export const NavigationButtons = () => {
 		transactionProducts,
 		orNumber,
 		pageNumber,
-		previousSukli,
+		previousChange,
 		client,
 		navigateProduct,
 	} = useCurrentTransaction();
@@ -76,11 +76,11 @@ export const NavigationButtons = () => {
 					<p className="label">Invoice No:</p>
 					<p className="value">{orNumber || EMPTY_CELL}</p>
 				</div>
-				<div className="item previous-sukli">
-					<p className="label">Previous Sukli:</p>
+				<div className="item previous-change">
+					<p className="label">Previous Change:</p>
 					<p className="value">
-						{previousSukli !== null
-							? `₱${numberWithCommas(previousSukli?.toFixed(2))}`
+						{previousChange !== null
+							? `₱${numberWithCommas(previousChange?.toFixed(2))}`
 							: EMPTY_CELL}
 					</p>
 				</div>
