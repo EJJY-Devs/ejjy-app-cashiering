@@ -64,7 +64,7 @@ const configurePrinter = (callback = null) => {
 	}
 };
 
-export const printSalesInvoice = (transaction, transactionProducts, change) => {
+export const printSalesInvoice = (transaction, transactionProducts, change, isReprint = false) => {
 	message.loading({
 		content: 'Printing sales invoice...',
 		key: SI_MESSAGE_KEY,
@@ -99,6 +99,17 @@ export const printSalesInvoice = (transaction, transactionProducts, change) => {
 						<div style="width: 100%; text-align: center">${transaction?.branch_machine?.machine_id || EMPTY_CELL}</div>
 						<div style="width: 100%; text-align: center">${transaction?.branch_machine?.machine_printer_serial_number || EMPTY_CELL}</div>
 						<div style="width: 100%; text-align: center; font-weight: bold">[SALES INVOICE]</div>
+	
+						${isReprint ? 
+							`<table style="width: 100%; font-size: 10px; line-height: 12px">
+								<tr>
+									<td>For 11/20/2020</td>
+									<td style="text-align: right;">
+										1:32PM REPRINT
+									</td>
+								</tr>
+							</table>` : ''
+						}						
 
 						<br />
 

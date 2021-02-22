@@ -165,7 +165,7 @@ const Main = () => {
 	};
 
 	const reprintInvoice = () => {
-		printSalesInvoice(transaction, transactionProducts, previousSukli);
+		printSalesInvoice(transaction, transactionProducts, previousSukli, true);
 	};
 
 	return (

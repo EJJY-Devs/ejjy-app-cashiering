@@ -1,5 +1,4 @@
 const { app, BrowserWindow } = require('electron');
-const path = require('path');
 const { Menu, MenuItem } = require('electron');
 
 let mainWindow;
@@ -9,10 +8,10 @@ function createWindow() {
 		width: 800,
 		height: 600,
 		show: false,
-		fullscreen: true, // Auto full screen only in production
+		fullscreen: false, // Auto full screen only in production
 	});
 
-	const startURL = `file://${path.join(__dirname, '../build/index.html')}`;
+	const startURL = 'http://localhost:3004';
 	mainWindow.loadURL(startURL);
 
 	mainWindow.once('ready-to-show', () => {
@@ -26,6 +25,13 @@ function createWindow() {
 
 	// Remove menu
 	const menu = new Menu();
+	menu.append(
+		new MenuItem({
+			label: 'Dev',
+			submenu: [{ role: 'toggleDevTools' }, { role: 'forceReload' }],
+		}),
+	);
+
 	Menu.setApplicationMenu(menu);
 }
 app.on('ready', createWindow);
