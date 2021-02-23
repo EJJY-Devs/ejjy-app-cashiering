@@ -108,7 +108,7 @@ export const printSalesInvoice = (transaction, transactionProducts, change, isRe
 										1:32PM REPRINT
 									</td>
 								</tr>
-							</table>` : ''
+							</table>` : `&nbsp;`
 						}						
 
 						<br />
