@@ -454,7 +454,7 @@ export const printZreadReport = (report) => {
 						<table style="width: 100%; font-size: 12px; line-height: 12px">
 							<tr>
 								<td style="padding-left: 30px">DISCOUNTS</td>
-								<td style="text-align: right">₱${numberWithCommas(Number(report?.discounts).toFixed(2))}</td>
+								<td style="text-align: right">₱0.00</td>
 							</tr>
 							<tr>
 								<td style="padding-left: 30px">SALES RETURNS</td>
@@ -493,7 +493,7 @@ export const printZreadReport = (report) => {
 						<table style="width: 100%; font-size: 12px; line-height: 12px">
 							<tr>
 								<td>FOR	DEC-07-2020</td>
-								<td>${report?.branch_machine?.machine_id}</td>
+								<td>N2M1</td>
 								<td></td>
 							</tr>
 							<tr>
