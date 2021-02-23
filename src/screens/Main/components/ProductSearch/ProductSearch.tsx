@@ -40,6 +40,14 @@ export const ProductSearch = () => {
 
 	// Effect: Set list of searchable products
 	useEffect(() => {
+		if (inputRef && inputRef.current) {
+			setTimeout(() => {
+				inputRef.current?.focus();
+			}, 500);
+		}
+	}, [inputRef]);
+
+	useEffect(() => {
 		const ids = transactionProducts.map((item) => item.id);
 		setSearchableProducts(branchProducts.filter((item) => !ids.includes(item.id)));
 	}, [transactionProducts, branchProducts]);
