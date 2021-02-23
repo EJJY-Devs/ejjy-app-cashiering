@@ -5,7 +5,7 @@ import { EMPTY_CELL } from './global/constants';
 import { getCashBreakdownTypeDescription, getProductQuantity, numberWithCommas } from './utils/function';
 
 const PAPER_MARGIN = 0.2; // inches
-const PAPER_WIDTH = 3; // inches
+const PAPER_WIDTH = 3.25; // inches
 const PRINTER_MESSAGE_KEY = 'configurePrinter';
 const SI_MESSAGE_KEY = 'SI_MESSAGE_KEY';
 const PRINTER_NAME = 'EPSON TM-U220 Receipt';
@@ -156,7 +156,9 @@ export const printSalesInvoice = (transaction, transactionProducts, change, isRe
 							</tr>
 							<tr>
 								<td style="padding-left: 30px">CHANGE</td>
-								<td style="text-align: right">₱${change?.toFixed(2)}</td>
+								<td style="text-align: right; font-size: 14px; font-weight: bold">
+									₱${change?.toFixed(2)}
+								</td>
 							</tr>
 						</table>
 
