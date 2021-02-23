@@ -92,24 +92,13 @@ export const printSalesInvoice = (transaction, transactionProducts, change, isRe
 					<div style="width: 100%; font-family: courier new, tahoma; font-size: 12px; line-height: 12px">
 						<div style="font-size: 20px; text-align: center; line-height: 20px">EJ AND JY</div>
 						<div style="width: 100%; text-align: center">WET AND MARKET ENTERPRISES</div>
-						<div style="width: 100%; text-align: center">WET MARKET AND ENTERPRISESPOB., CARMEN, AGUSAN DEL NORTE</div>
+						<div style="width: 100%; text-align: center">POB., CARMEN, AGUSAN DEL NORTE</div>
 						<div style="width: 100%; text-align: center">Tel# 808-8866</div>
 						<div style="width: 100%; text-align: center">EMMANUEL T. FINEZA</div>
 						<div style="width: 100%; text-align: center">178-846-963-000</div>
 						<div style="width: 100%; text-align: center">MIN</div>
 						<div style="width: 100%; text-align: center">SN</div>
 						<div style="width: 100%; text-align: center; font-weight: bold">[SALES INVOICE]</div>
-	
-						${isReprint &&
-							`<table style="width: 100%; font-size: 12px; line-height: 12px">
-								<tr>
-									<td>For 11/20/2020</td>
-									<td style="text-align: right;">
-										1:32PM REPRINT
-									</td>
-								</tr>
-							</table>`
-						}						
 
 						<br />
 
@@ -218,7 +207,7 @@ export const printSalesInvoice = (transaction, transactionProducts, change, isRe
 						<br />
 
 						<div style="text-align: center">EJ & JY I.T. SOLUTIONS</div>
-						<div style="text-align: center">Burgos St., Poblacion, Carmen, Agusandel Norte</div>
+						<div style="text-align: center">Burgos St., Poblacion, Carmen, Agusan del Norte</div>
 						<div style="text-align: center">178-846-963-005</div>
 						<div style="text-align: center">ACCREDITATION NUMBER</div>
 						<div style="text-align: center">DATE ISSUED</div>
