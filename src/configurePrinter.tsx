@@ -121,7 +121,7 @@ export const printSalesInvoice = (transaction, transactionProducts, change, isRe
 									<tr>
 										<td style="padding-left: 30px">${getProductQuantity(item.quantity, item.data.unit_of_measurement)} @ ${`₱${item.pricePerPiece.toFixed(2)}`}</td>
 										<td style="text-align: right">
-											${`₱${(item.quantity * item.pricePerPiece).toFixed(2)}`}
+											${`₱${(item.quantity * item.pricePerPiece).toFixed(2)}`} V
 										</td>
 									</tr>`
 								))	
