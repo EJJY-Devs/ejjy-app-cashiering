@@ -331,7 +331,7 @@ export const printXreadReport = (report) => {
 						<table style="width: 100%; font-size: 12px; line-height: 12px">
 							<tr>
 								<td>FOR	DEC-07-2020</td>
-								<td>${report?.branch_machine?.machine_id}</td>
+								<td>N2M1</td>
 								<td>${report?.total_transactions} tran(s)</td>
 							</tr>
 							<tr>
@@ -354,7 +354,7 @@ export const printXreadReport = (report) => {
 							</tr>
 							<tr>
 								<td>Beg Sales</td>
-								<td style="text-align: right">₱${numberWithCommas(Number(report?.beginning_sales).toFixed(2))}</td>
+								<td style="text-align: right">₱1,000.00</td>
 							</tr>
 							<tr>
 								<td>Cur Sales</td>
@@ -362,7 +362,7 @@ export const printXreadReport = (report) => {
 							</tr>
 							<tr>
 								<td>End Sales</td>
-								<td style="text-align: right">₱${numberWithCommas(Number(report?.ending_sales).toFixed(2))}</td>
+								<td style="text-align: right">₱3,840.00</td>
 							</tr>
 						</table>
 
