@@ -4,8 +4,8 @@ import qz from 'qz-tray';
 import { EMPTY_CELL } from './global/constants';
 import { getCashBreakdownTypeDescription, getProductQuantity, numberWithCommas } from './utils/function';
 
-const PAPER_MARGIN = 0.2; // inches
-const PAPER_WIDTH = 3.25; // inches
+const PAPER_MARGIN = 0.4; // inches
+const PAPER_WIDTH = 4; // inches
 const PRINTER_MESSAGE_KEY = 'configurePrinter';
 const SI_MESSAGE_KEY = 'SI_MESSAGE_KEY';
 const PRINTER_NAME = 'EPSON TM-U220 Receipt';
@@ -91,7 +91,7 @@ export const printSalesInvoice = (transaction, transactionProducts, change, isRe
 					data: `
 					<div style="width: 100%; font-family: courier new, tahoma; font-size: 12px; line-height: 12px">
 						<div style="font-size: 20px; text-align: center; line-height: 20px">EJ AND JY</div>
-						<div style="width: 100%; text-align: center">WET AND MARKET ENTERPRISES</div>
+						<div style="width: 100%; text-align: center">WET MARKET AND ENTERPRISES</div>
 						<div style="width: 100%; text-align: center">POB., CARMEN, AGUSAN DEL NORTE</div>
 						<div style="width: 100%; text-align: center">Tel# 808-8866</div>
 						<div style="width: 100%; text-align: center">EMMANUEL T. FINEZA</div>
@@ -207,7 +207,8 @@ export const printSalesInvoice = (transaction, transactionProducts, change, isRe
 						<br />
 
 						<div style="text-align: center">EJ & JY I.T. SOLUTIONS</div>
-						<div style="text-align: center">Burgos St., Poblacion, Carmen, Agusan del Norte</div>
+						<div style="text-align: center">Burgos St., Poblacion, Carmen,</div>
+						<div style="text-align: center">Agusan del Norte</div>
 						<div style="text-align: center">178-846-963-005</div>
 						<div style="text-align: center">ACCREDITATION NUMBER</div>
 						<div style="text-align: center">DATE ISSUED</div>
@@ -265,8 +266,8 @@ export const printXreadReport = (report) => {
 					data: `
 					<div style="width: 100%; font-family: courier new, tahoma; font-size: 12px; line-height: 12px">
 						<div style="font-size: 20px; text-align: center; line-height: 20px">EJ AND JY</div>
-						<div style="width: 100%; text-align: center">WET AND MARKET ENTERPRISES</div>
-						<div style="width: 100%; text-align: center">WET MARKET AND ENTERPRISESPOB., CARMEN, AGUSAN DEL NORTE</div>
+						<div style="width: 100%; text-align: center">WET MARKET AND ENTERPRISES</div>
+						<div style="width: 100%; text-align: center">POB., CARMEN, AGUSAN DEL NORTE</div>
 						<div style="width: 100%; text-align: center">Tel# 808-8866</div>
 						<div style="width: 100%; text-align: center">EMMANUEL T. FINEZA</div>
 						<div style="width: 100%; text-align: center">178-846-963-000</div>
@@ -368,7 +369,8 @@ export const printXreadReport = (report) => {
 						<br />
 
 						<div style="text-align: center">EJ & JY I.T. SOLUTIONS</div>
-						<div style="text-align: center">Burgos St., Poblacion, Carmen, Agusandel Norte</div>
+						<div style="text-align: center">Burgos St., Poblacion, Carmen,</div>
+						<div style="text-align: center">Agusan del Norte</div>
 						<div style="text-align: center">178-846-963-005</div>
 						<div style="text-align: center">ACCREDITATION NUMBER</div>
 						<div style="text-align: center">DATE ISSUED</div>
@@ -423,8 +425,8 @@ export const printZreadReport = (report) => {
 					data: `
 					<div style="width: 100%; font-family: courier new, tahoma; font-size: 12px; line-height: 12px">
 						<div style="font-size: 20px; text-align: center; line-height: 20px">EJ AND JY</div>
-						<div style="width: 100%; text-align: center">WET AND MARKET ENTERPRISES</div>
-						<div style="width: 100%; text-align: center">WET MARKET AND ENTERPRISESPOB., CARMEN, AGUSAN DEL NORTE</div>
+						<div style="width: 100%; text-align: center">WET MARKET AND ENTERPRISES</div>
+						<div style="width: 100%; text-align: center">POB., CARMEN, AGUSAN DEL NORTE</div>
 						<div style="width: 100%; text-align: center">Tel# 808-8866</div>
 						<div style="width: 100%; text-align: center">EMMANUEL T. FINEZA</div>
 						<div style="width: 100%; text-align: center">178-846-963-000</div>
@@ -513,7 +515,8 @@ export const printZreadReport = (report) => {
 						<br />
 
 						<div style="text-align: center">EJ & JY I.T. SOLUTIONS</div>
-						<div style="text-align: center">Burgos St., Poblacion, Carmen, Agusandel Norte</div>
+						<div style="text-align: center">Burgos St., Poblacion, Carmen,</div>
+						<div style="text-align: center">Agusan del Norte</div>
 						<div style="text-align: center">178-846-963-005</div>
 						<div style="text-align: center">ACCREDITATION NUMBER</div>
 						<div style="text-align: center">DATE ISSUED</div>
@@ -568,7 +571,7 @@ export const printCashBreakdown = (cashBreakdown, session, type) => {
 					data: `
 					<div style="width: 100%; font-family: tahoma, helvetica, verdana; font-size: 12px; line-height: 12px">
 						<div style="font-size: 20px; text-align: center; line-height: 20px">EJ AND JY</div>
-						<div style="width: 100%; text-align: center">WET AND MARKET ENTERPRISES</div>
+						<div style="width: 100%; text-align: center">WET MARKET AND ENTERPRISES</div>
 
 						<hr />
 
