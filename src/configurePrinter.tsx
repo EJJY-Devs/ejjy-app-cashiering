@@ -346,7 +346,7 @@ export const printXreadReport = (report) => {
 						<table style="width: 100%; font-size: 12px; line-height: 12px">
 							<tr>
 								<td style="padding-left: 30px">Beginning OR #</td>
-								<td style="text-align: right">${report?.beginning_or?.or_number || EMPTY_CELL}</td>
+								<td style="text-align: right">20210206-1</td>
 							</tr>
 							<tr>
 								<td style="padding-left: 30px">Ending OR #</td>
@@ -354,15 +354,15 @@ export const printXreadReport = (report) => {
 							</tr>
 							<tr>
 								<td>Beg Sales</td>
-								<td style="text-align: right; font-size: 8px">₱${numberWithCommas(Number(report?.beginning_sales).toFixed(2))}</td>
+								<td style="text-align: right">₱${numberWithCommas(Number(report?.beginning_sales).toFixed(2))}</td>
 							</tr>
 							<tr>
 								<td>Cur Sales</td>
-								<td style="text-align: right; font-size: 8px">₱${numberWithCommas(Number(report?.total_sales).toFixed(2))}</td>
+								<td style="text-align: right">₱${numberWithCommas(Number(report?.total_sales).toFixed(2))}</td>
 							</tr>
 							<tr>
 								<td>End Sales</td>
-								<td style="text-align: right; font-size: 8px">₱${numberWithCommas(Number(report?.ending_sales).toFixed(2))}</td>
+								<td style="text-align: right">₱${numberWithCommas(Number(report?.ending_sales).toFixed(2))}</td>
 							</tr>
 						</table>
 
