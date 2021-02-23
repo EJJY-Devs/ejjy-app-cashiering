@@ -2,7 +2,11 @@ import { message } from 'antd';
 import dayjs from 'dayjs';
 import qz from 'qz-tray';
 import { EMPTY_CELL } from './global/constants';
-import { getCashBreakdownTypeDescription, getProductQuantity, numberWithCommas } from './utils/function';
+import {
+	getCashBreakdownTypeDescription,
+	getProductQuantity,
+	numberWithCommas,
+} from './utils/function';
 
 const PAPER_MARGIN = 0.2; // inches
 const PAPER_WIDTH = 3; // inches
@@ -16,27 +20,29 @@ const configurePrinter = (callback = null) => {
 		// Authentication setup
 		qz.security.setCertificatePromise(function (resolve, reject) {
 			//Alternate method 2 - direct
-			resolve("-----BEGIN CERTIFICATE-----\n" + 
-				"MIIC2DCCAcACCQDbsDMxRWeypzANBgkqhkiG9w0BAQsFADAtMQ0wCwYDVQQKDARF\n" + 
-				"SkpZMQ0wCwYDVQQLDARFSkpZMQ0wCwYDVQQDDARFSkpZMCAXDTIxMDIxODA3MzEx\n" + 
-				"MFoYDzIwNTIwODEzMDczMTEwWjAtMQ0wCwYDVQQKDARFSkpZMQ0wCwYDVQQLDARF\n" + 
-				"SkpZMQ0wCwYDVQQDDARFSkpZMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC\n" + 
-				"AQEAx1weEomPtIi4ETBWqcSjzolUQVtsOz1mp8K91tVSImZslXG7t0mplVarc4pN\n" + 
-				"w7o1hD4hmn7rag3JhLOJrkkZ04WQUzKpRrkUnuVf26hxjqoKjSP3gUk22j3xuYMR\n" + 
-				"DfBN9Qvy7qs9XqR9JT7KCce3bgxZpUdoOfK2N6scZjCkNsH1zqM1so/aDEkAF2He\n" + 
-				"2BpMg9xorWbmDA0Qe2HF3fslCbTyzAa9qq7y3Rw/yDhaQ7F0l/7D4hBRg/3WGrjv\n" + 
-				"wUcm7OLaC8hAcP8V/Y1is2+M8TxQZ5BMZR95CSw3qyGN++Mw2lvOKBE/cKmTs64x\n" + 
-				"oMn6wE66EGsJJkxGOaZy3Aq+jwIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQCRRS9H\n" + 
-				"M1g+nOarunY+MrnjBwtnUFdCZKJDzetgPwDfTTIuY7k0mx4Mm0aNjyfz2OKcnJoi\n" + 
-				"GcnqjzPjbv3I2+3sbc4muItLkV5PyRP8SVUcjUWD/ql30DXLpAmmxD2JvVtu0xv5\n" + 
-				"+CMF/mrkGmU7/Oos4D7AS5lHx4P/73JCcyeVOwIj4JKzCrZPJ/ot4ECdtQRUKHP6\n" + 
-				"JU34uiv9UeGP5hwPh6/an9YkmBQNtLNBOYgBg33OCkYEsosJxIeYHgZ/hP01beOr\n" + 
-				"vVdcs+Swa/Q6nLkclLl53/r3sX3ypKzORuLo+F7I/Z8zbtm1c6jfmyCn5qNNygVe\n" + 
-				"jl3kpz8ugDyp9FyV\n" + 
-				"-----END CERTIFICATE-----");
+			resolve(
+				'-----BEGIN CERTIFICATE-----\n' +
+					'MIIC2DCCAcACCQDbsDMxRWeypzANBgkqhkiG9w0BAQsFADAtMQ0wCwYDVQQKDARF\n' +
+					'SkpZMQ0wCwYDVQQLDARFSkpZMQ0wCwYDVQQDDARFSkpZMCAXDTIxMDIxODA3MzEx\n' +
+					'MFoYDzIwNTIwODEzMDczMTEwWjAtMQ0wCwYDVQQKDARFSkpZMQ0wCwYDVQQLDARF\n' +
+					'SkpZMQ0wCwYDVQQDDARFSkpZMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC\n' +
+					'AQEAx1weEomPtIi4ETBWqcSjzolUQVtsOz1mp8K91tVSImZslXG7t0mplVarc4pN\n' +
+					'w7o1hD4hmn7rag3JhLOJrkkZ04WQUzKpRrkUnuVf26hxjqoKjSP3gUk22j3xuYMR\n' +
+					'DfBN9Qvy7qs9XqR9JT7KCce3bgxZpUdoOfK2N6scZjCkNsH1zqM1so/aDEkAF2He\n' +
+					'2BpMg9xorWbmDA0Qe2HF3fslCbTyzAa9qq7y3Rw/yDhaQ7F0l/7D4hBRg/3WGrjv\n' +
+					'wUcm7OLaC8hAcP8V/Y1is2+M8TxQZ5BMZR95CSw3qyGN++Mw2lvOKBE/cKmTs64x\n' +
+					'oMn6wE66EGsJJkxGOaZy3Aq+jwIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQCRRS9H\n' +
+					'M1g+nOarunY+MrnjBwtnUFdCZKJDzetgPwDfTTIuY7k0mx4Mm0aNjyfz2OKcnJoi\n' +
+					'GcnqjzPjbv3I2+3sbc4muItLkV5PyRP8SVUcjUWD/ql30DXLpAmmxD2JvVtu0xv5\n' +
+					'+CMF/mrkGmU7/Oos4D7AS5lHx4P/73JCcyeVOwIj4JKzCrZPJ/ot4ECdtQRUKHP6\n' +
+					'JU34uiv9UeGP5hwPh6/an9YkmBQNtLNBOYgBg33OCkYEsosJxIeYHgZ/hP01beOr\n' +
+					'vVdcs+Swa/Q6nLkclLl53/r3sX3ypKzORuLo+F7I/Z8zbtm1c6jfmyCn5qNNygVe\n' +
+					'jl3kpz8ugDyp9FyV\n' +
+					'-----END CERTIFICATE-----',
+			);
 		});
-		
-	  	qz.security.setSignatureAlgorithm('SHA512'); // Since 2.1
+
+		qz.security.setSignatureAlgorithm('SHA512'); // Since 2.1
 
 		message.loading({
 			content: 'Connecting to printer...',
@@ -74,14 +80,16 @@ export const printSalesInvoice = (transaction, transactionProducts, change, isRe
 	const generated = transaction?.invoice?.datetime_created
 		? dayjs(transaction?.invoice?.datetime_created)
 		: dayjs();
-		const endValidityDate = generated.add(5, 'year');
+	const endValidityDate = generated.add(5, 'year');
 	const cashier = `${transaction?.teller?.first_name} ${transaction?.teller?.last_name}`;
 
 	qz.printers
 		.find(PRINTER_NAME)
 		.then((printer) => {
 			message.success(`Printer found: ${printer}`);
-			const config = qz.configs.create(printer, { margins: { top: 0, right: PAPER_MARGIN, bottom: 0, left: PAPER_MARGIN }});
+			const config = qz.configs.create(printer, {
+				margins: { top: 0, right: PAPER_MARGIN, bottom: 0, left: PAPER_MARGIN },
+			});
 			const data = [
 				{
 					type: 'pixel',
@@ -92,40 +100,49 @@ export const printSalesInvoice = (transaction, transactionProducts, change, isRe
 					<div style="width: 100%; font-family: courier new, tahoma; font-size: 12px; line-height: 12px">
 						<div style="font-size: 20px; text-align: center; line-height: 20px">EJ AND JY</div>
 						<div style="width: 100%; text-align: center">WET AND MARKET ENTERPRISES</div>
-						<div style="width: 100%; text-align: center">WET MARKET AND ENTERPRISESPOB., CARMEN, AGUSAN DEL NORTE</div>
+						<div style="width: 100%; text-align: center">${transaction?.invoice?.location || EMPTY_CELL}</div>
 						<div style="width: 100%; text-align: center">Tel# 808-8866</div>
-						<div style="width: 100%; text-align: center">EMMANUEL T. FINEZA</div>
-						<div style="width: 100%; text-align: center">178-846-963-000</div>
-						<div style="width: 100%; text-align: center">MIN</div>
-						<div style="width: 100%; text-align: center">SN</div>
+						<div style="width: 100%; text-align: center">${transaction?.invoice?.proprietor || EMPTY_CELL}</div>
+						<div style="width: 100%; text-align: center">${transaction?.invoice?.tin || EMPTY_CELL}</div>
+						<div style="width: 100%; text-align: center">${
+							transaction?.branch_machine?.machine_id || EMPTY_CELL
+						}</div>
+						<div style="width: 100%; text-align: center">${
+							transaction?.branch_machine?.machine_printer_serial_number || EMPTY_CELL
+						}</div>
 						<div style="width: 100%; text-align: center; font-weight: bold">[SALES INVOICE]</div>
 	
-						${isReprint ? 
-							`<table style="width: 100%; font-size: 12px; line-height: 12px">
+						${
+							isReprint
+								? `<table style="width: 100%; font-size: 12px; line-height: 12px">
 								<tr>
 									<td>For 11/20/2020</td>
 									<td style="text-align: right;">
 										1:32PM REPRINT
 									</td>
 								</tr>
-							</table>` : ''
+							</table>`
+								: ''
 						}						
 
 						<br />
 
 						<table style="width: 100%; font-size: 12px; line-height: 12px">
-							${transactionProducts.map((item) => (
+							${transactionProducts.map(
+								(item) =>
 									`<tr>
 										<td colspan="2">${item.data.name}</td>
 									</tr>
 									<tr>
-										<td style="padding-left: 30px">${getProductQuantity(item.quantity, item.data.unit_of_measurement)} @ ${`₱${item.pricePerPiece.toFixed(2)}`}</td>
+										<td style="padding-left: 30px">${getProductQuantity(
+											item.quantity,
+											item.data.unit_of_measurement,
+										)} @ ${`₱${item.pricePerPiece.toFixed(2)}`}</td>
 										<td style="text-align: right">
 											${`₱${(item.quantity * item.pricePerPiece).toFixed(2)}`}
 										</td>
-									</tr>`
-								))	
-							}
+									</tr>`,
+							)}
 						</table>
 
 						<div style="width: 100%; font-weight: bold">----------------</div>
@@ -170,13 +187,13 @@ export const printSalesInvoice = (transaction, transactionProducts, change, isRe
 							<tr>
 								<td>VAT Sales</td>
 								<td style="text-align: right">
-									₱196.43
+									₱${numberWithCommas(Number(transaction?.invoice?.vat_sales).toFixed(2))}
 								</td>
 							</tr>
 							<tr>
 								<td>VAT Amount</td>
 								<td style="text-align: right">
-									₱23.57
+									₱${numberWithCommas(Number(transaction?.invoice?.vat_12_percent).toFixed(2))}
 								</td>
 							</tr>
 						</table>
@@ -213,11 +230,11 @@ export const printSalesInvoice = (transaction, transactionProducts, change, isRe
 
 						<br />
 
-						<div style="text-align: center">EJ & JY I.T. SOLUTIONS</div>
-						<div style="text-align: center">Burgos St., Poblacion, Carmen, Agusandel Norte</div>
-						<div style="text-align: center">178-846-963-005</div>
-						<div style="text-align: center">ACCREDITATION NUMBER</div>
-						<div style="text-align: center">DATE ISSUED</div>
+						<div style="text-align: center">${transaction?.invoice?.software_developer}</div>
+						<div style="text-align: center">${transaction?.invoice?.location}</div>
+						<div style="text-align: center">${transaction?.invoice?.software_developer_tin}</div>
+						<div style="text-align: center">${transaction?.invoice?.pos_accreditation_number}</div>
+						<div style="text-align: center">${transaction?.invoice?.pos_accreditation_date}</div>
 						<div style="text-align: center">VALID UNTIL</div>
 
 						<br />
@@ -262,7 +279,9 @@ export const printXreadReport = (report) => {
 		.find(PRINTER_NAME)
 		.then((printer) => {
 			message.success(`Printer found: ${printer}`);
-			const config = qz.configs.create(printer, { margins: { top: 0, right: PAPER_MARGIN, bottom: 0, left: PAPER_MARGIN }});
+			const config = qz.configs.create(printer, {
+				margins: { top: 0, right: PAPER_MARGIN, bottom: 0, left: PAPER_MARGIN },
+			});
 			const data = [
 				{
 					type: 'pixel',
@@ -273,12 +292,16 @@ export const printXreadReport = (report) => {
 					<div style="width: 100%; font-family: courier new, tahoma; font-size: 12px; line-height: 12px">
 						<div style="font-size: 20px; text-align: center; line-height: 20px">EJ AND JY</div>
 						<div style="width: 100%; text-align: center">WET AND MARKET ENTERPRISES</div>
-						<div style="width: 100%; text-align: center">WET MARKET AND ENTERPRISESPOB., CARMEN, AGUSAN DEL NORTE</div>
+						<div style="width: 100%; text-align: center">${report?.location || EMPTY_CELL}</div>
 						<div style="width: 100%; text-align: center">Tel# 808-8866</div>
-						<div style="width: 100%; text-align: center">EMMANUEL T. FINEZA</div>
-						<div style="width: 100%; text-align: center">178-846-963-000</div>
-						<div style="width: 100%; text-align: center">${report?.branch_machine?.machine_id || EMPTY_CELL}</div>
-						<div style="width: 100%; text-align: center">${report?.branch_machine?.machine_printer_serial_number || EMPTY_CELL}</div>
+						<div style="width: 100%; text-align: center">${report?.proprietor || EMPTY_CELL}</div>
+						<div style="width: 100%; text-align: center">${report?.tin || EMPTY_CELL}</div>
+						<div style="width: 100%; text-align: center">${
+							report?.branch_machine?.machine_id || EMPTY_CELL
+						}</div>
+						<div style="width: 100%; text-align: center">${
+							report?.branch_machine?.machine_printer_serial_number || EMPTY_CELL
+						}</div>
 						<div style="width: 100%; text-align: center; font-weight: bold">[X-REPORT]</div>	
 
 						<br />
@@ -298,7 +321,9 @@ export const printXreadReport = (report) => {
 							</tr>
 							<tr>
 								<td>TOTAL SALES</td>
-								<td style="text-align: right; font-weight: bold">₱${numberWithCommas(Number(report?.total_sales).toFixed(2))}</td>
+								<td style="text-align: right; font-weight: bold">₱${numberWithCommas(
+									Number(report?.total_sales).toFixed(2),
+								)}</td>
 							</tr>
 						</table>
 
@@ -360,25 +385,31 @@ export const printXreadReport = (report) => {
 							</tr>
 							<tr>
 								<td>Beg Sales</td>
-								<td style="text-align: right; font-size: 8px">₱${numberWithCommas(Number(report?.beginning_sales).toFixed(2))}</td>
+								<td style="text-align: right; font-size: 8px">₱${numberWithCommas(
+									Number(report?.beginning_sales).toFixed(2),
+								)}</td>
 							</tr>
 							<tr>
 								<td>Cur Sales</td>
-								<td style="text-align: right; font-size: 8px">₱${numberWithCommas(Number(report?.total_sales).toFixed(2))}</td>
+								<td style="text-align: right; font-size: 8px">₱${numberWithCommas(
+									Number(report?.total_sales).toFixed(2),
+								)}</td>
 							</tr>
 							<tr>
 								<td>End Sales</td>
-								<td style="text-align: right; font-size: 8px">₱${numberWithCommas(Number(report?.ending_sales).toFixed(2))}</td>
+								<td style="text-align: right; font-size: 8px">₱${numberWithCommas(
+									Number(report?.ending_sales).toFixed(2),
+								)}</td>
 							</tr>
 						</table>
 
 						<br />
 
-						<div style="text-align: center">EJ & JY I.T. SOLUTIONS</div>
-						<div style="text-align: center">Burgos St., Poblacion, Carmen, Agusandel Norte</div>
-						<div style="text-align: center">178-846-963-005</div>
-						<div style="text-align: center">ACCREDITATION NUMBER</div>
-						<div style="text-align: center">DATE ISSUED</div>
+						<div style="text-align: center">${report?.software_developer}</div>
+						<div style="text-align: center">${report?.location}</div>
+						<div style="text-align: center">${report?.software_developer_tin}</div>
+						<div style="text-align: center">${report?.pos_accreditation_number}</div>
+						<div style="text-align: center">${report?.pos_accreditation_date}</div>
 						<div style="text-align: center">VALID UNTIL</div>
 
 						<br />
@@ -420,7 +451,9 @@ export const printZreadReport = (report) => {
 		.find(PRINTER_NAME)
 		.then((printer) => {
 			message.success(`Printer found: ${printer}`);
-			const config = qz.configs.create(printer, { margins: { top: 0, right: PAPER_MARGIN, bottom: 0, left: PAPER_MARGIN }});
+			const config = qz.configs.create(printer, {
+				margins: { top: 0, right: PAPER_MARGIN, bottom: 0, left: PAPER_MARGIN },
+			});
 			const data = [
 				{
 					type: 'pixel',
@@ -431,12 +464,16 @@ export const printZreadReport = (report) => {
 					<div style="width: 100%; font-family: courier new, tahoma; font-size: 12px; line-height: 12px">
 						<div style="font-size: 20px; text-align: center; line-height: 20px">EJ AND JY</div>
 						<div style="width: 100%; text-align: center">WET AND MARKET ENTERPRISES</div>
-						<div style="width: 100%; text-align: center">WET MARKET AND ENTERPRISESPOB., CARMEN, AGUSAN DEL NORTE</div>
+						<div style="width: 100%; text-align: center">${report?.location || EMPTY_CELL}</div>
 						<div style="width: 100%; text-align: center">Tel# 808-8866</div>
-						<div style="width: 100%; text-align: center">EMMANUEL T. FINEZA</div>
-						<div style="width: 100%; text-align: center">178-846-963-000</div>
-						<div style="width: 100%; text-align: center">${report?.branch_machine?.machine_id || EMPTY_CELL}</div>
-						<div style="width: 100%; text-align: center">${report?.branch_machine?.machine_printer_serial_number || EMPTY_CELL}</div>
+						<div style="width: 100%; text-align: center">${report?.proprietor || EMPTY_CELL}</div>
+						<div style="width: 100%; text-align: center">${report?.tin || EMPTY_CELL}</div>
+						<div style="width: 100%; text-align: center">${
+							report?.branch_machine?.machine_id || EMPTY_CELL
+						}</div>
+						<div style="width: 100%; text-align: center">${
+							report?.branch_machine?.machine_printer_serial_number || EMPTY_CELL
+						}</div>
 						<div style="width: 100%; text-align: center; font-weight: bold">[Z-REPORT]</div>	
 
 						<br />
@@ -452,7 +489,9 @@ export const printZreadReport = (report) => {
 							</tr>
 							<tr>
 								<td>CREDIT PAY</td>
-								<td style="text-align: right; font-weight: bold">₱${numberWithCommas(Number(report?.credit_pay).toFixed(2))}</td>
+								<td style="text-align: right; font-weight: bold">₱${numberWithCommas(
+									Number(report?.credit_pay).toFixed(2),
+								)}</td>
 							</tr>
 						</table>
 
@@ -472,7 +511,9 @@ export const printZreadReport = (report) => {
 						<table style="width: 100%; font-size: 12px; line-height: 12px">
 							<tr>
 								<td>TOTAL SALES</td>
-								<td style="text-align: right; font-weight: bold">₱${numberWithCommas(Number(report?.total_sales).toFixed(2))}</td>
+								<td style="text-align: right; font-weight: bold">₱${numberWithCommas(
+									Number(report?.total_sales).toFixed(2),
+								)}</td>
 							</tr>
 						</table>
 
@@ -519,11 +560,11 @@ export const printZreadReport = (report) => {
 
 						<br />
 
-						<div style="text-align: center">EJ & JY I.T. SOLUTIONS</div>
-						<div style="text-align: center">Burgos St., Poblacion, Carmen, Agusandel Norte</div>
-						<div style="text-align: center">178-846-963-005</div>
-						<div style="text-align: center">ACCREDITATION NUMBER</div>
-						<div style="text-align: center">DATE ISSUED</div>
+						<div style="text-align: center">${report?.software_developer}</div>
+						<div style="text-align: center">${report?.location}</div>
+						<div style="text-align: center">${report?.software_developer_tin}</div>
+						<div style="text-align: center">${report?.pos_accreditation_number}</div>
+						<div style="text-align: center">${report?.pos_accreditation_date}</div>
 						<div style="text-align: center">VALID UNTIL</div>
 
 						<br />
@@ -565,7 +606,9 @@ export const printCashBreakdown = (cashBreakdown, session, type) => {
 		.find(PRINTER_NAME)
 		.then((printer) => {
 			message.success(`Printer found: ${printer}`);
-			const config = qz.configs.create(printer, { margins: { top: 0, right: PAPER_MARGIN, bottom: 0, left: PAPER_MARGIN }});
+			const config = qz.configs.create(printer, {
+				margins: { top: 0, right: PAPER_MARGIN, bottom: 0, left: PAPER_MARGIN },
+			});
 			const data = [
 				{
 					type: 'pixel',
@@ -579,14 +622,18 @@ export const printCashBreakdown = (cashBreakdown, session, type) => {
 
 						<hr />
 
-						<div style="font-size: 20px; text-align: center; line-height: 20px">${getCashBreakdownTypeDescription(type)}</div>
+						<div style="font-size: 20px; text-align: center; line-height: 20px">${getCashBreakdownTypeDescription(
+							type,
+						)}</div>
 
 						<hr />
 
 						<table style="width: 100%; font-size: 12px; line-height: 12px">
 							<tr>
 								<td>Branch & Location:</td>
-								<td style="text-align: right">${session?.user?.branch?.name} - ${session?.user?.branch?.location}</td>
+								<td style="text-align: right">${session?.user?.branch?.name} - ${
+						session?.user?.branch?.location
+					}</td>
 							</tr>
 							<tr>
 								<td>Machine Name:</td>
