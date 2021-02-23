@@ -100,7 +100,7 @@ export const printSalesInvoice = (transaction, transactionProducts, change, isRe
 						<div style="width: 100%; text-align: center">SN</div>
 						<div style="width: 100%; text-align: center; font-weight: bold">[SALES INVOICE]</div>
 	
-						${isReprint ? 
+						${isReprint &&
 							`<table style="width: 100%; font-size: 12px; line-height: 12px">
 								<tr>
 									<td>For 11/20/2020</td>
@@ -108,7 +108,7 @@ export const printSalesInvoice = (transaction, transactionProducts, change, isRe
 										1:32PM REPRINT
 									</td>
 								</tr>
-							</table>` : `&nbsp;`
+							</table>`
 						}						
 
 						<br />
