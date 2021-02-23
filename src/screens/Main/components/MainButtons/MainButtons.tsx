@@ -56,11 +56,18 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 
 	const isResetDisabled = useCallback(() => !transactionProducts?.length, [transactionProducts]);
 
+	const isQueueDisabled = useCallback(
+		() => currentTransactionStatus !== null || !transactionProducts.length,
+		[currentTransactionStatus, transactionProducts],
+	);
+
 	const isDiscountDisabled = useCallback(
 		() =>
-			[transactionStatusTypes.FULLY_PAID, transactionStatusTypes.VOID_EDITED].includes(
-				currentTransactionStatus,
-			),
+			[
+				transactionStatusTypes.FULLY_PAID,
+				transactionStatusTypes.VOID_CANCELLED,
+				transactionStatusTypes.VOID_EDITED,
+			].includes(currentTransactionStatus),
 		[currentTransactionStatus],
 	);
 
@@ -159,7 +166,7 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 		event.stopPropagation();
 
 		// Queue and Resume
-		if (queueResumeShortcutKeys.includes(key)) {
+		if (queueResumeShortcutKeys.includes(key) && !isQueueDisabled()) {
 			setQueueModalVisible(true);
 			return;
 		}
@@ -242,6 +249,7 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 						</>
 					}
 					onClick={() => setQueueModalVisible(true)}
+					disabled={isQueueDisabled()}
 				/>
 
 				<MainButton
