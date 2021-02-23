@@ -4,8 +4,8 @@ import qz from 'qz-tray';
 import { EMPTY_CELL } from './global/constants';
 import { getCashBreakdownTypeDescription, getProductQuantity, numberWithCommas } from './utils/function';
 
-const PAPER_MARGIN = 0.4; // inches
-const PAPER_WIDTH = 4; // inches
+const PAPER_MARGIN = 0.2; // inches
+const PAPER_WIDTH = 3.2; // inches
 const PRINTER_MESSAGE_KEY = 'configurePrinter';
 const SI_MESSAGE_KEY = 'SI_MESSAGE_KEY';
 const PRINTER_NAME = 'EPSON TM-U220 Receipt';
