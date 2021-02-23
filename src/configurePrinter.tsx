@@ -89,7 +89,7 @@ export const printSalesInvoice = (transaction, transactionProducts, change, isRe
 					flavor: 'plain',
 					options: { pageWidth: PAPER_WIDTH },
 					data: `
-					<div style="width: 100%; font-family: courier new, tahoma; font-size: 10px; line-height: 12px">
+					<div style="width: 100%; font-family: courier new, tahoma; font-size: 12px; line-height: 12px">
 						<div style="font-size: 20px; text-align: center; line-height: 20px">EJ AND JY</div>
 						<div style="width: 100%; text-align: center">WET AND MARKET ENTERPRISES</div>
 						<div style="width: 100%; text-align: center">${transaction?.invoice?.location || EMPTY_CELL}</div>
@@ -101,7 +101,7 @@ export const printSalesInvoice = (transaction, transactionProducts, change, isRe
 						<div style="width: 100%; text-align: center; font-weight: bold">[SALES INVOICE]</div>
 	
 						${isReprint ? 
-							`<table style="width: 100%; font-size: 10px; line-height: 12px">
+							`<table style="width: 100%; font-size: 12px; line-height: 12px">
 								<tr>
 									<td>For 11/20/2020</td>
 									<td style="text-align: right;">
@@ -113,7 +113,7 @@ export const printSalesInvoice = (transaction, transactionProducts, change, isRe
 
 						<br />
 
-						<table style="width: 100%; font-size: 10px; line-height: 12px">
+						<table style="width: 100%; font-size: 12px; line-height: 12px">
 							${transactionProducts.map((item) => (
 									`<tr>
 										<td colspan="2">${item.data.name}</td>
@@ -130,7 +130,7 @@ export const printSalesInvoice = (transaction, transactionProducts, change, isRe
 
 						<div style="width: 100%; font-weight: bold">----------------</div>
 
-						<table style="width: 100%; font-size: 10px; line-height: 12px">
+						<table style="width: 100%; font-size: 12px; line-height: 12px">
 							<tr>
 								<td>TOTAL AMOUNT</td>
 								<td style="text-align: right; font-weight: bold">
@@ -139,7 +139,7 @@ export const printSalesInvoice = (transaction, transactionProducts, change, isRe
 							</tr>
 						</table>
 
-						<table style="width: 100%; font-size: 10px; line-height: 12px">
+						<table style="width: 100%; font-size: 12px; line-height: 12px">
 							<tr>
 								<td>AMOUNT RECEIVED</td>
 								<td style="text-align: right">
@@ -160,7 +160,7 @@ export const printSalesInvoice = (transaction, transactionProducts, change, isRe
 
 						<br />
 
-						<table style="width: 100%; font-size: 10px; line-height: 12px">
+						<table style="width: 100%; font-size: 12px; line-height: 12px">
 							<tr>
 								<td>VAT Exempt</td>
 								<td style="text-align: right">
@@ -183,7 +183,7 @@ export const printSalesInvoice = (transaction, transactionProducts, change, isRe
 
 						<br />
 
-						<table style="width: 100%; font-size: 10px; line-height: 12px">
+						<table style="width: 100%; font-size: 12px; line-height: 12px">
 							<tr>
 								<td>${generated.format('MM/DD/YYYY')}</td>
 								<td>${generated.format('HH:mm A')}</td>
@@ -196,7 +196,7 @@ export const printSalesInvoice = (transaction, transactionProducts, change, isRe
 							</tr>
 						</table>
 
-						<table style="width: 100%; font-size: 10px; line-height: 12px">
+						<table style="width: 100%; font-size: 12px; line-height: 12px">
 							<tr>
 								<td>NAME:</td>
 								<td>${EMPTY_CELL}</td>
@@ -270,7 +270,7 @@ export const printXreadReport = (report) => {
 					flavor: 'plain',
 					options: { pageWidth: PAPER_WIDTH },
 					data: `
-					<div style="width: 100%; font-family: courier new, tahoma; font-size: 10px; line-height: 12px">
+					<div style="width: 100%; font-family: courier new, tahoma; font-size: 12px; line-height: 12px">
 						<div style="font-size: 20px; text-align: center; line-height: 20px">EJ AND JY</div>
 						<div style="width: 100%; text-align: center">WET AND MARKET ENTERPRISES</div>
 						<div style="width: 100%; text-align: center">${report?.location || EMPTY_CELL}</div>
@@ -283,7 +283,7 @@ export const printXreadReport = (report) => {
 
 						<br />
 
-						<table style="width: 100%; font-size: 10px; line-height: 12px">
+						<table style="width: 100%; font-size: 12px; line-height: 12px">
 							<tr>
 								<td>CASH SALES</td>
 								<td style="text-align: right">₱${numberWithCommas(Number(report?.cash_sales).toFixed(2))}</td>
@@ -304,7 +304,7 @@ export const printXreadReport = (report) => {
 
 						<br/> 
 
-						<table style="width: 100%; font-size: 10px; line-height: 12px">
+						<table style="width: 100%; font-size: 12px; line-height: 12px">
 							<tr>
 								<td style="padding-left: 30px">DISCOUNTS</td>
 								<td style="text-align: right">₱${numberWithCommas(Number(report?.discounts).toFixed(2))}</td>
@@ -317,7 +317,7 @@ export const printXreadReport = (report) => {
 
 						<br />
 
-						<table style="width: 100%; font-size: 10px; line-height: 12px">
+						<table style="width: 100%; font-size: 12px; line-height: 12px">
 							<tr>
 								<td>VAT Exempt</td>
 								<td style="text-align: right">₱${numberWithCommas(Number(report?.vat_exempt).toFixed(2))}</td>
@@ -334,7 +334,7 @@ export const printXreadReport = (report) => {
 
 						<br />
 
-						<table style="width: 100%; font-size: 10px; line-height: 12px">
+						<table style="width: 100%; font-size: 12px; line-height: 12px">
 							<tr>
 								<td>FOR	DEC-07-2020</td>
 								<td>${report?.branch_machine?.machine_id}</td>
@@ -349,7 +349,7 @@ export const printXreadReport = (report) => {
 
 						<br />
 
-						<table style="width: 100%; font-size: 10px; line-height: 12px">
+						<table style="width: 100%; font-size: 12px; line-height: 12px">
 							<tr>
 								<td>Beginning OR #</td>
 								<td style="text-align: right">${report?.beginning_or?.or_number || EMPTY_CELL}</td>
@@ -428,7 +428,7 @@ export const printZreadReport = (report) => {
 					flavor: 'plain',
 					options: { pageWidth: PAPER_WIDTH },
 					data: `
-					<div style="width: 100%; font-family: courier new, tahoma; font-size: 10px; line-height: 12px">
+					<div style="width: 100%; font-family: courier new, tahoma; font-size: 12px; line-height: 12px">
 						<div style="font-size: 20px; text-align: center; line-height: 20px">EJ AND JY</div>
 						<div style="width: 100%; text-align: center">WET AND MARKET ENTERPRISES</div>
 						<div style="width: 100%; text-align: center">${report?.location || EMPTY_CELL}</div>
@@ -441,7 +441,7 @@ export const printZreadReport = (report) => {
 
 						<br />
 
-						<table style="width: 100%; font-size: 10px; line-height: 12px">
+						<table style="width: 100%; font-size: 12px; line-height: 12px">
 							<tr>
 								<td>CASH SALES</td>
 								<td style="text-align: right">₱${numberWithCommas(Number(report?.cash_sales).toFixed(2))}</td>
@@ -456,7 +456,7 @@ export const printZreadReport = (report) => {
 							</tr>
 						</table>
 
-						<table style="width: 100%; font-size: 10px; line-height: 12px">
+						<table style="width: 100%; font-size: 12px; line-height: 12px">
 							<tr>
 								<td style="padding-left: 30px">DISCOUNTS</td>
 								<td style="text-align: right">₱${numberWithCommas(Number(report?.discounts).toFixed(2))}</td>
@@ -469,7 +469,7 @@ export const printZreadReport = (report) => {
 
 						<hr />
 
-						<table style="width: 100%; font-size: 10px; line-height: 12px">
+						<table style="width: 100%; font-size: 12px; line-height: 12px">
 							<tr>
 								<td>TOTAL SALES</td>
 								<td style="text-align: right; font-weight: bold">₱${numberWithCommas(Number(report?.total_sales).toFixed(2))}</td>
@@ -478,7 +478,7 @@ export const printZreadReport = (report) => {
 
 						<br />
 
-						<table style="width: 100%; font-size: 10px; line-height: 12px">
+						<table style="width: 100%; font-size: 12px; line-height: 12px">
 							<tr>
 								<td>VAT Exempt</td>
 								<td style="text-align: right">₱${numberWithCommas(Number(report?.vat_exempt).toFixed(2))}</td>
@@ -495,7 +495,7 @@ export const printZreadReport = (report) => {
 
 						<br />
 
-						<table style="width: 100%; font-size: 10px; line-height: 12px">
+						<table style="width: 100%; font-size: 12px; line-height: 12px">
 							<tr>
 								<td>FOR	DEC-07-2020</td>
 								<td>${report?.branch_machine?.machine_id}</td>
@@ -510,7 +510,7 @@ export const printZreadReport = (report) => {
 
 						<br />
 
-						<table style="width: 100%; font-size: 10px; line-height: 12px">
+						<table style="width: 100%; font-size: 12px; line-height: 12px">
 							<tr>
 								<td style="padding-left: 30px">Ending OR #</td>
 								<td style="text-align: right">${report?.ending_or?.or_number || EMPTY_CELL}</td>
@@ -573,7 +573,7 @@ export const printCashBreakdown = (cashBreakdown, session, type) => {
 					flavor: 'plain',
 					options: { pageWidth: PAPER_WIDTH },
 					data: `
-					<div style="width: 100%; font-family: tahoma, helvetica, verdana; font-size: 10px; line-height: 12px">
+					<div style="width: 100%; font-family: tahoma, helvetica, verdana; font-size: 12px; line-height: 12px">
 						<div style="font-size: 20px; text-align: center; line-height: 20px">EJ AND JY</div>
 						<div style="width: 100%; text-align: center">WET AND MARKET ENTERPRISES</div>
 
@@ -583,7 +583,7 @@ export const printCashBreakdown = (cashBreakdown, session, type) => {
 
 						<hr />
 
-						<table style="width: 100%; font-size: 10px; line-height: 12px">
+						<table style="width: 100%; font-size: 12px; line-height: 12px">
 							<tr>
 								<td>Branch & Location:</td>
 								<td style="text-align: right">${session?.user?.branch?.name} - ${session?.user?.branch?.location}</td>
@@ -604,7 +604,7 @@ export const printCashBreakdown = (cashBreakdown, session, type) => {
 
 						<hr />
 
-						<table style="width: 100%; font-size: 10px; line-height: 12px">
+						<table style="width: 100%; font-size: 12px; line-height: 12px">
 							<tr>
 								<td>₱0.25</td>
 								<td style="text-align: right">${cashBreakdown.coins_25}</td>
