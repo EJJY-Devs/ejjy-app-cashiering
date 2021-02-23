@@ -271,8 +271,8 @@ export const printXreadReport = (report) => {
 						<div style="width: 100%; text-align: center">Tel# 808-8866</div>
 						<div style="width: 100%; text-align: center">EMMANUEL T. FINEZA</div>
 						<div style="width: 100%; text-align: center">178-846-963-000</div>
-						<div style="width: 100%; text-align: center">${report?.branch_machine?.machine_id || EMPTY_CELL}</div>
-						<div style="width: 100%; text-align: center">${report?.branch_machine?.machine_printer_serial_number || EMPTY_CELL}</div>
+						<div style="width: 100%; text-align: center">MIN</div>
+						<div style="width: 100%; text-align: center">SN</div>
 						<div style="width: 100%; text-align: center; font-weight: bold">[X-REPORT]</div>	
 
 						<br />
@@ -301,7 +301,7 @@ export const printXreadReport = (report) => {
 						<table style="width: 100%; font-size: 12px; line-height: 12px">
 							<tr>
 								<td style="padding-left: 30px">DISCOUNTS</td>
-								<td style="text-align: right">₱${numberWithCommas(Number(report?.discounts).toFixed(2))}</td>
+								<td style="text-align: right">₱0.00</td>
 							</tr>
 							<tr>
 								<td style="padding-left: 30px">SALES RETURNS</td>
@@ -345,11 +345,11 @@ export const printXreadReport = (report) => {
 
 						<table style="width: 100%; font-size: 12px; line-height: 12px">
 							<tr>
-								<td>Beginning OR #</td>
+								<td style="padding-left: 30px">Beginning OR #</td>
 								<td style="text-align: right">${report?.beginning_or?.or_number || EMPTY_CELL}</td>
 							</tr>
 							<tr>
-								<td>Ending OR #</td>
+								<td style="padding-left: 30px">Ending OR #</td>
 								<td style="text-align: right">${report?.ending_or?.or_number || EMPTY_CELL}</td>
 							</tr>
 							<tr>
@@ -430,8 +430,8 @@ export const printZreadReport = (report) => {
 						<div style="width: 100%; text-align: center">Tel# 808-8866</div>
 						<div style="width: 100%; text-align: center">EMMANUEL T. FINEZA</div>
 						<div style="width: 100%; text-align: center">178-846-963-000</div>
-						<div style="width: 100%; text-align: center">${report?.branch_machine?.machine_id || EMPTY_CELL}</div>
-						<div style="width: 100%; text-align: center">${report?.branch_machine?.machine_printer_serial_number || EMPTY_CELL}</div>
+						<div style="width: 100%; text-align: center">MIN</div>
+						<div style="width: 100%; text-align: center">SN</div>
 						<div style="width: 100%; text-align: center; font-weight: bold">[Z-REPORT]</div>	
 
 						<br />
