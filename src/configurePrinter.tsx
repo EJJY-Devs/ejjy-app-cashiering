@@ -77,145 +77,6 @@ export const printSalesInvoice = (transaction, transactionProducts, change, isRe
 		const endValidityDate = generated.add(5, 'year');
 	const cashier = `${transaction?.teller?.first_name} ${transaction?.teller?.last_name}`;
 
-	const printData = `
-		<div style="width: 100%; font-family: courier new, tahoma; font-size: 12px; line-height: 12px">
-			<div style="font-size: 20px; text-align: center; line-height: 20px">EJ AND JY</div>
-			<div style="width: 100%; text-align: center">WET MARKET AND ENTERPRISES</div>
-			<div style="width: 100%; text-align: center">POB., CARMEN, AGUSAN DEL NORTE</div>
-			<div style="width: 100%; text-align: center">Tel# 808-8866</div>
-			<div style="width: 100%; text-align: center">EMMANUEL T. FINEZA</div>
-			<div style="width: 100%; text-align: center">178-846-963-000</div>
-			<div style="width: 100%; text-align: center">MIN</div>
-			<div style="width: 100%; text-align: center">SN</div>
-			<div style="width: 100%; text-align: center; font-weight: bold">[SALES INVOICE]</div>
-
-			<br />
-
-			<table style="width: 100%; font-size: 12px; line-height: 12px">
-				${transactionProducts.map((item) => (
-						`<tr>
-							<td colspan="2">${item.data.name}</td>
-						</tr>
-						<tr>
-							<td style="padding-left: 30px">${getProductQuantity(item.quantity, item.data.unit_of_measurement)} @ ${`₱${item.pricePerPiece.toFixed(2)}`}</td>
-							<td style="text-align: right">
-								${`₱${(item.quantity * item.pricePerPiece).toFixed(2)}`} V
-							</td>
-						</tr>`
-					))	
-				}
-			</table>
-
-			<div style="width: 100%; font-weight: bold">----------------</div>
-
-			<table style="width: 100%; font-size: 12px; line-height: 12px">
-				<tr>
-					<td>TOTAL AMOUNT</td>
-					<td style="text-align: right; font-size: 14px; font-weight: bold">
-						₱${numberWithCommas(Number(transaction?.total_amount).toFixed(2))}
-					</td>
-				</tr>
-			</table>
-
-			<br />
-
-			<table style="width: 100%; font-size: 12px; line-height: 12px">
-				<tr>
-					<td style="padding-left: 30px">AMOUNT RECEIVED</td>
-					<td style="text-align: right">
-						₱${numberWithCommas(Number(transaction?.total_paid_amount + (change || 0)).toFixed(2))}
-					</td>
-				</tr>
-				<tr>
-					<td style="padding-left: 30px">AMOUNT DUE</td>
-					<td style="text-align: right">
-						₱${numberWithCommas(Number(transaction?.total_amount).toFixed(2))}
-					</td>
-				</tr>
-				<tr>
-					<td style="padding-left: 30px">CHANGE</td>
-					<td style="text-align: right; font-size: 14px; font-weight: bold">
-						₱${change?.toFixed(2)}
-					</td>
-				</tr>
-			</table>
-
-			<br />
-
-			<table style="width: 100%; font-size: 12px; line-height: 12px">
-				<tr>
-					<td>VAT Exempt</td>
-					<td style="text-align: right">
-						₱0.00
-					</td>
-				</tr>
-				<tr>
-					<td>VAT Sales</td>
-					<td style="text-align: right">
-						₱196.43
-					</td>
-				</tr>
-				<tr>
-					<td>VAT Amount</td>
-					<td style="text-align: right">
-						₱23.57
-					</td>
-				</tr>
-			</table>
-
-			<br />
-
-			<table style="width: 100%; font-size: 12px; line-height: 12px">
-				<tr>
-					<td>${generated.format('MM/DD/YYYY')}</td>
-					<td>${generated.format('HH:mm A')}</td>
-					<td>${cashier}</td>
-				</tr>
-				<tr>
-					<td>1234567890</td>
-					<td>N2M1</td>
-					<td>${transactionProducts?.length} item(s)</td>
-				</tr>
-			</table>
-
-			<table style="width: 100%; font-size: 12px; line-height: 12px">
-				<tr>
-					<td>NAME:</td>
-					<td>${EMPTY_CELL}</td>
-				</tr>
-				<tr>
-					<td>TIN:</td>
-					<td>${EMPTY_CELL}</td>
-				</tr>
-				<tr>
-					<td>ADDRESS:</td>
-					<td>${EMPTY_CELL}</td>
-				</tr>
-			</table>
-
-			<br />
-
-			<div style="text-align: center">EJ & JY I.T. SOLUTIONS</div>
-			<div style="text-align: center">Burgos St., Poblacion, Carmen,</div>
-			<div style="text-align: center">Agusan del Norte</div>
-			<div style="text-align: center">178-846-963-005</div>
-			<div style="text-align: center">ACCREDITATION NUMBER</div>
-			<div style="text-align: center">DATE ISSUED</div>
-			<div style="text-align: center">VALID UNTIL</div>
-
-			<br />
-
-			<div style="text-align: center">PTU#</div>
-			<div style="text-align: center">${generated.format('MM/DD/YYYY')}</div>
-			<div style="text-align: center">${endValidityDate.format('MM/DD/YYYY')}</div>
-			<div style="text-align: center">PRODUCT VERSION</div>
-			<div style="text-align: center">THIS RECEIPT SHALL BE VALID FOR FIVE (5) YEARS FROM THE DATE OF PERMIT TO USE.</div>
-			<div style="text-align: center">THIS SERVES AS YOUR SALES INVOICE</div>
-			<div style="text-align: center">"Thank You! Come Again!"</div>
-		</div>`
-
-	console.log('data',printData);
-
 	qz.printers
 		.find(PRINTER_NAME)
 		.then((printer) => {
@@ -227,7 +88,143 @@ export const printSalesInvoice = (transaction, transactionProducts, change, isRe
 					format: 'html',
 					flavor: 'plain',
 					options: { pageWidth: PAPER_WIDTH },
-					data: printData,
+					data: `
+					<div style="width: 100%; font-family: courier new, tahoma; font-size: 12px; line-height: 12px">
+						<div style="font-size: 20px; text-align: center; line-height: 20px">EJ AND JY</div>
+						<div style="width: 100%; text-align: center">WET MARKET AND ENTERPRISES</div>
+						<div style="width: 100%; text-align: center">POB., CARMEN, AGUSAN DEL NORTE</div>
+						<div style="width: 100%; text-align: center">Tel# 808-8866</div>
+						<div style="width: 100%; text-align: center">EMMANUEL T. FINEZA</div>
+						<div style="width: 100%; text-align: center">178-846-963-000</div>
+						<div style="width: 100%; text-align: center">MIN</div>
+						<div style="width: 100%; text-align: center">SN</div>
+						<div style="width: 100%; text-align: center; font-weight: bold">[SALES INVOICE]</div>
+
+						<br />
+
+						<table style="width: 100%; font-size: 12px; line-height: 12px">
+							${transactionProducts.map((item) => (
+									`<tr>
+										<td colspan="2">${item.data.name}</td>
+									</tr>
+									<tr>
+										<td style="padding-left: 30px">${getProductQuantity(item.quantity, item.data.unit_of_measurement)} @ ${`₱${item.pricePerPiece.toFixed(2)}`}</td>
+										<td style="text-align: right">
+											${`₱${(item.quantity * item.pricePerPiece).toFixed(2)}`} V
+										</td>
+									</tr>`
+								)).join('')	
+							}
+						</table>
+
+						<div style="width: 100%; font-weight: bold">----------------</div>
+
+						<table style="width: 100%; font-size: 12px; line-height: 12px">
+							<tr>
+								<td>TOTAL AMOUNT</td>
+								<td style="text-align: right; font-size: 14px; font-weight: bold">
+									₱${numberWithCommas(Number(transaction?.total_amount).toFixed(2))}
+								</td>
+							</tr>
+						</table>
+
+						<br />
+
+						<table style="width: 100%; font-size: 12px; line-height: 12px">
+							<tr>
+								<td style="padding-left: 30px">AMOUNT RECEIVED</td>
+								<td style="text-align: right">
+									₱${numberWithCommas(Number(transaction?.total_paid_amount + (change || 0)).toFixed(2))}
+								</td>
+							</tr>
+							<tr>
+								<td style="padding-left: 30px">AMOUNT DUE</td>
+								<td style="text-align: right">
+									₱${numberWithCommas(Number(transaction?.total_amount).toFixed(2))}
+								</td>
+							</tr>
+							<tr>
+								<td style="padding-left: 30px">CHANGE</td>
+								<td style="text-align: right; font-size: 14px; font-weight: bold">
+									₱${change?.toFixed(2)}
+								</td>
+							</tr>
+						</table>
+
+						<br />
+
+						<table style="width: 100%; font-size: 12px; line-height: 12px">
+							<tr>
+								<td>VAT Exempt</td>
+								<td style="text-align: right">
+									₱0.00
+								</td>
+							</tr>
+							<tr>
+								<td>VAT Sales</td>
+								<td style="text-align: right">
+									₱196.43
+								</td>
+							</tr>
+							<tr>
+								<td>VAT Amount</td>
+								<td style="text-align: right">
+									₱23.57
+								</td>
+							</tr>
+						</table>
+
+						<br />
+
+						<table style="width: 100%; font-size: 12px; line-height: 12px">
+							<tr>
+								<td>${generated.format('MM/DD/YYYY')}</td>
+								<td>${generated.format('HH:mm A')}</td>
+								<td>${cashier}</td>
+							</tr>
+							<tr>
+								<td>${transaction?.invoice?.or_number}</td>
+								<td>N2M1</td>
+								<td>${transactionProducts?.length} item(s)</td>
+							</tr>
+						</table>
+
+						<table style="width: 100%; font-size: 12px; line-height: 12px">
+							<tr>
+								<td>NAME:</td>
+								<td>${EMPTY_CELL}</td>
+							</tr>
+							<tr>
+								<td>TIN:</td>
+								<td>${EMPTY_CELL}</td>
+							</tr>
+							<tr>
+								<td>ADDRESS:</td>
+								<td>${EMPTY_CELL}</td>
+							</tr>
+						</table>
+
+						<br />
+
+						<div style="text-align: center">EJ & JY I.T. SOLUTIONS</div>
+						<div style="text-align: center">Burgos St., Poblacion, Carmen,</div>
+						<div style="text-align: center">Agusan del Norte</div>
+						<div style="text-align: center">178-846-963-005</div>
+						<div style="text-align: center">ACCREDITATION NUMBER</div>
+						<div style="text-align: center">DATE ISSUED</div>
+						<div style="text-align: center">VALID UNTIL</div>
+
+						<br />
+
+						<div style="text-align: center">PTU#</div>
+						<div style="text-align: center">${generated.format('MM/DD/YYYY')}</div>
+						<div style="text-align: center">${endValidityDate.format('MM/DD/YYYY')}</div>
+						<div style="text-align: center">PRODUCT VERSION</div>
+						<div style="text-align: center">THIS RECEIPT SHALL BE VALID FOR FIVE (5) YEARS FROM THE DATE OF PERMIT TO USE.</div>
+						<div style="text-align: center">THIS SERVES AS YOUR SALES INVOICE</div>
+						<div style="text-align: center">"Thank You! Come Again!"</div>
+					</div>
+					`,
 				},
 			];
 
