@@ -133,27 +133,29 @@ export const printSalesInvoice = (transaction, transactionProducts, change, isRe
 						<table style="width: 100%; font-size: 12px; line-height: 12px">
 							<tr>
 								<td>TOTAL AMOUNT</td>
-								<td style="text-align: right; font-weight: bold">
+								<td style="text-align: right; font-size: 14px; font-weight: bold">
 									₱${numberWithCommas(Number(transaction?.total_amount).toFixed(2))}
 								</td>
 							</tr>
 						</table>
 
+						<br />
+
 						<table style="width: 100%; font-size: 12px; line-height: 12px">
 							<tr>
-								<td>AMOUNT RECEIVED</td>
+								<td style="padding-left: 30px">AMOUNT RECEIVED</td>
 								<td style="text-align: right">
-									₱${numberWithCommas(Number(transaction?.total_paid_amount).toFixed(2))}
+									₱${numberWithCommas(Number(transaction?.total_paid_amount + (change || 0)).toFixed(2))}
 								</td>
 							</tr>
 							<tr>
-								<td>AMOUNT DUE</td>
+								<td style="padding-left: 30px">AMOUNT DUE</td>
 								<td style="text-align: right">
 									₱${numberWithCommas(Number(transaction?.total_amount).toFixed(2))}
 								</td>
 							</tr>
 							<tr>
-								<td>CHANGE</td>
+								<td style="padding-left: 30px">CHANGE</td>
 								<td style="text-align: right">₱${change?.toFixed(2)}</td>
 							</tr>
 						</table>
@@ -164,7 +166,7 @@ export const printSalesInvoice = (transaction, transactionProducts, change, isRe
 							<tr>
 								<td>VAT Exempt</td>
 								<td style="text-align: right">
-									₱${numberWithCommas(Number(transaction?.invoice?.vat_exempt).toFixed(2))}
+									₱0.00
 								</td>
 							</tr>
 							<tr>
