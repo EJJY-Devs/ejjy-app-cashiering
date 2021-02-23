@@ -4,7 +4,7 @@ import React, { useCallback, useState } from 'react';
 import * as Yup from 'yup';
 import { Button, FieldError, FormInputLabel } from '../../../../components/elements';
 import { userTypes } from '../../../../global/types';
-import { sleep } from '../../../../utils/function';
+import { countDecimals, sleep } from '../../../../utils/function';
 
 interface Props {
 	currentPrice: number;
@@ -44,7 +44,22 @@ export const DiscountAmountForm = ({
 			Schema: Yup.object().shape({
 				login: Yup.string().required().label('Username'),
 				password: Yup.string().required().label('Password'),
-				discount: Yup.number().required().moreThan(0).lessThan(currentPrice).label('Discount'),
+				discount: Yup.number()
+					.required()
+					.moreThan(0)
+					.lessThan(currentPrice)
+					.test(
+						'decimal-places',
+						'Discount must be at most 2 decimal places only.',
+						function (value) {
+							if (value >= 0) {
+								return countDecimals(Number(value)) <= 2;
+							}
+
+							return true;
+						},
+					)
+					.label('Discount'),
 			}),
 		}),
 		[currentPrice, overallDiscount],
@@ -73,6 +88,7 @@ export const DiscountAmountForm = ({
 							label="Discount"
 							inputClassname="input-control input-quantity"
 							labelClassname="input-label"
+							step="0.01"
 						/>
 						{errors.discount && touched.discount ? <FieldError error={errors.discount} /> : null}
 					</div>

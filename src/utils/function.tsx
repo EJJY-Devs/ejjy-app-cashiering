@@ -21,6 +21,11 @@ import {
 
 export const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
+export const countDecimals = (value) => {
+	if (Math.floor(value) === value) return 0;
+	return value.toString().split('.')[1].length || 0;
+};
+
 export const getUserTypeDescription = memoize((userType) => {
 	switch (userType) {
 		case userTypes.ADMIN:
