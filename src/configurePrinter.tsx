@@ -154,7 +154,7 @@ export const printSalesInvoice = (transaction, transactionProducts, change, isRe
 							</tr>
 							<tr>
 								<td>CHANGE</td>
-								<td style="text-align: right">₱${change.toFixed(2)}</td>
+								<td style="text-align: right">₱${change?.toFixed(2)}</td>
 							</tr>
 						</table>
 
