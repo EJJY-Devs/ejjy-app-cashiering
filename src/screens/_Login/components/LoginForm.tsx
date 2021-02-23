@@ -1,5 +1,5 @@
 import { Form, Formik } from 'formik';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import * as Yup from 'yup';
 import { Button, FieldError, FormInputLabel } from '../../../components/elements';
 import { sleep } from '../../../utils/function';
@@ -33,7 +33,17 @@ export const LoginForm = ({
 	submitText,
 	isManager,
 }: ILoginForm) => {
+	const usernameRef = useRef(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
+
+	// METHODS
+	useEffect(() => {
+		if (usernameRef && usernameRef.current) {
+			setTimeout(() => {
+				usernameRef.current?.focus();
+			}, 500);
+		}
+	}, [usernameRef]);
 
 	const getFormDetails = useCallback(
 		() => ({
@@ -72,7 +82,11 @@ export const LoginForm = ({
 				{({ errors, touched }) => (
 					<Form className="form">
 						<div className="input-field">
-							<FormInputLabel id="login" label={`${isManager ? "Manager's" : ''} Username`} />
+							<FormInputLabel
+								id="login"
+								label={`${isManager ? "Manager's" : ''} Username`}
+								inputRef={usernameRef}
+							/>
 							{errors.login && touched.login ? <FieldError error={errors.login} /> : null}
 						</div>
 

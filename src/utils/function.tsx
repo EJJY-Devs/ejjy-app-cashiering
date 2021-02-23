@@ -177,7 +177,6 @@ export const getCashBreakdownTypeDescription = memoize((type) => {
 });
 
 export const getProductQuantity = (quantity, unitOfMeasurementType) => {
-	return quantity.toFixed(0);
 	if (unitOfMeasurementType === unitOfMeasurementTypes.WEIGHING) {
 		return quantity.toFixed(3);
 	} else if (unitOfMeasurementType === unitOfMeasurementTypes.NON_WEIGHING) {
