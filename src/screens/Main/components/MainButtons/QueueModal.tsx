@@ -4,6 +4,7 @@ import cn from 'classnames';
 import React, { useCallback, useEffect, useState } from 'react';
 import KeyboardEventHandler from 'react-keyboard-event-handler';
 import { ButtonLink } from '../../../../components/elements';
+import FieldInfo from '../../../../components/elements/FieldInfo/FieldInfo';
 import { TableQueue } from '../../../../components/TableQueue/TableQueue';
 import { NO_INDEX_SELECTED } from '../../../../global/constants';
 import { request, transactionStatusTypes } from '../../../../global/types';
@@ -172,7 +173,7 @@ export const QueueModal = ({ visible, onClose }: Props) => {
 			<Spin size="large" spinning={transactionsRequestStatus === request.REQUESTING}>
 				<button className={cn('btn-queue', { disabled: isQueueDisabled() })} onClick={onQueue}>
 					<>
-						<span>Queue</span>
+						<span>Hold</span>
 						<span className="shortcut-key">[F1]</span>
 					</>
 				</button>
@@ -183,6 +184,8 @@ export const QueueModal = ({ visible, onClose }: Props) => {
 					data={queuedTransactions}
 					loading={transactionsStatus === request.REQUESTING}
 				/>
+
+				<FieldInfo type="large" info="Pick and click to resume transaction" />
 			</Spin>
 		</Modal>
 	);
