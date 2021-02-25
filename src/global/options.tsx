@@ -12,6 +12,7 @@ export const queueResumeShortcutKeys = ['f9', 'ctrl+h', 'meta+h'];
 export const searchShortcutKeys = ['f10', 'ctrl+s', 'meta+s'];
 export const voidShortcutKeys = ['f11', 'ctrl+v', 'meta+v'];
 export const resetShortcutKeys = ['f12', 'ctrl+r', 'meta+r'];
+export const reprintInvoiceShortcutKeys = ['ctrl+p', 'meta+p'];
 
 // For display
 export const othersShortcutKeysDisplay = ['F1', 'CTRL + O'];
@@ -27,3 +28,4 @@ export const queueResumeShortcutKeysDisplay = ['F9', 'CTRL + H'];
 export const searchShortcutKeysDisplay = ['F10', 'CTRL + S'];
 export const voidShortcutKeysDisplay = ['F11', 'CTRL + V'];
 export const resetShortcutKeysDisplay = ['F12', 'CTRL + R'];
+export const reprintInvoiceShortcutKeysDisplay = ['CTRL + P'];

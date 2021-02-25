@@ -1,7 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { message, Modal } from 'antd';
-import React, { useCallback, useState } from 'react';
-import KeyboardEventHandler from 'react-keyboard-event-handler';
+import React, { useCallback, useEffect, useState } from 'react';
 import { EMPTY_CELL } from '../../../../global/constants';
 import {
 	cashCollectionShortcutKeys,
@@ -17,6 +17,7 @@ import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import { useSession } from '../../../../hooks/useSession';
 import { useTransactions } from '../../../../hooks/useTransactions';
 import { useUI } from '../../../../hooks/useUI';
+import { getKeyDownCombination } from '../../../../utils/function';
 import { DiscountAmountModal } from './DiscountAmountModal';
 import { KeyboardShortcutsModal } from './KeyboardShortcutsModal';
 import { MainButton } from './MainButton';
@@ -33,8 +34,10 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 	// STATES
 	const [othersModalVisible, setOthersModalVisible] = useState(false);
 	const [queueModalVisible, setQueueModalVisible] = useState(false);
-	const [keyboardShortcutsVisible, setKeyboardShortcutsVisible] = useState(false);
-	const [discountAmountVisible, setDiscountAmountVisible] = useState(false);
+	const [keyboardShortcutsModalVisible, setKeyboardShortcutsModalVisible] = useState(false);
+	const [discountAmountModalVisible, setDiscountAmountModalVisible] = useState(false);
+	const [resetModalVisible, setResetModalVisible] = useState(false);
+	const [voidModalVisible, setVoidModalVisible] = useState(false);
 
 	// CUSTOM HOOKS
 	const { session } = useSession();
@@ -46,9 +49,35 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 		resetTransaction,
 	} = useCurrentTransaction();
 	const { voidTransaction, cancelVoidedTransaction } = useTransactions();
-	const { setMainLoading, setMainLoadingText } = useUI();
+	const { isModalVisible, setModalVisible, setMainLoading, setMainLoadingText } = useUI();
 
 	// METHODS
+	useEffect(() => {
+		document.addEventListener('keydown', handleKeyDown);
+
+		return () => {
+			document.removeEventListener('keydown', handleKeyDown);
+		};
+	});
+
+	useEffect(() => {
+		setModalVisible(
+			othersModalVisible ||
+				queueModalVisible ||
+				keyboardShortcutsModalVisible ||
+				discountAmountModalVisible ||
+				resetModalVisible ||
+				voidModalVisible,
+		);
+	}, [
+		othersModalVisible,
+		queueModalVisible,
+		keyboardShortcutsModalVisible,
+		discountAmountModalVisible,
+		resetModalVisible,
+		voidModalVisible,
+	]);
+
 	const isVoidDisabled = useCallback(
 		() => currentTransactionStatus !== transactionStatusTypes.FULLY_PAID,
 		[currentTransactionStatus],
@@ -82,17 +111,22 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 	};
 
 	const onResetConfirmation = () => {
+		setResetModalVisible(true);
+
 		Modal.confirm({
 			title: 'Reset Confirmation',
 			icon: <ExclamationCircleOutlined />,
 			content: 'Are you sure you want to reset the transaction?',
 			okText: 'Reset',
 			cancelText: 'Cancel',
+			onCancel: () => setResetModalVisible(false),
 			onOk: onReset,
 		});
 	};
 
 	const onReset = () => {
+		setResetModalVisible(false);
+
 		if (previousVoidedTransactionId) {
 			setMainLoading(true);
 			setMainLoadingText('Cancelling voided transaction...');
@@ -126,17 +160,21 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 	};
 
 	const onVoidConfirmation = () => {
+		setVoidModalVisible(true);
+
 		Modal.confirm({
 			title: 'Void Confirmation',
 			icon: <ExclamationCircleOutlined />,
 			content: 'Are you sure you want to void the transaction?',
 			okText: 'Void',
 			cancelText: 'Cancel',
+			onCancel: () => setVoidModalVisible(false),
 			onOk: onVoid,
 		});
 	};
 
 	const onVoid = () => {
+		setVoidModalVisible(false);
 		setMainLoading(true);
 		setMainLoadingText('Setting transaction to void...');
 
@@ -158,12 +196,20 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 			return;
 		}
 
-		setDiscountAmountVisible(true);
+		setDiscountAmountModalVisible(true);
 	};
 
-	const handleKeyPress = (key, event) => {
-		event.preventDefault();
-		event.stopPropagation();
+	const onKeyboardShortcuts = () => {
+		setKeyboardShortcutsModalVisible(true);
+		setOthersModalVisible(false);
+	};
+
+	const handleKeyDown = (event) => {
+		if (isModalVisible) {
+			return;
+		}
+
+		const key = getKeyDownCombination(event);
 
 		// Queue and Resume
 		if (queueResumeShortcutKeys.includes(key) && !isQueueDisabled()) {
@@ -208,26 +254,8 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 		}
 	};
 
-	const onKeyboardShortcuts = () => {
-		setKeyboardShortcutsVisible(true);
-		setOthersModalVisible(false);
-	};
-
 	return (
 		<div className="MainButtons">
-			<KeyboardEventHandler
-				handleKeys={[
-					...othersShortcutKeys,
-					...cashCollectionShortcutKeys,
-					...endSessionShortcutKeys,
-					...queueResumeShortcutKeys,
-					...voidShortcutKeys,
-					...resetShortcutKeys,
-					...discountAmountShortcutKeys,
-				]}
-				onKeyEvent={handleKeyPress}
-			/>
-
 			<div className="store-info-wrapper">
 				<div className="item">
 					<p className="label">Branch</p>
@@ -306,15 +334,15 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 			/>
 
 			<KeyboardShortcutsModal
-				visible={keyboardShortcutsVisible}
-				onClose={() => setKeyboardShortcutsVisible(false)}
+				visible={keyboardShortcutsModalVisible}
+				onClose={() => setKeyboardShortcutsModalVisible(false)}
 			/>
 
 			<QueueModal visible={queueModalVisible} onClose={() => setQueueModalVisible(false)} />
 
 			<DiscountAmountModal
-				visible={discountAmountVisible}
-				onClose={() => setDiscountAmountVisible(false)}
+				visible={discountAmountModalVisible}
+				onClose={() => setDiscountAmountModalVisible(false)}
 			/>
 		</div>
 	);

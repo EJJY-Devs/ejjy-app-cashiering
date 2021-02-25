@@ -17,6 +17,7 @@ import {
 	tenderShortcutKeysDisplay,
 	voidShortcutKeysDisplay,
 	discountAmountShortcutKeysDisplay,
+	reprintInvoiceShortcutKeysDisplay,
 } from '../../../../global/options';
 import './style.scss';
 
@@ -176,6 +177,17 @@ export const KeyboardShortcutsModal = ({ visible, onClose }: Props) => {
 					valueSpan={12}
 					label="Reset"
 					value={resetShortcutKeysDisplay.map((key) => (
+						<KeyboardButtonDisplay key={key} keyboardKey={key} />
+					))}
+				/>
+
+				<DetailsSingle
+					classNamesLabel="label"
+					classNamesValue="value"
+					labelSpan={12}
+					valueSpan={12}
+					label="Reprint Invoice"
+					value={reprintInvoiceShortcutKeysDisplay.map((key) => (
 						<KeyboardButtonDisplay key={key} keyboardKey={key} />
 					))}
 				/>

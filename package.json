@@ -3,13 +3,13 @@
 	"version": "0.1.1",
 	"private": true,
 	"homepage": "./",
-	"main": "./electron/main.js",
+	"main": "./electron-dev/main.js",
 	"scripts": {
 		"start": "PORT=3004 react-scripts start",
 		"build": "react-scripts build",
 		"dev": "concurrently \"npm start\" \"wait-on http://localhost:3004 && electron .\"",
 		"electron": "wait-on http://localhost:3004 && electron .",
-		"pack": "npm run build && electron-packager . EJJY-Cashiering --no-prune --platform=win32 --ignore=/.vscode --ignore=/deployment --ignore=/node_modules --ignore=/public --ignore=/src --ignore=/.prettierignore --ignore=/.prettierrc --ignore=/.config-overrides.js --ignore=/package-lock.json --ignore=/README.md --ignore=/tsconfig.json --ignore=/yarn.lock --overwrite"
+		"pack": "npm run build && electron-packager . EJJY-Cashiering --no-prune --platform=win32 --ignore=/.vscode --ignore=/deployment --ignore=/node_modules --ignore=/public --ignore=/src --ignore=/.prettierignore --ignore=/.prettierrc --ignore=/.config-overrides.js --ignore=/package-lock.json --ignore=/README.md --ignore=/tsconfig.json --ignore=/yarn.lock --ignore=/electron-dev --overwrite"
 	},
 	"dependencies": {
 		"@ant-design/icons": "^4.2.2",

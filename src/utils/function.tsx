@@ -190,3 +190,25 @@ export const getProductQuantity = (quantity, unitOfMeasurementType) => {
 
 	return 0;
 };
+
+export const getKeyDownCombination = (keyboardEvent) => {
+	let firstKey = '';
+
+	if (keyboardEvent?.altKey) {
+		firstKey = 'alt+';
+	}
+
+	if (keyboardEvent?.ctrlKey) {
+		firstKey = 'ctrl+';
+	}
+
+	if (keyboardEvent?.metaKey) {
+		firstKey = 'meta+';
+	}
+
+	if (keyboardEvent?.shiftKey) {
+		firstKey = 'shift+';
+	}
+
+	return firstKey + keyboardEvent?.key;
+};

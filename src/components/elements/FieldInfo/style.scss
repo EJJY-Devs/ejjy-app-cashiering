@@ -1,0 +1,29 @@
+@import '../../../assets/styles/variables';
+@import '../../../assets/styles/mixins';
+
+.FieldInfo {
+	@include flex($align-items: center);
+	margin-top: 8px;
+	margin-bottom: 5px;
+
+	.icon {
+		color: $color-info;
+		font-size: 13px;
+	}
+
+	.text {
+		margin-left: 5px;
+		color: $color-info;
+		@include font(0.75rem);
+	}
+
+	&.large {
+		.icon {
+			font-size: 15px;
+		}
+
+		.text {
+			@include font(1rem);
+		}
+	}
+}
