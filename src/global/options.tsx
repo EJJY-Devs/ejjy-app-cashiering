@@ -1,17 +1,17 @@
 // For keyboard listeners
-export const othersShortcutKeys = ['f1', 'ctrl+o', 'meta+o'];
-export const cashCollectionShortcutKeys = ['f2', 'ctrl+c', 'meta+c'];
-export const endSessionShortcutKeys = ['f3', 'ctrl+e', 'meta+e'];
-export const deleteItemShortcutKeys = ['f4', 'ctrl+d', 'meta+d'];
-export const discountItemShortcutKeys = ['f5', 'ctrl+f', 'meta+f'];
-export const discountAmountShortcutKeys = ['f5', 'ctrl+z', 'meta+z'];
-export const editClientShortcutKeys = ['f6', 'ctrl+x', 'meta+x'];
-export const editQuantityShortcutKeys = ['f7', 'ctrl+q', 'meta+q'];
-export const tenderShortcutKeys = ['f8', 'ctrl+a', 'meta+a'];
-export const queueResumeShortcutKeys = ['f9', 'ctrl+h', 'meta+h'];
-export const searchShortcutKeys = ['f10', 'ctrl+s', 'meta+s'];
-export const voidShortcutKeys = ['f11', 'ctrl+v', 'meta+v'];
-export const resetShortcutKeys = ['f12', 'ctrl+r', 'meta+r'];
+export const othersShortcutKeys = ['F1', 'ctrl+o', 'meta+o'];
+export const cashCollectionShortcutKeys = ['F2', 'ctrl+c', 'meta+c'];
+export const endSessionShortcutKeys = ['F3', 'ctrl+e', 'meta+e'];
+export const deleteItemShortcutKeys = ['F4', 'ctrl+d', 'meta+d'];
+export const discountItemShortcutKeys = ['F5', 'ctrl+f', 'meta+f'];
+export const discountAmountShortcutKeys = ['F5', 'ctrl+z', 'meta+z'];
+export const editClientShortcutKeys = ['F6', 'ctrl+x', 'meta+x'];
+export const editQuantityShortcutKeys = ['F7', 'ctrl+q', 'meta+q'];
+export const tenderShortcutKeys = ['F8', 'ctrl+a', 'meta+a'];
+export const queueResumeShortcutKeys = ['F9', 'ctrl+h', 'meta+h'];
+export const searchShortcutKeys = ['F10', 'ctrl+s', 'meta+s'];
+export const voidShortcutKeys = ['F11', 'ctrl+v', 'meta+v'];
+export const resetShortcutKeys = ['F12', 'ctrl+r', 'meta+r'];
 export const reprintInvoiceShortcutKeys = ['ctrl+p', 'meta+p'];
 
 // For display
