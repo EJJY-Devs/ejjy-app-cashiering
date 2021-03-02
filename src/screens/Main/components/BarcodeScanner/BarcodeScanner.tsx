@@ -127,31 +127,54 @@ export const BarcodeScanner = ({ setLoading }: Props) => {
 		}
 	};
 
-	const handleScan = (test) => {
-		let data = `${test}`;
-
+	const scanWeighing = (data) => {
 		const barcode = data.substr(0, 7);
-		const value = data.substr(-6);
-		const whole = value.substr(0, 2);
-		const decimal = value.substr(2, 3);
-
-		message.info(`Barcode: ${barcode} -> Value: ${whole}.${decimal}`);
-
-		const quantity = Number(`${whole}.${decimal}`);
 		const scannedBarcode = barcode?.toLowerCase() || '';
-		const branchProduct = branchProducts.find(({ product }) => product?.barcode === scannedBarcode);
 
-		if (branchProduct) {
-			const existingProduct = transactionProducts.find((product) => product.id);
+		return branchProducts.find(({ product }) => product?.barcode === scannedBarcode);
+	};
 
-			if (existingProduct) {
-				editBarcodeProduct(branchProduct, existingProduct, quantity);
-			} else {
-				addBarcodeProduct(branchProduct, quantity);
-			}
+	const scanNonWeighing = (data) => {
+		return branchProducts.find(({ product }) => product?.barcode === data);
+	};
+
+	const addOrEditScannedProduct = (branchProduct, quantity) => {
+		const existingProduct = transactionProducts.find((product) => product.id === branchProduct.id);
+
+		if (existingProduct) {
+			editBarcodeProduct(branchProduct, existingProduct, quantity);
 		} else {
-			message.error(`Cannot find the scanned product: ${data}`);
+			addBarcodeProduct(branchProduct, quantity);
 		}
+	};
+
+	const handleScan = (barcodeNumber) => {
+		const data = `${barcodeNumber}`;
+		let branchProduct = null;
+
+		message.info(`Scanned Barcode: ${barcodeNumber}`);
+
+		// Scan weighing
+		branchProduct = scanWeighing(data);
+		if (branchProduct) {
+			const value = data.substr(-6);
+			const whole = value.substr(0, 2);
+			const decimal = value.substr(2, 3);
+			const quantity = Number(`${whole}.${decimal}`);
+			addOrEditScannedProduct(branchProduct, quantity);
+
+			return;
+		}
+
+		// Scan non-weighing
+		branchProduct = scanNonWeighing(data);
+		if (branchProduct) {
+			addOrEditScannedProduct(branchProduct, 1);
+
+			return;
+		}
+
+		message.error(`Cannot find the scanned product: ${data}`);
 	};
 
 	const handleError = (err) => console.error(err);

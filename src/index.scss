@@ -11,6 +11,7 @@ body {
 	background-color: $color-main-background;
 	font-family: $font-primary;
 	color: $color-dark;
+	overflow: hidden;
 
 	@include flex(center, center);
 

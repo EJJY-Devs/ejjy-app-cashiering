@@ -4,16 +4,21 @@ import cn from 'classnames';
 import { debounce } from 'lodash';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
+import KeyboardEventHandler from 'react-keyboard-event-handler';
 import { ControlledInput } from '../../../../components/elements';
 import { NO_INDEX_SELECTED } from '../../../../global/constants';
 import { searchShortcutKeys } from '../../../../global/options';
 import { branchProductStatus } from '../../../../global/types';
 import { useBranchProducts } from '../../../../hooks/useBranchProducts';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
-import { getBranchProductStatus, searchProductInfo } from '../../../../utils/function';
+import {
+	getBranchProductStatus,
+	getKeyDownCombination,
+	searchProductInfo,
+} from '../../../../utils/function';
 import { AddProductModal } from './AddProductModal';
-import KeyboardEventHandler from 'react-keyboard-event-handler';
 import './style.scss';
+import { useUI } from '../../../../hooks/useUI';
 
 const SEARCH_DEBOUNCE_TIME = 500;
 const PRODUCT_LIST_HEIGHT = 450;
@@ -33,12 +38,32 @@ export const ProductSearch = () => {
 	const scrollbarRef = useRef(null);
 
 	// CUSTOM HOOKS
-	const { transactionProducts } = useCurrentTransaction();
 	const { branchProducts } = useBranchProducts();
+	const { transactionProducts } = useCurrentTransaction();
+	const { isModalVisible, setModalVisible, setSearchSuggestionVisible } = useUI();
 
 	// METHODS
+	useEffect(() => {
+		document.addEventListener('keydown', handleKeyDown);
+
+		return () => {
+			document.removeEventListener('keydown', handleKeyDown);
+		};
+	});
+
+	useEffect(() => {
+		setModalVisible(addProductModalVisible);
+	}, [addProductModalVisible]);
 
 	// Effect: Set list of searchable products
+	useEffect(() => {
+		if (inputRef && inputRef.current) {
+			setTimeout(() => {
+				inputRef.current?.focus();
+			}, 500);
+		}
+	}, [inputRef]);
+
 	useEffect(() => {
 		const ids = transactionProducts.map((item) => item.id);
 		setSearchableProducts(branchProducts.filter((item) => !ids.includes(item.id)));
@@ -69,6 +94,8 @@ export const ProductSearch = () => {
 		setProducts(filteredProducts);
 		setActiveIndex(0);
 		setSearchedSpin(false);
+
+		setSearchSuggestionVisible(!!filteredProducts.length);
 	};
 
 	const onFocus = () => {
@@ -105,13 +132,21 @@ export const ProductSearch = () => {
 		setProducts([]);
 	};
 
-	const handleKeyPress = (key, event) => {
-		event.preventDefault();
-		event.stopPropagation();
+	const handleKeyDown = (event) => {
+		if (isModalVisible) {
+			return;
+		}
+
+		const key = getKeyDownCombination(event);
 
 		if (searchShortcutKeys.includes(key)) {
 			inputRef?.current?.focus();
 		}
+	};
+
+	const handleKeyPress = (key, event) => {
+		event.preventDefault();
+		event.stopPropagation();
 
 		if ((key === 'up' || key === 'down') && activeIndex === NO_INDEX_SELECTED) {
 			setActiveIndex(0);
@@ -142,8 +177,6 @@ export const ProductSearch = () => {
 
 	return (
 		<div className="ProductSearch">
-			<KeyboardEventHandler handleKeys={searchShortcutKeys} onKeyEvent={handleKeyPress} />
-
 			<KeyboardEventHandler
 				handleKeys={['up', 'down', 'enter', 'esc']}
 				onKeyEvent={handleKeyPress}

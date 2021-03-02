@@ -1,14 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { CaretLeftOutlined, CaretRightOutlined } from '@ant-design/icons';
 import { ceil } from 'lodash';
-import React, { useCallback, useState } from 'react';
-import KeyboardEventHandler from 'react-keyboard-event-handler';
+import React, { useCallback, useEffect, useState } from 'react';
 import { EditButtonIcon } from '../../../../components';
 import { EMPTY_CELL, PRODUCT_LENGTH_PER_PAGE } from '../../../../global/constants';
 import { editClientShortcutKeys } from '../../../../global/options';
 import { productNavigation } from '../../../../global/types';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
-import { numberWithCommas } from '../../../../utils/function';
+import { useUI } from '../../../../hooks/useUI';
+import { getKeyDownCombination, numberWithCommas } from '../../../../utils/function';
 import { ClientDetailsModal } from './ClientDetailsModal';
 import { NavigationButton } from './NavigationButton';
 import './style.scss';
@@ -23,19 +23,35 @@ export const NavigationButtons = () => {
 		transactionProducts,
 		orNumber,
 		pageNumber,
-		previousSukli,
+		previousChange,
 		client,
 		navigateProduct,
 	} = useCurrentTransaction();
+	const { isModalVisible, setModalVisible } = useUI();
 
 	// METHODS
+	useEffect(() => {
+		document.addEventListener('keydown', handleKeyDown);
+
+		return () => {
+			document.removeEventListener('keydown', handleKeyDown);
+		};
+	});
+
+	useEffect(() => {
+		setModalVisible(clientDetailsModalVisible);
+	}, [clientDetailsModalVisible]);
+
 	const getMaxPage = useCallback(() => ceil(transactionProducts.length / PRODUCT_LENGTH_PER_PAGE), [
 		transactionProducts,
 	]);
 
-	const handleKeyPress = (key, event) => {
-		event.preventDefault();
-		event.stopPropagation();
+	const handleKeyDown = (event) => {
+		if (isModalVisible) {
+			return;
+		}
+
+		const key = getKeyDownCombination(event);
 
 		// Edit Client
 		if (editClientShortcutKeys.includes(key)) {
@@ -43,11 +59,8 @@ export const NavigationButtons = () => {
 			return;
 		}
 	};
-
 	return (
 		<div className="NavigationButtons">
-			<KeyboardEventHandler handleKeys={editClientShortcutKeys} onKeyEvent={handleKeyPress} />
-
 			<div className="details">
 				<div className="item">
 					<p className="label">Client ID:</p>
@@ -76,11 +89,11 @@ export const NavigationButtons = () => {
 					<p className="label">Invoice No:</p>
 					<p className="value">{orNumber || EMPTY_CELL}</p>
 				</div>
-				<div className="item previous-sukli">
-					<p className="label">Previous Sukli:</p>
+				<div className="item previous-change">
+					<p className="label">Previous Change:</p>
 					<p className="value">
-						{previousSukli !== null
-							? `₱${numberWithCommas(previousSukli?.toFixed(2))}`
+						{previousChange !== null
+							? `₱${numberWithCommas(previousChange?.toFixed(2))}`
 							: EMPTY_CELL}
 					</p>
 				</div>

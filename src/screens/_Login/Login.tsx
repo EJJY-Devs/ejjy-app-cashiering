@@ -12,7 +12,7 @@ import './style.scss';
 
 const Login = () => {
 	const { startSession, status, errors } = useSession();
-	const { setPreviousSukli } = useCurrentTransaction();
+	const { setPreviousChange } = useCurrentTransaction();
 
 	const [registerModalVisible, setRegisterModalVisible] = useState(false);
 
@@ -31,7 +31,7 @@ const Login = () => {
 			branch_machine_registration_count: data.login === 'specialpersonnel' ? 1 : branchMachineCount,
 		});
 
-		setPreviousSukli(null);
+		setPreviousChange(null);
 	};
 
 	return (

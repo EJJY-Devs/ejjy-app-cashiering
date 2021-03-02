@@ -5,6 +5,7 @@ import { Container } from '../../components';
 import { printSalesInvoice } from '../../configurePrinter';
 import { types as cashBreakdownsRequestTypes } from '../../ducks/cash-breakdowns';
 import { types as sessionTypes } from '../../ducks/sessions';
+import { reprintInvoiceShortcutKeys } from '../../global/options';
 import { cashBreakdownTypes, request, transactionStatusTypes } from '../../global/types';
 import { useBranchProducts } from '../../hooks/useBranchProducts';
 import { useCashBreakdown } from '../../hooks/useCashBreakdown';
@@ -12,6 +13,7 @@ import { useCurrentTransaction } from '../../hooks/useCurrentTransaction';
 import { useSession } from '../../hooks/useSession';
 import { useSiteSettings } from '../../hooks/useSiteSettings';
 import { useUI } from '../../hooks/useUI';
+import { getKeyDownCombination } from '../../utils/function';
 import { BarcodeScanner } from './components/BarcodeScanner/BarcodeScanner';
 import { CashBreakdownModal } from './components/CashBreakdown/CashBreakdownModal';
 import { MainButtons } from './components/MainButtons/MainButtons';
@@ -47,7 +49,7 @@ const Main = () => {
 		transactionId,
 		transactionStatus,
 		transactionProducts,
-		previousSukli,
+		previousChange,
 		resetTransaction,
 	} = useCurrentTransaction();
 	const {
@@ -58,9 +60,17 @@ const Main = () => {
 	} = useCashBreakdown();
 	const { listBranchProducts, status: branchProductsStatus } = useBranchProducts();
 	const { getSiteSettings, status: siteSettingsStatus } = useSiteSettings();
-	const { mainLoading, mainLoadingText } = useUI();
+	const { isModalVisible, setModalVisible, mainLoading, mainLoadingText } = useUI();
 
 	// METHODS
+	useEffect(() => {
+		document.addEventListener('keydown', handleKeyDown);
+
+		return () => {
+			document.removeEventListener('keydown', handleKeyDown);
+		};
+	});
+
 	// Effect: Reset current transaction if refreshed and there is already transaction id
 	useEffect(() => {
 		if (transactionId) {
@@ -81,6 +91,10 @@ const Main = () => {
 
 		document.body.style.backgroundColor = 'white';
 	}, []);
+
+	useEffect(() => {
+		setModalVisible(cashBreakdownModalVisible);
+	}, [cashBreakdownModalVisible]);
 
 	// Effect: Check if there is already a start session's cash breakdown
 	useEffect(() => {
@@ -165,7 +179,22 @@ const Main = () => {
 	};
 
 	const reprintInvoice = () => {
-		printSalesInvoice(transaction, transactionProducts, previousSukli, true);
+		printSalesInvoice(transaction, transactionProducts, previousChange, true);
+	};
+
+	const handleKeyDown = (event) => {
+		if (isModalVisible) {
+			return;
+		}
+
+		const key = getKeyDownCombination(event);
+
+		if (
+			reprintInvoiceShortcutKeys.includes(key) &&
+			transactionStatus === transactionStatusTypes.FULLY_PAID
+		) {
+			reprintInvoice();
+		}
 	};
 
 	return (

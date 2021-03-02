@@ -21,6 +21,11 @@ import {
 
 export const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
+export const countDecimals = (value) => {
+	if (Math.floor(value) === value) return 0;
+	return value.toString().split('.')[1].length || 0;
+};
+
 export const getUserTypeDescription = memoize((userType) => {
 	switch (userType) {
 		case userTypes.ADMIN:
@@ -177,7 +182,6 @@ export const getCashBreakdownTypeDescription = memoize((type) => {
 });
 
 export const getProductQuantity = (quantity, unitOfMeasurementType) => {
-	return quantity.toFixed(0);
 	if (unitOfMeasurementType === unitOfMeasurementTypes.WEIGHING) {
 		return quantity.toFixed(3);
 	} else if (unitOfMeasurementType === unitOfMeasurementTypes.NON_WEIGHING) {
@@ -185,4 +189,26 @@ export const getProductQuantity = (quantity, unitOfMeasurementType) => {
 	}
 
 	return 0;
+};
+
+export const getKeyDownCombination = (keyboardEvent) => {
+	let firstKey = '';
+
+	if (keyboardEvent?.altKey) {
+		firstKey = 'alt+';
+	}
+
+	if (keyboardEvent?.ctrlKey) {
+		firstKey = 'ctrl+';
+	}
+
+	if (keyboardEvent?.metaKey) {
+		firstKey = 'meta+';
+	}
+
+	if (keyboardEvent?.shiftKey) {
+		firstKey = 'shift+';
+	}
+
+	return firstKey + keyboardEvent?.key;
 };

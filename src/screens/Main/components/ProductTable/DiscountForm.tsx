@@ -3,8 +3,8 @@ import { Form, Formik } from 'formik';
 import React, { useCallback, useState } from 'react';
 import * as Yup from 'yup';
 import { Button, FieldError, FormInputLabel } from '../../../../components/elements';
-import { sleep, numberWithCommas } from '../../../../utils/function';
 import { userTypes } from '../../../../global/types';
+import { countDecimals, numberWithCommas, sleep } from '../../../../utils/function';
 
 interface Props {
 	maxQuantity: number;
@@ -51,6 +51,17 @@ export const DiscountForm = ({
 						`Must not be greater than the original price (₱${numberWithCommas(
 							maxQuantity.toFixed(2),
 						)}).`,
+					)
+					.test(
+						'decimal-places',
+						'Discount must be at most 2 decimal places only.',
+						function (value) {
+							if (value >= 0) {
+								return countDecimals(Number(value)) <= 2;
+							}
+
+							return true;
+						},
 					)
 					.label('Discount'),
 			}),
@@ -103,6 +114,7 @@ export const DiscountForm = ({
 							label="Discount"
 							inputClassname="input-control"
 							labelClassname="input-label"
+							step="0.01"
 						/>
 						{errors.discount && touched.discount ? <FieldError error={errors.discount} /> : null}
 					</div>

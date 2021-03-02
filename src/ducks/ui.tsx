@@ -9,6 +9,8 @@ export const types = {
 	SET_MAIN_LOADING: `${key}/SET_MAIN_LOADING`,
 	SET_MAIN_LOADING_TEXT: `${key}/SET_MAIN_LOADING_TEXT`,
 	SET_BARCODE_SCANNING_ENABLE: `${key}/SET_BARCODE_SCANNING_ENABLE`,
+	SET_SEARCH_SUGGESTION_VISIBLE: `${key}/SET_SEARCH_SUGGESTION_VISIBLE`,
+	SET_MODAL_VISIBLE: `${key}/SET_MODAL_VISIBLE`,
 };
 
 const initialState = {
@@ -16,6 +18,8 @@ const initialState = {
 	mainLoading: false,
 	mainLoadingText: null,
 	isBarcodeScanningEnabled: true,
+	isSearchSuggestionVisible: true,
+	isModalVisible: true,
 };
 
 const reducer = handleActions(
@@ -35,6 +39,14 @@ const reducer = handleActions(
 		[types.SET_BARCODE_SCANNING_ENABLE]: (state, { payload }: any) => {
 			return { ...state, isBarcodeScanningEnabled: payload };
 		},
+
+		[types.SET_SEARCH_SUGGESTION_VISIBLE]: (state, { payload }: any) => {
+			return { ...state, isSearchSuggestionVisible: payload };
+		},
+
+		[types.SET_MODAL_VISIBLE]: (state, { payload }: any) => {
+			return { ...state, isModalVisible: payload };
+		},
 	},
 	initialState,
 );
@@ -44,6 +56,8 @@ export const actions = {
 	setMainLoading: createAction(types.SET_MAIN_LOADING),
 	setMainLoadingText: createAction(types.SET_MAIN_LOADING_TEXT),
 	setBarcodeScanningEnabled: createAction(types.SET_BARCODE_SCANNING_ENABLE),
+	setSearchSuggestionVisible: createAction(types.SET_SEARCH_SUGGESTION_VISIBLE),
+	setModalVisible: createAction(types.SET_MODAL_VISIBLE),
 };
 
 const selectState = (state: any) => state[key] || initialState;
@@ -53,6 +67,9 @@ export const selectors = {
 	selectMainLoadingText: () => createSelector(selectState, (state) => state.mainLoadingText),
 	selectBarcodeScanningEnabled: () =>
 		createSelector(selectState, (state) => state.isBarcodeScanningEnabled),
+	selectIsSearchSuggestionVisible: () =>
+		createSelector(selectState, (state) => state.isSearchSuggestionVisible),
+	selectIsModalVisible: () => createSelector(selectState, (state) => state.isModalVisible),
 };
 
 export default reducer;

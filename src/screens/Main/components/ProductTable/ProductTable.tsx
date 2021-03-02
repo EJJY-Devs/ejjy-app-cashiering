@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { message, Tooltip } from 'antd';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { message, Modal, Tooltip } from 'antd';
 import { floor, throttle } from 'lodash';
 import React, { useEffect, useState } from 'react';
-import KeyboardEventHandler from 'react-keyboard-event-handler';
 import { CancelButtonIcon, TableProducts } from '../../../../components';
 import { NO_INDEX_SELECTED, PRODUCT_LENGTH_PER_PAGE } from '../../../../global/constants';
 import {
@@ -19,12 +19,15 @@ import {
 import { useBranchProducts } from '../../../../hooks/useBranchProducts';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import { useTransactions } from '../../../../hooks/useTransactions';
-import { getProductQuantity, numberWithCommas } from '../../../../utils/function';
+import { useUI } from '../../../../hooks/useUI';
+import {
+	getKeyDownCombination,
+	getProductQuantity,
+	numberWithCommas,
+} from '../../../../utils/function';
 import { DiscountModal } from './DiscountModal';
 import { EditProductModal } from './EditProductModal';
 import './style.scss';
-import { Modal } from 'antd';
-import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 const columns = [
 	{ name: '', width: '1px' },
@@ -47,6 +50,14 @@ interface Props {
 }
 
 export const ProductTable = ({ isLoading }: Props) => {
+	// STATES
+	const [selectedProductIndex, setSelectedProductIndex] = useState(0);
+	const [selectedDiscountProduct, setSelectedDiscountProduct] = useState(null);
+	const [editProductModalVisible, setEditProductModalVisible] = useState(false);
+	const [discountModalVisible, setDiscountModalVisible] = useState(false);
+	const [data, setData] = useState([]);
+
+	// CUSTOM HOOKS
 	const {
 		transactionId,
 		transactionProducts,
@@ -58,12 +69,20 @@ export const ProductTable = ({ isLoading }: Props) => {
 	} = useCurrentTransaction();
 	const { branchProducts } = useBranchProducts();
 	const { updateTransaction, status } = useTransactions();
+	const { isModalVisible, isSearchSuggestionVisible, setModalVisible } = useUI();
 
-	const [selectedProductIndex, setSelectedProductIndex] = useState(0);
-	const [selectedDiscountProduct, setSelectedDiscountProduct] = useState(null);
-	const [editProductModalVisible, setEditProductModalVisible] = useState(false);
-	const [discountModalVisible, setDiscountModalVisible] = useState(false);
-	const [data, setData] = useState([]);
+	// METHODS
+	useEffect(() => {
+		document.addEventListener('keydown', handleKeyDown);
+
+		return () => {
+			document.removeEventListener('keydown', handleKeyDown);
+		};
+	});
+
+	useEffect(() => {
+		setModalVisible(editProductModalVisible || discountModalVisible);
+	}, [editProductModalVisible, discountModalVisible]);
 
 	// Effect: Format product data
 	useEffect(() => {
@@ -159,14 +178,25 @@ export const ProductTable = ({ isLoading }: Props) => {
 		}
 	};
 
-	const handleKeyPress = throttle((key, event) => {
-		event.preventDefault();
-		event.stopPropagation();
+	const handleKeyDown = throttle((event) => {
+		if (isModalVisible || isSearchSuggestionVisible) {
+			return;
+		}
+
+		if (
+			selectedProductIndex === NO_INDEX_SELECTED ||
+			!transactionProducts.length ||
+			uneditableStatus.includes(currentTransactionStatus)
+		) {
+			return;
+		}
 
 		if (selectedProductIndex === NO_INDEX_SELECTED) {
 			message.error('Please select a product from the table first.');
 			return;
 		}
+
+		const key = getKeyDownCombination(event);
 
 		// Edit
 		if (editQuantityShortcutKeys.includes(key)) {
@@ -187,12 +217,12 @@ export const ProductTable = ({ isLoading }: Props) => {
 		}
 
 		// Select products
-		if ((key === 'up' || key === 'down') && selectedProductIndex === NO_INDEX_SELECTED) {
+		if ((key === 'ArrowUp' || key === 'ArrowDown') && selectedProductIndex === NO_INDEX_SELECTED) {
 			setSelectedProductIndex(0);
 			return;
 		}
 
-		if (key === 'up') {
+		if (key === 'ArrowUp') {
 			const value = selectedProductIndex > 0 ? selectedProductIndex - 1 : selectedProductIndex;
 			const newPage = floor(value / PRODUCT_LENGTH_PER_PAGE) + 1;
 			if (newPage < pageNumber) {
@@ -204,7 +234,7 @@ export const ProductTable = ({ isLoading }: Props) => {
 			return;
 		}
 
-		if (key === 'down') {
+		if (key === 'ArrowDown') {
 			let value = selectedProductIndex;
 			if (transactionProducts?.length > 0) {
 				value =
@@ -226,21 +256,6 @@ export const ProductTable = ({ isLoading }: Props) => {
 
 	return (
 		<div className="ProductTable">
-			<KeyboardEventHandler
-				handleKeys={[
-					...editQuantityShortcutKeys,
-					...deleteItemShortcutKeys,
-					...discountItemShortcutKeys,
-					...['up', 'down'],
-				]}
-				onKeyEvent={handleKeyPress}
-				isDisabled={
-					selectedProductIndex === NO_INDEX_SELECTED ||
-					!transactionProducts.length ||
-					uneditableStatus.includes(currentTransactionStatus)
-				}
-			/>
-
 			<TableProducts
 				columns={columns}
 				data={data}

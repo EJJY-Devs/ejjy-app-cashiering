@@ -20,7 +20,7 @@ export const ThankYouModal = ({ visible, onViewInvoice, onClose }: Props) => {
 	// CUSTOM HOOKS
 	const { setBarcodeScanningEnabled } = useUI();
 	const { siteSettings } = useSiteSettings();
-	const { previousSukli, orNumber, resetTransaction } = useCurrentTransaction();
+	const { previousChange, orNumber, resetTransaction } = useCurrentTransaction();
 
 	// METHODS
 	useEffect(() => {
@@ -66,10 +66,10 @@ export const ThankYouModal = ({ visible, onViewInvoice, onClose }: Props) => {
 						</div>
 
 						<div className="item">
-							<span className="label">Previous Sukli: </span>
+							<span className="label">Current Change: </span>
 							<span className="value">
-								{previousSukli !== null
-									? `₱${numberWithCommas(previousSukli?.toFixed(2))}`
+								{previousChange !== null
+									? `₱${numberWithCommas(previousChange?.toFixed(2))}`
 									: EMPTY_CELL}
 							</span>
 						</div>

@@ -1,13 +1,14 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { message } from 'antd';
-import React, { useCallback, useState } from 'react';
-import KeyboardEventHandler from 'react-keyboard-event-handler';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Button } from '../../../../components/elements';
 import { printSalesInvoice } from '../../../../configurePrinter';
 import { tenderShortcutKeys } from '../../../../global/options';
 import { transactionStatusTypes } from '../../../../global/types';
 import { useBranchProducts } from '../../../../hooks/useBranchProducts';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
-import { numberWithCommas } from '../../../../utils/function';
+import { useUI } from '../../../../hooks/useUI';
+import { getKeyDownCombination, numberWithCommas } from '../../../../utils/function';
 import { InvoiceModal } from './InvoiceModal';
 import { PaymentModal } from './PaymentModal';
 import './style.scss';
@@ -24,12 +25,25 @@ export const Payment = () => {
 	const {
 		transactionProducts,
 		transactionStatus,
-		previousSukli,
+		previousChange,
 		overallDiscount,
 	} = useCurrentTransaction();
 	const { listBranchProducts } = useBranchProducts();
+	const { isModalVisible, setModalVisible } = useUI();
 
 	//METHODS
+	useEffect(() => {
+		document.addEventListener('keydown', handleKeyDown);
+
+		return () => {
+			document.removeEventListener('keydown', handleKeyDown);
+		};
+	});
+
+	useEffect(() => {
+		setModalVisible(paymentModalVisible || thankYouModalVisible || invoiceModalVisible);
+	}, [invoiceModalVisible, paymentModalVisible, thankYouModalVisible]);
+
 	const getTotal = useCallback(
 		() =>
 			Number(
@@ -54,7 +68,7 @@ export const Payment = () => {
 		setPaymentModalVisible(false);
 		setThankYouModalVisible(true);
 		setTransaction(transaction);
-		printSalesInvoice(transaction, transactionProducts, previousSukli);
+		printSalesInvoice(transaction, transactionProducts, previousChange);
 	};
 
 	const onPay = () => {
@@ -72,9 +86,12 @@ export const Payment = () => {
 		}
 	};
 
-	const handleKeyPress = (key, event) => {
-		event.preventDefault();
-		event.stopPropagation();
+	const handleKeyDown = (event) => {
+		if (isModalVisible) {
+			return;
+		}
+
+		const key = getKeyDownCombination(event);
 
 		// Tender
 		if (tenderShortcutKeys.includes(key) && !isPaymentDisabled()) {
@@ -85,8 +102,6 @@ export const Payment = () => {
 
 	return (
 		<div className="Payment">
-			<KeyboardEventHandler handleKeys={tenderShortcutKeys} onKeyEvent={handleKeyPress} />
-
 			<div className="payment-content">
 				<div className="text-wrapper">
 					<p className="label">
