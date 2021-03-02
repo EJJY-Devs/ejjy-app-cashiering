@@ -3,7 +3,7 @@
 	"version": "0.1.1",
 	"private": true,
 	"homepage": "./",
-	"main": "./electron-dev/main.js",
+	"main": "./electron/main.js",
 	"scripts": {
 		"start": "PORT=3004 react-scripts start",
 		"build": "react-scripts build",

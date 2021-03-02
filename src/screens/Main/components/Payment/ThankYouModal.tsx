@@ -66,7 +66,7 @@ export const ThankYouModal = ({ visible, onViewInvoice, onClose }: Props) => {
 						</div>
 
 						<div className="item">
-							<span className="label">Previous Change: </span>
+							<span className="label">Current Change: </span>
 							<span className="value">
 								{previousChange !== null
 									? `₱${numberWithCommas(previousChange?.toFixed(2))}`

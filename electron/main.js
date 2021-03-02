@@ -10,7 +10,7 @@ function createWindow() {
 		width: 800,
 		height: 600,
 		show: false,
-		frame: false,
+		// frame: false,
 		fullscreen: !isDev, // Auto full screen only in production
 	});
 
