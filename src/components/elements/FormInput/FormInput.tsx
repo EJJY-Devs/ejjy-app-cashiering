@@ -41,6 +41,11 @@ const FormInput = ({
 		tabIndex={1}
 		autoFocus={autoFocus}
 		step={step}
+		onKeyDown={(evt) => {
+			if (type === 'number' && ['e', 'E', '+', '-'].includes(evt.key)) {
+				evt.preventDefault();
+			}
+		}}
 	/>
 );
 
