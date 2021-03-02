@@ -22,6 +22,7 @@ interface Props {
 	tooltipPlacement?: TooltipPlacement;
 	tooltip?: string;
 	hasShortcutKey?: boolean;
+	tabIndex?: number;
 }
 
 const Button = React.forwardRef<HTMLInputElement, Props>(
@@ -41,6 +42,7 @@ const Button = React.forwardRef<HTMLInputElement, Props>(
 			tooltip,
 			size,
 			hasShortcutKey,
+			tabIndex,
 		}: Props,
 		ref,
 	) => (
@@ -58,6 +60,7 @@ const Button = React.forwardRef<HTMLInputElement, Props>(
 					loading,
 				})}
 				onClick={disabled ? null : onClick}
+				tabIndex={tabIndex}
 			>
 				{loading ? (
 					<Spin indicator={loadingIcon} className="spinner" />
@@ -80,6 +83,7 @@ Button.defaultProps = {
 	variant: 'default',
 	size: 'md',
 	iconDirection: null,
+	tabIndex: 0,
 };
 
 export default Button;
