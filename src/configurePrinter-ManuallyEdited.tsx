@@ -2,7 +2,7 @@ import { message } from 'antd';
 import dayjs from 'dayjs';
 import qz from 'qz-tray';
 import { EMPTY_CELL } from './global/constants';
-import { getCashBreakdownTotal, getCashBreakdownTypeDescription, getProductQuantity, numberWithCommas } from './utils/function';
+import { getCashBreakdownTypeDescription, getProductQuantity, numberWithCommas } from './utils/function';
 
 const PAPER_MARGIN = 0.2; // inches
 const PAPER_WIDTH = 3.2; // inches
@@ -92,24 +92,13 @@ export const printSalesInvoice = (transaction, transactionProducts, change, isRe
 					<div style="width: 100%; font-family: courier new, tahoma; font-size: 12px; line-height: 12px">
 						<div style="font-size: 20px; text-align: center; line-height: 20px">EJ AND JY</div>
 						<div style="width: 100%; text-align: center">WET MARKET AND ENTERPRISES</div>
-						<div style="width: 100%; text-align: center">${transaction?.invoice?.location || EMPTY_CELL}</div>
+						<div style="width: 100%; text-align: center">POB., CARMEN, AGUSAN DEL NORTE</div>
 						<div style="width: 100%; text-align: center">Tel# 808-8866</div>
-						<div style="width: 100%; text-align: center">${transaction?.invoice?.proprietor || EMPTY_CELL}</div>
-						<div style="width: 100%; text-align: center">${transaction?.invoice?.tin || EMPTY_CELL}</div>
+						<div style="width: 100%; text-align: center">EMMANUEL T. FINEZA</div>
+						<div style="width: 100%; text-align: center">178-846-963-000</div>
 						<div style="width: 100%; text-align: center">MIN</div>
 						<div style="width: 100%; text-align: center">SN</div>
 						<div style="width: 100%; text-align: center; font-weight: bold">[SALES INVOICE]</div>
-
-						${
-							isReprint
-								? `<table style="width: 100%; font-size: 12px; line-height: 12px">
-								<tr>
-									<td>For 11/20/2020</td>
-									<td style="text-align: right;">1:32PM REPRINT</td>
-								</tr>
-							</table>`
-								: ''
-						}
 
 						<br />
 
@@ -168,19 +157,19 @@ export const printSalesInvoice = (transaction, transactionProducts, change, isRe
 							<tr>
 								<td>VAT Exempt</td>
 								<td style="text-align: right">
-									₱${numberWithCommas(Number(transaction?.invoice?.vat_exempt).toFixed(2))}
+									₱0.00
 								</td>
 							</tr>
 							<tr>
 								<td>VAT Sales</td>
 								<td style="text-align: right">
-									₱${numberWithCommas(Number(transaction?.invoice?.vat_sales).toFixed(2))}
+									₱196.43
 								</td>
 							</tr>
 							<tr>
 								<td>VAT Amount</td>
 								<td style="text-align: right">
-									₱${numberWithCommas(Number(transaction?.invoice?.vat_12_percent).toFixed(2))}
+									₱23.57
 								</td>
 							</tr>
 						</table>
@@ -278,10 +267,10 @@ export const printXreadReport = (report) => {
 					<div style="width: 100%; font-family: courier new, tahoma; font-size: 12px; line-height: 12px">
 						<div style="font-size: 20px; text-align: center; line-height: 20px">EJ AND JY</div>
 						<div style="width: 100%; text-align: center">WET MARKET AND ENTERPRISES</div>
-						<div style="width: 100%; text-align: center">${report?.location || EMPTY_CELL}</div>
+						<div style="width: 100%; text-align: center">POB., CARMEN, AGUSAN DEL NORTE</div>
 						<div style="width: 100%; text-align: center">Tel# 808-8866</div>
-						<div style="width: 100%; text-align: center">${report?.proprietor || EMPTY_CELL}</div>
-						<div style="width: 100%; text-align: center">${report?.tin || EMPTY_CELL}</div>
+						<div style="width: 100%; text-align: center">EMMANUEL T. FINEZA</div>
+						<div style="width: 100%; text-align: center">178-846-963-000</div>
 						<div style="width: 100%; text-align: center">MIN</div>
 						<div style="width: 100%; text-align: center">SN</div>
 						<div style="width: 100%; text-align: center; font-weight: bold">[X-REPORT]</div>	
@@ -312,7 +301,7 @@ export const printXreadReport = (report) => {
 						<table style="width: 100%; font-size: 12px; line-height: 12px">
 							<tr>
 								<td style="padding-left: 30px">DISCOUNTS</td>
-								<td style="text-align: right">₱${numberWithCommas(Number(report?.discounts).toFixed(2))}</td>
+								<td style="text-align: right">₱0.00</td>
 							</tr>
 							<tr>
 								<td style="padding-left: 30px">SALES RETURNS</td>
@@ -357,7 +346,7 @@ export const printXreadReport = (report) => {
 						<table style="width: 100%; font-size: 12px; line-height: 12px">
 							<tr>
 								<td style="padding-left: 30px">Beginning OR #</td>
-								<td style="text-align: right">${report?.beginning_or?.or_number || EMPTY_CELL}</td>
+								<td style="text-align: right">20210206-1</td>
 							</tr>
 							<tr>
 								<td style="padding-left: 30px">Ending OR #</td>
@@ -365,21 +354,15 @@ export const printXreadReport = (report) => {
 							</tr>
 							<tr>
 								<td>Beg Sales</td>
-								<td style="text-align: right">
-									₱${numberWithCommas(Number(report?.beginning_sales).toFixed(2))}
-								</td>
+								<td style="text-align: right">₱1,000.00</td>
 							</tr>
 							<tr>
 								<td>Cur Sales</td>
-								<td style="text-align: right">
-									₱${numberWithCommas(Number(report?.total_sales).toFixed(2))}
-								</td>
+								<td style="text-align: right">₱${numberWithCommas(Number(report?.total_sales).toFixed(2))}</td>
 							</tr>
 							<tr>
 								<td>End Sales</td>
-								<td style="text-align: right">
-									₱${numberWithCommas(Number(report?.ending_sales).toFixed(2))}
-								</td>
+								<td style="text-align: right">₱3,840.00</td>
 							</tr>
 						</table>
 
@@ -443,10 +426,10 @@ export const printZreadReport = (report) => {
 					<div style="width: 100%; font-family: courier new, tahoma; font-size: 12px; line-height: 12px">
 						<div style="font-size: 20px; text-align: center; line-height: 20px">EJ AND JY</div>
 						<div style="width: 100%; text-align: center">WET MARKET AND ENTERPRISES</div>
-						<div style="width: 100%; text-align: center">${report?.location || EMPTY_CELL}</div>
+						<div style="width: 100%; text-align: center">POB., CARMEN, AGUSAN DEL NORTE</div>
 						<div style="width: 100%; text-align: center">Tel# 808-8866</div>
-						<div style="width: 100%; text-align: center">${report?.proprietor || EMPTY_CELL}</div>
-						<div style="width: 100%; text-align: center">${report?.tin || EMPTY_CELL}</div>
+						<div style="width: 100%; text-align: center">EMMANUEL T. FINEZA</div>
+						<div style="width: 100%; text-align: center">178-846-963-000</div>
 						<div style="width: 100%; text-align: center">MIN</div>
 						<div style="width: 100%; text-align: center">SN</div>
 						<div style="width: 100%; text-align: center; font-weight: bold">[Z-REPORT]</div>	
@@ -456,36 +439,26 @@ export const printZreadReport = (report) => {
 						<table style="width: 100%; font-size: 12px; line-height: 12px">
 							<tr>
 								<td>CASH SALES</td>
-								<td style="text-align: right">
-									₱${numberWithCommas(Number(report?.cash_sales).toFixed(2))}
-								</td>
+								<td style="text-align: right">₱${numberWithCommas(Number(report?.cash_sales).toFixed(2))}</td>
 							</tr>
 							<tr>
 								<td>CHEQUE SALES</td>
-								<td style="text-align: right">
-									₱${numberWithCommas(Number(report?.check_sales).toFixed(2))}
-								</td>
+								<td style="text-align: right">₱${numberWithCommas(Number(report?.check_sales).toFixed(2))}</td>
 							</tr>
 							<tr>
 								<td>CREDIT PAY</td>
-								<td style="text-align: right; font-weight: bold">
-									₱${numberWithCommas(Number(report?.credit_pay).toFixed(2))}
-								</td>
+								<td style="text-align: right; font-weight: bold">₱${numberWithCommas(Number(report?.credit_pay).toFixed(2))}</td>
 							</tr>
 						</table>
 
 						<table style="width: 100%; font-size: 12px; line-height: 12px">
 							<tr>
 								<td style="padding-left: 30px">DISCOUNTS</td>
-								<td style="text-align: right">
-									₱${numberWithCommas(Number(report?.discounts).toFixed(2))}
-								</td>
+								<td style="text-align: right">₱0.00</td>
 							</tr>
 							<tr>
 								<td style="padding-left: 30px">SALES RETURNS</td>
-								<td style="text-align: right">
-									₱${numberWithCommas(Number(report?.sales_return).toFixed(2))}
-								</td>
+								<td style="text-align: right">₱${numberWithCommas(Number(report?.sales_return).toFixed(2))}</td>
 							</tr>	
 						</table>
 
@@ -494,9 +467,7 @@ export const printZreadReport = (report) => {
 						<table style="width: 100%; font-size: 12px; line-height: 12px">
 							<tr>
 								<td>TOTAL SALES</td>
-								<td style="text-align: right; font-weight: bold">
-									₱${numberWithCommas(Number(report?.total_sales).toFixed(2))}
-								</td>
+								<td style="text-align: right; font-weight: bold">₱${numberWithCommas(Number(report?.total_sales).toFixed(2))}</td>
 							</tr>
 						</table>
 
@@ -505,21 +476,15 @@ export const printZreadReport = (report) => {
 						<table style="width: 100%; font-size: 12px; line-height: 12px">
 							<tr>
 								<td>VAT Exempt</td>
-								<td style="text-align: right">
-									₱${numberWithCommas(Number(report?.vat_exempt).toFixed(2))}
-								</td>
+								<td style="text-align: right">₱${numberWithCommas(Number(report?.vat_exempt).toFixed(2))}</td>
 							</tr>
 							<tr>
 								<td>VAT Sales</td>
-								<td style="text-align: right">
-									₱${numberWithCommas(Number(report?.vat_sales).toFixed(2))}
-								</td>
+								<td style="text-align: right">₱${numberWithCommas(Number(report?.vat_sales).toFixed(2))}</td>
 							</tr>
 							<tr>
 								<td>12% of VAT</td>
-								<td style="text-align: right">
-									₱${numberWithCommas(Number(report?.vat_12_percent).toFixed(2))}
-								</td>
+								<td style="text-align: right">₱${numberWithCommas(Number(report?.vat_12_percent).toFixed(2))}</td>
 							</tr>
 						</table>
 
@@ -604,18 +569,15 @@ export const printCashBreakdown = (cashBreakdown, session, type) => {
 					flavor: 'plain',
 					options: { pageWidth: PAPER_WIDTH },
 					data: `
-					<div style="width: 100%; font-family: courier new, tahoma; font-size: 12px; line-height: 12px">
+					<div style="width: 100%; font-family: tahoma, helvetica, verdana; font-size: 12px; line-height: 12px">
 						<div style="font-size: 20px; text-align: center; line-height: 20px">EJ AND JY</div>
 						<div style="width: 100%; text-align: center">WET MARKET AND ENTERPRISES</div>
-						<div style="width: 100%; text-align: center">POB., CARMEN, AGUSAN DEL NORTE</div>
-						<div style="width: 100%; text-align: center">MAIN</div>
 
-						<br />
+						<hr />
 
-						<div style="font-size: 20px; font-weight: bold; text-align: center; line-height: 20px">[CASH BREAKDOWN]</div>
 						<div style="font-size: 20px; text-align: center; line-height: 20px">${getCashBreakdownTypeDescription(type)}</div>
 
-						<br />
+						<hr />
 
 						<table style="width: 100%; font-size: 12px; line-height: 12px">
 							<tr>
@@ -639,101 +601,51 @@ export const printCashBreakdown = (cashBreakdown, session, type) => {
 						<hr />
 
 						<table style="width: 100%; font-size: 12px; line-height: 12px">
-							<thead>
-								<tr>
-									<th>DENOM</th>
-									<th>QTY</th>
-									<th>AMOUNT</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td><span>₱</span><span>0.25</span></td>
-									<td style="text-align: right">${cashBreakdown.coins_25}</td>
-									<td style="text-align: right">₱${0.25 * cashBreakdown.coins_25}</td>
-								</tr>
-								<tr>
-									<td><span>₱</span><span>0.50</span></td>
-									<td style="text-align: right">${cashBreakdown.coins_50}</td>
-									<td style="text-align: right">₱${0.50 * cashBreakdown.coins_50}</td>
-								</tr>
-								<tr>
-									<td><span>₱</span><span>1.00</span></td>
-									<td style="text-align: right">${cashBreakdown.coins_1}</td>
-									<td style="text-align: right">₱${1 * cashBreakdown.coins_1}</td>
-								</tr>
-								<tr>
-									<td><span>₱</span><span>5.00</span></td>
-									<td style="text-align: right">${cashBreakdown.coins_5}</td>
-									<td style="text-align: right">₱${5 * cashBreakdown.coins_5}</td>
-								</tr>
-								<tr>
-									<td><span>₱</span><span>10.00</span></td>
-									<td style="text-align: right">${cashBreakdown.coins_10}</td>
-									<td style="text-align: right">₱${10 * cashBreakdown.coins_10}</td>
-								</tr>
-								<tr>
-									<td><span>₱</span><span>20</span></td>
-									<td style="text-align: right">${cashBreakdown.bills_20}</td>
-									<td style="text-align: right">₱${20 * cashBreakdown.bills_20}</td>
-								</tr>
-								<tr>
-									<td><span>₱</span><span>50</span></td>
-									<td style="text-align: right">${cashBreakdown.bills_50}</td>
-									<td style="text-align: right">₱${50 * cashBreakdown.bills_50}</td>
-								</tr>
-								<tr>
-									<td><span>₱</span><span>100</span></td>
-									<td style="text-align: right">${cashBreakdown.bills_100}</td>
-									<td style="text-align: right">₱${100 * cashBreakdown.bills_100}</td>
-								</tr>
-								<tr>
-									<td><span>₱</span><span>200</span></td>
-									<td style="text-align: right">${cashBreakdown.bills_200}</td>
-									<td style="text-align: right">₱${200 * cashBreakdown.bills_200}</td>
-								</tr>
-								<tr>
-									<td><span>₱</span><span>500</span></td>
-									<td style="text-align: right">${cashBreakdown.bills_500}</td>
-									<td style="text-align: right">₱${500 * cashBreakdown.bills_500}</td>
-								</tr>
-								<tr>
-									<td><span>₱</span><span>1000</span></td>
-									<td style="text-align: right">${cashBreakdown.bills_1000}</td>
-									<td style="text-align: right">₱${1000 * cashBreakdown.bills_1000}</td>
-								</tr>
-							</tbody>
-						</table>
-
-						<div style="display: flex; align-items: center; justify-content: space-evenly">
-							<span>TOTAL</span>
-							<span style="font-weight: bold;">₱${numberWithCommas(getCashBreakdownTotal(cashBreakdown).toFixed(2))}</span>
-						</div>
-
-						<br	/>
-
-						<table style="width: 100%">
 							<tr>
-								<td>12/26/2020</td>
-								<td>5:32PM</td>
-								<td>N2M1</td>
+								<td>₱0.25</td>
+								<td style="text-align: right">${cashBreakdown.coins_25}</td>
 							</tr>
 							<tr>
-								<td>John Doe</td>
-								<td>—</td>
-								<td></td>
+								<td>₱0.50</td>
+								<td style="text-align: right">${cashBreakdown.coins_50}</td>
+							</tr>
+							<tr>
+								<td>₱1.00</td>
+								<td style="text-align: right">${cashBreakdown.coins_1}</td>
+							</tr>
+							<tr>
+								<td>₱5.00</td>
+								<td style="text-align: right">${cashBreakdown.coins_5}</td>
+							</tr>
+							<tr>
+								<td>₱10.00</td>
+								<td style="text-align: right">${cashBreakdown.coins_10}</td>
+							</tr>
+							<tr>
+								<td>₱20</td>
+								<td style="text-align: right">${cashBreakdown.bills_20}</td>
+							</tr>
+							<tr>
+								<td>₱50</td>
+								<td style="text-align: right">${cashBreakdown.bills_50}</td>
+							</tr>
+							<tr>
+								<td>₱100</td>
+								<td style="text-align: right">${cashBreakdown.bills_100}</td>
+							</tr>
+							<tr>
+								<td>₱200</td>
+								<td style="text-align: right">${cashBreakdown.bills_200}</td>
+							</tr>
+							<tr>
+								<td>₱500</td>
+								<td style="text-align: right">${cashBreakdown.bills_500}</td>
+							</tr>
+							<tr>
+								<td>₱1000</td>
+								<td style="text-align: right">${cashBreakdown.bills_1000}</td>
 							</tr>
 						</table>
-
-						<br/>
-
-						<div style="text-align: center">EJ & JY I.T. SOLUTIONS</div>
-						<div style="text-align: center">Burgos St., Poblacion, Carmen,</div>
-						<div style="text-align: center">Agusan del Norte</div>
-						<div style="text-align: center">178-846-963-005</div>
-						<div style="text-align: center">ACCREDITATION NUMBER</div>
-						<div style="text-align: center">DATE ISSUED</div>
-						<div style="text-align: center">VALID UNTIL</div>
 					</div>
 					`,
 				},
