@@ -43,14 +43,13 @@ function* firstTimePayment({ payload }: any) {
 				{
 					page: 1,
 					page_size: MAX_PAGE_SIZE,
-					fields: 'id,product,price_per_piece,product_status',
 				},
 			);
 
 			yield put(
 				branchProductActions.save({
 					type: branchProductTypes.LIST_BRANCH_PRODUCTS,
-					branchProducts: response.data,
+					branchProducts: response.data.results,
 				}),
 			);
 		}
@@ -81,14 +80,13 @@ function* cancelVoidedTransaction({ payload }: any) {
 				{
 					page: 1,
 					page_size: MAX_PAGE_SIZE,
-					fields: 'id,product,price_per_piece,product_status',
 				},
 			);
 
 			yield put(
 				branchProductActions.save({
 					type: branchProductTypes.LIST_BRANCH_PRODUCTS,
-					branchProducts: response.data,
+					branchProducts: response.data.results,
 				}),
 			);
 		}
