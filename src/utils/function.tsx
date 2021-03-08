@@ -170,16 +170,32 @@ export const getBranchProductStatus = memoize((status) => {
 export const getCashBreakdownTypeDescription = memoize((type) => {
 	switch (type) {
 		case cashBreakdownTypes.START_SESSION: {
-			return 'Cash Breakdown - Start Session';
+			return 'Start Session';
 		}
 		case cashBreakdownTypes.MID_SESSION: {
 			return 'Cash Collection';
 		}
 		case cashBreakdownTypes.END_SESSION: {
-			return 'Cash Breakdown - End Session';
+			return 'End Session';
 		}
 	}
 });
+
+export const getCashBreakdownTotal = (cashBreakdown) => {
+	return (
+		0.25 * cashBreakdown.coins_25 +
+		0.5 * cashBreakdown.coins_50 +
+		1 * cashBreakdown.coins_1 +
+		5 * cashBreakdown.coins_5 +
+		10 * cashBreakdown.coins_10 +
+		20 * cashBreakdown.bills_20 +
+		50 * cashBreakdown.bills_50 +
+		100 * cashBreakdown.bills_100 +
+		200 * cashBreakdown.bills_200 +
+		500 * cashBreakdown.bills_500 +
+		1000 * cashBreakdown.bills_1000
+	);
+};
 
 export const getProductQuantity = (quantity, unitOfMeasurementType) => {
 	if (unitOfMeasurementType === unitOfMeasurementTypes.WEIGHING) {

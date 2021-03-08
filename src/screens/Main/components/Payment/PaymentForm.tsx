@@ -71,7 +71,7 @@ export const PaymentForm = ({ inputRef, amountDue, onSubmit, onClose }: Props) =
 					<Label classNames="quantity-label space-top" label="Amount Due (₱)" spacing />
 					<ControlledInput
 						classNames="amount-due-input"
-						value={numberWithCommas(amountDue)}
+						value={numberWithCommas(amountDue.toFixed(2))}
 						onChange={() => null}
 						disabled
 					/>

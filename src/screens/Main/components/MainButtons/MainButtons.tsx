@@ -278,6 +278,7 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 					}
 					onClick={() => setQueueModalVisible(true)}
 					disabled={isQueueDisabled()}
+					tabIndex={isQueueDisabled() ? -1 : 0}
 				/>
 
 				<MainButton
@@ -289,6 +290,7 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 					}
 					onClick={onSetDiscountAmount}
 					disabled={isDiscountDisabled()}
+					tabIndex={isDiscountDisabled() ? -1 : 0}
 				/>
 
 				<MainButton
@@ -300,6 +302,7 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 					}
 					onClick={onResetConfirmation}
 					disabled={isResetDisabled()}
+					tabIndex={isResetDisabled() ? -1 : 0}
 				/>
 
 				<MainButton
@@ -311,6 +314,7 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 					}
 					onClick={onVoidConfirmation}
 					disabled={isVoidDisabled()}
+					tabIndex={isVoidDisabled() ? -1 : 0}
 				/>
 
 				<MainButton
@@ -322,6 +326,7 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 					}
 					classNames="btn-others"
 					onClick={() => setOthersModalVisible(true)}
+					tabIndex={0}
 				/>
 			</div>
 

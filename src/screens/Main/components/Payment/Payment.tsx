@@ -128,6 +128,7 @@ export const Payment = () => {
 					variant="primary"
 					onClick={onPay}
 					disabled={isPaymentDisabled()}
+					tabIndex={isPaymentDisabled() ? -1 : 0}
 					hasShortcutKey
 				/>
 			</div>

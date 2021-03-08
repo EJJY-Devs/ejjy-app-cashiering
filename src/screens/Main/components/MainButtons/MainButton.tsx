@@ -10,16 +10,18 @@ interface Props {
 	classNames?: string;
 	disabled?: boolean;
 	loading?: boolean;
+	tabIndex?: number;
 }
 
 const loadingIcon = (
 	<LoadingOutlined style={{ fontSize: 17, color: 'rgba(35, 37, 46, 0.85)' }} spin />
 );
 
-export const MainButton = ({ title, onClick, classNames, disabled, loading }: Props) => (
+export const MainButton = ({ tabIndex, title, onClick, classNames, disabled, loading }: Props) => (
 	<button
 		className={cn('MainButton', classNames, { disabled: disabled || loading })}
 		onClick={onClick}
+		tabIndex={tabIndex}
 	>
 		{loading ? <Spin indicator={loadingIcon} className="spinner" /> : title}
 	</button>

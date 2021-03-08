@@ -13,13 +13,12 @@ function* list({ payload }: any) {
 		const response = yield retry(MAX_RETRY, RETRY_INTERVAL_MS, service.listByBranch, {
 			page: 1,
 			page_size: MAX_PAGE_SIZE,
-			fields: 'id,product,price_per_piece,product_status',
 		});
 
 		yield put(
 			actions.save({
 				type: types.LIST_BRANCH_PRODUCTS,
-				branchProducts: response.data,
+				branchProducts: response.data.results,
 			}),
 		);
 		callback({ status: request.SUCCESS });

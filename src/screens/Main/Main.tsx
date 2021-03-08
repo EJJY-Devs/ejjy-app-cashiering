@@ -212,7 +212,6 @@ const Main = () => {
 								message="This transaction was voided."
 								type="warning"
 								showIcon
-								closable
 							/>
 						)}
 
