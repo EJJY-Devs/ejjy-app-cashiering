@@ -32,6 +32,14 @@ export const ThankYouModal = ({ visible, onViewInvoice, onClose }: Props) => {
 		onClose();
 	};
 
+	const handleKeyPress = (key, event) => {
+		if (key === 'enter') {
+			close();
+		} else if (key === 'f1') {
+			onViewInvoice();
+		}
+	};
+
 	return (
 		<Modal
 			title=""
@@ -44,12 +52,8 @@ export const ThankYouModal = ({ visible, onViewInvoice, onClose }: Props) => {
 			destroyOnClose
 		>
 			<KeyboardEventHandler
-				handleKeys={['enter']}
-				onKeyEvent={(key, e) => {
-					if (key === 'enter') {
-						close();
-					}
-				}}
+				handleKeys={['enter', 'f1']}
+				onKeyEvent={handleKeyPress}
 				handleFocusableElements
 				isDisabled={!visible}
 			/>
@@ -74,7 +78,17 @@ export const ThankYouModal = ({ visible, onViewInvoice, onClose }: Props) => {
 							</span>
 						</div>
 					</div>,
-					<Button text="VIEW OR" variant="primary" size="lg" onClick={onViewInvoice} />,
+					<Button
+						text={
+							<>
+								<span>VIEW OR</span>
+								<span className="shortcut-key">[F1]</span>
+							</>
+						}
+						variant="primary"
+						size="lg"
+						onClick={onViewInvoice}
+					/>,
 				]}
 			/>
 		</Modal>

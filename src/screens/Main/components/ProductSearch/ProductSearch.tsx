@@ -82,13 +82,17 @@ export const ProductSearch = () => {
 		}
 	}, [activeIndex, scrollbarRef]);
 
-	const onSearch = (value) => {
+	const onSearch = (value, searchableProducts) => {
 		let filteredProducts = [];
 
 		if (value.length) {
 			filteredProducts = searchableProducts.filter(({ product }) =>
 				searchProductInfo(value, product),
 			);
+		}
+
+		if (value.length && !filteredProducts.length) {
+			message.warning('Code not recognized.');
 		}
 
 		setProducts(filteredProducts);
@@ -99,12 +103,12 @@ export const ProductSearch = () => {
 	};
 
 	const onFocus = () => {
-		onSearch(searchedKey);
+		onSearch(searchedKey, searchableProducts);
 	};
 
 	const debounceSearchedChange = useCallback(
-		debounce((keyword) => onSearch(keyword), SEARCH_DEBOUNCE_TIME),
-		[onSearch],
+		debounce((keyword) => onSearch(keyword, searchableProducts), SEARCH_DEBOUNCE_TIME),
+		[searchableProducts],
 	);
 
 	const handleHover = (index) => {
@@ -130,6 +134,7 @@ export const ProductSearch = () => {
 	const onAddProductSuccess = () => {
 		setSearchedKey('');
 		setProducts([]);
+		setSearchSuggestionVisible(false);
 	};
 
 	const handleKeyDown = (event) => {

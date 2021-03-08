@@ -23,9 +23,10 @@ const columns = [
 
 export const InvoiceModal = ({ visible, transaction, onClose }: Props) => {
 	// CUSTOM HOOKS
-	const { transactionProducts, resetTransaction } = useCurrentTransaction();
+	const { transactionProducts } = useCurrentTransaction();
 	const [data, setData] = useState([]);
 
+	// METHODS
 	// Effect: Format product data
 	useEffect(() => {
 		const formattedProducts = transactionProducts.map((item) => [
@@ -38,18 +39,13 @@ export const InvoiceModal = ({ visible, transaction, onClose }: Props) => {
 		setData(formattedProducts);
 	}, [transactionProducts]);
 
-	const close = () => {
-		resetTransaction();
-		onClose();
-	};
-
 	return (
 		<Modal
 			title="Invoice"
 			className="InvoiceModal modal-large"
 			visible={visible}
 			footer={null}
-			onCancel={close}
+			onCancel={onClose}
 			centered
 			closable
 		>
@@ -265,7 +261,7 @@ export const InvoiceModal = ({ visible, transaction, onClose }: Props) => {
 			<Divider />
 
 			<div className="custom-footer">
-				<Button classNames="btn-cancel" text="Close" size="lg" onClick={close} />
+				<Button classNames="btn-cancel" text="Close" size="lg" onClick={onClose} />
 			</div>
 		</Modal>
 	);
