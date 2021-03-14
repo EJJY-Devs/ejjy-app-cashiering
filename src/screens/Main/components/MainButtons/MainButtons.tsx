@@ -17,13 +17,14 @@ import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import { useSession } from '../../../../hooks/useSession';
 import { useTransactions } from '../../../../hooks/useTransactions';
 import { useUI } from '../../../../hooks/useUI';
-import { getKeyDownCombination } from '../../../../utils/function';
+import { getKeyDownCombination, showErrorMessages } from '../../../../utils/function';
 import { DiscountAmountModal } from './DiscountAmountModal';
 import { KeyboardShortcutsModal } from './KeyboardShortcutsModal';
 import { MainButton } from './MainButton';
 import { OthersModal } from './OthersModal';
 import { QueueModal } from './QueueModal';
 import './style.scss';
+import { VoidAuthModal } from './VoidAuthModal';
 
 interface Props {
 	onCashCollection: any;
@@ -49,7 +50,13 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 		resetTransaction,
 	} = useCurrentTransaction();
 	const { voidTransaction, cancelVoidedTransaction } = useTransactions();
-	const { isModalVisible, setModalVisible, setMainLoading, setMainLoadingText } = useUI();
+	const {
+		mainLoading,
+		isModalVisible,
+		setModalVisible,
+		setMainLoading,
+		setMainLoadingText,
+	} = useUI();
 
 	// METHODS
 	useEffect(() => {
@@ -84,11 +91,6 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 	);
 
 	const isResetDisabled = useCallback(() => !transactionProducts?.length, [transactionProducts]);
-
-	const isQueueDisabled = useCallback(
-		() => currentTransactionStatus !== null || !transactionProducts.length,
-		[currentTransactionStatus, transactionProducts],
-	);
 
 	const isDiscountDisabled = useCallback(
 		() =>
@@ -159,28 +161,17 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 		}
 	};
 
-	const onVoidConfirmation = () => {
-		setVoidModalVisible(true);
-
-		Modal.confirm({
-			title: 'Void Confirmation',
-			icon: <ExclamationCircleOutlined />,
-			content: 'Are you sure you want to void the transaction?',
-			okText: 'Void',
-			cancelText: 'Cancel',
-			onCancel: () => setVoidModalVisible(false),
-			onOk: onVoid,
-		});
-	};
-
-	const onVoid = () => {
-		setVoidModalVisible(false);
+	const onVoid = (formData) => {
 		setMainLoading(true);
 		setMainLoadingText('Setting transaction to void...');
 
-		voidTransaction(transactionId, ({ status, errors }) => {
+		voidTransaction({ ...formData, transactionId }, ({ status, errors }) => {
 			if (status === request.ERROR) {
-				message.error(errors);
+				showErrorMessages(errors);
+			}
+
+			if (status === request.SUCCESS) {
+				setVoidModalVisible(false);
 			}
 
 			if ([request.ERROR, request.SUCCESS].includes(status)) {
@@ -212,7 +203,7 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 		const key = getKeyDownCombination(event);
 
 		// Queue and Resume
-		if (queueResumeShortcutKeys.includes(key) && !isQueueDisabled()) {
+		if (queueResumeShortcutKeys.includes(key)) {
 			setQueueModalVisible(true);
 			return;
 		}
@@ -237,7 +228,7 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 
 		// Void
 		if (voidShortcutKeys.includes(key) && !isVoidDisabled()) {
-			onVoidConfirmation();
+			setVoidModalVisible(true);
 			return;
 		}
 
@@ -277,8 +268,7 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 						</>
 					}
 					onClick={() => setQueueModalVisible(true)}
-					disabled={isQueueDisabled()}
-					tabIndex={isQueueDisabled() ? -1 : 0}
+					tabIndex={-1}
 				/>
 
 				<MainButton
@@ -290,7 +280,7 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 					}
 					onClick={onSetDiscountAmount}
 					disabled={isDiscountDisabled()}
-					tabIndex={isDiscountDisabled() ? -1 : 0}
+					tabIndex={-1}
 				/>
 
 				<MainButton
@@ -302,7 +292,7 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 					}
 					onClick={onResetConfirmation}
 					disabled={isResetDisabled()}
-					tabIndex={isResetDisabled() ? -1 : 0}
+					tabIndex={-1}
 				/>
 
 				<MainButton
@@ -312,9 +302,9 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 							<span className="shortcut-key">[F11]</span>
 						</>
 					}
-					onClick={onVoidConfirmation}
+					onClick={() => setVoidModalVisible(true)}
 					disabled={isVoidDisabled()}
-					tabIndex={isVoidDisabled() ? -1 : 0}
+					tabIndex={-1}
 				/>
 
 				<MainButton
@@ -326,7 +316,7 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 					}
 					classNames="btn-others"
 					onClick={() => setOthersModalVisible(true)}
-					tabIndex={0}
+					tabIndex={-1}
 				/>
 			</div>
 
@@ -335,6 +325,13 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 				onCashCollection={onCashCollectionModified}
 				onEndSession={onEndSessionModified}
 				visible={othersModalVisible}
+				onClose={() => setOthersModalVisible(false)}
+			/>
+
+			<VoidAuthModal
+				visible={voidModalVisible}
+				isLoading={mainLoading}
+				onConfirm={onVoid}
 				onClose={() => setOthersModalVisible(false)}
 			/>
 

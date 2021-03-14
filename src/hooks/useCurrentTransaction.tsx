@@ -14,6 +14,7 @@ export const useCurrentTransaction = () => {
 	const client = useSelector(selectors.selectClient());
 	const totalPaidAmount = useSelector(selectors.selectTotalPaidAmount());
 	const overallDiscount = useSelector(selectors.selectOverallDiscount());
+	const isTransactionSearched = useSelector(selectors.selectIsTransactionSearched());
 
 	const orNumber = useSelector(selectors.selectOrNumber());
 	const previousVoidedTransactionId = useSelector(selectors.selectPreviousVoidedTransactionId());
@@ -77,6 +78,7 @@ export const useCurrentTransaction = () => {
 		previousVoidedTransactionId,
 		pageNumber,
 		previousChange,
+		isTransactionSearched,
 		addProduct,
 		removeProduct,
 		editProduct,

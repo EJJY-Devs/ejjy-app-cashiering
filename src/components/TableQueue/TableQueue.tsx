@@ -18,9 +18,10 @@ interface Props {
 	data: any;
 	activeRow?: number;
 	loading?: any;
+	onRowClick?: any;
 }
 
-export const TableQueue = ({ columns, data, activeRow, loading }: Props) => {
+export const TableQueue = ({ columns, data, activeRow, loading, onRowClick }: Props) => {
 	const itemRefs = useRef([]);
 
 	// Effect: Focus active item
@@ -54,6 +55,7 @@ export const TableQueue = ({ columns, data, activeRow, loading }: Props) => {
 								className={cn({ active: activeRow === index })}
 								key={`tr-${index}`}
 								style={{ height: `${ROW_HEIGHT}px` }}
+								onClick={() => onRowClick(index)}
 							>
 								{row.map((item, index) => (
 									<td
