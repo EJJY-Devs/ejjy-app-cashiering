@@ -63,6 +63,7 @@ export const ProductTable = ({ isLoading }: Props) => {
 		transactionProducts,
 		pageNumber,
 		transactionStatus: currentTransactionStatus,
+		isTransactionSearched,
 		navigateProduct,
 		removeProduct,
 		setCurrentTransaction,
@@ -89,7 +90,7 @@ export const ProductTable = ({ isLoading }: Props) => {
 		const formattedProducts = transactionProducts
 			.slice((pageNumber - 1) * PRODUCT_LENGTH_PER_PAGE, pageNumber * PRODUCT_LENGTH_PER_PAGE)
 			.map((item) => [
-				uneditableStatus.includes(currentTransactionStatus) ? null : (
+				uneditableStatus.includes(currentTransactionStatus) || isTransactionSearched ? null : (
 					<CancelButtonIcon tooltip="Remove" onClick={() => onRemoveProductConfirmation(item)} />
 				),
 				<Tooltip placement="top" title={item.data.description}>
@@ -113,7 +114,7 @@ export const ProductTable = ({ isLoading }: Props) => {
 			]);
 
 		setData(formattedProducts);
-	}, [transactionProducts, currentTransactionStatus, pageNumber]);
+	}, [transactionProducts, currentTransactionStatus, isTransactionSearched, pageNumber]);
 
 	// Effect: Set default active
 	useEffect(() => {
@@ -172,7 +173,7 @@ export const ProductTable = ({ isLoading }: Props) => {
 	};
 
 	const onDiscountProduct = (product) => {
-		if (currentTransactionStatus !== transactionStatusTypes.FULLY_PAID) {
+		if (currentTransactionStatus !== transactionStatusTypes.FULLY_PAID && !isTransactionSearched) {
 			setSelectedDiscountProduct(product);
 			setDiscountModalVisible(true);
 		}
@@ -186,7 +187,8 @@ export const ProductTable = ({ isLoading }: Props) => {
 		if (
 			selectedProductIndex === NO_INDEX_SELECTED ||
 			!transactionProducts.length ||
-			uneditableStatus.includes(currentTransactionStatus)
+			uneditableStatus.includes(currentTransactionStatus) ||
+			isTransactionSearched
 		) {
 			return;
 		}

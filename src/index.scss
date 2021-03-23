@@ -71,6 +71,14 @@ body {
 	}
 }
 
+.ant-message {
+	.ant-message-custom-content {
+		span {
+			font-size: 20px;
+		}
+	}
+}
+
 .quantity-container {
 	@include flex();
 

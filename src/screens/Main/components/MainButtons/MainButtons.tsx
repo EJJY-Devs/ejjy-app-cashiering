@@ -47,6 +47,7 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 		transactionProducts,
 		previousVoidedTransactionId,
 		transactionStatus: currentTransactionStatus,
+		isTransactionSearched,
 		resetTransaction,
 	} = useCurrentTransaction();
 	const { voidTransaction, cancelVoidedTransaction } = useTransactions();
@@ -316,6 +317,7 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 					}
 					classNames="btn-others"
 					onClick={() => setOthersModalVisible(true)}
+					disabled={isTransactionSearched}
 					tabIndex={-1}
 				/>
 			</div>
