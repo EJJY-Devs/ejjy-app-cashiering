@@ -1,6 +1,6 @@
 import { message, Modal } from 'antd';
 import dayjs from 'dayjs';
-import { floor, memoize } from 'lodash';
+import { floor, isArray, isString, memoize } from 'lodash';
 import React from 'react';
 import {
 	AvailableBadgePill,
@@ -59,6 +59,14 @@ export const showMessage = (status, successMessage, errorMessage) => {
 		message.success(successMessage);
 	} else if (status === request.ERROR) {
 		message.error(errorMessage);
+	}
+};
+
+export const showErrorMessages = (errors) => {
+	if (isString(errors)) {
+		message.error(errors);
+	} else if (isArray(errors)) {
+		errors.forEach((error) => message.error(error));
 	}
 };
 

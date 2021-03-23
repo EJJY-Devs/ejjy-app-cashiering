@@ -83,11 +83,11 @@ export const useTransactions = () => {
 		});
 	};
 
-	const voidTransactionRequest = (transactionId, extraCallback = null) => {
+	const voidTransactionRequest = (data, extraCallback = null) => {
 		setRecentRequest(types.VOID_TRANSACTION);
 
 		voidTransaction({
-			transactionId,
+			...data,
 			callback: modifiedExtraCallback(callback, extraCallback),
 		});
 	};

@@ -52,6 +52,7 @@ export const PaymentModal = ({ amountDue, visible, onClose, onSuccess }: Props) 
 						message.error('An error occurred while creating transaction');
 					}
 				},
+				shouldResetTransaction: false,
 			});
 		}
 	};

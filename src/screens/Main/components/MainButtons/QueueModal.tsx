@@ -152,6 +152,15 @@ export const QueueModal = ({ visible, onClose }: Props) => {
 		}
 	};
 
+	const onRowClick = (index) => {
+		if (filteredTransactions?.[activeIndex]) {
+			checkCurrentTransaction(filteredTransactions[activeIndex]);
+			setActiveIndex(index);
+		} else {
+			message.error('Cannot find selected queued item.');
+		}
+	};
+
 	return (
 		<Modal
 			title="Queue & Resume"
@@ -183,6 +192,7 @@ export const QueueModal = ({ visible, onClose }: Props) => {
 					columns={columns}
 					data={queuedTransactions}
 					loading={transactionsStatus === request.REQUESTING}
+					onRowClick={onRowClick}
 				/>
 
 				<FieldInfo type="large" info="Pick and click to resume transaction" />

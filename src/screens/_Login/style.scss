@@ -3,6 +3,7 @@
 .Login {
 	height: 100%;
 	background-color: $color-main-background;
+	position: relative;
 	@include flex(center, center);
 
 	.container {
@@ -26,6 +27,33 @@
 		.btn-reports {
 			width: 100%;
 			margin-top: 10px;
+		}
+	}
+
+	.ButtonClose {
+		@include flex(center, center, column);
+		padding: 15px 20px 10px;
+		background-color: transparent;
+		position: absolute;
+		top: 0;
+		right: 0;
+		border: 0;
+		border-radius: 8px;
+		cursor: pointer;
+		transition: 150ms;
+		color: $color-dark-gray;
+
+		&:hover {
+			background-color: #ebedef;
+		}
+
+		.icon {
+			font-size: 50px;
+		}
+
+		.text {
+			margin-top: 5px;
+			font-size: 15px;
 		}
 	}
 }

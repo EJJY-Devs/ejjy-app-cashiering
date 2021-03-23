@@ -33,7 +33,7 @@ export const SearchTransaction = ({ inputRef, visible, closeModal }: Props) => {
 
 		getTransaction(searchedKey, ({ status, transaction }) => {
 			if (status === request.SUCCESS) {
-				setCurrentTransaction({ transaction, branchProducts });
+				setCurrentTransaction({ transaction, branchProducts, isTransactionSearched: true });
 				closeModal();
 			} else if (status === request.ERROR) {
 				message.error('Cannot find transaction.');

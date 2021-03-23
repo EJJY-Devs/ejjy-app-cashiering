@@ -20,21 +20,16 @@ export const ThankYouModal = ({ visible, onViewInvoice, onClose }: Props) => {
 	// CUSTOM HOOKS
 	const { setBarcodeScanningEnabled } = useUI();
 	const { siteSettings } = useSiteSettings();
-	const { previousChange, orNumber, resetTransaction } = useCurrentTransaction();
+	const { previousChange, orNumber } = useCurrentTransaction();
 
 	// METHODS
 	useEffect(() => {
 		setBarcodeScanningEnabled(!visible);
 	}, [visible]);
 
-	const close = () => {
-		resetTransaction();
-		onClose();
-	};
-
 	const handleKeyPress = (key, event) => {
 		if (key === 'enter') {
-			close();
+			onClose();
 		} else if (key === 'f1') {
 			onViewInvoice();
 		}
@@ -46,7 +41,7 @@ export const ThankYouModal = ({ visible, onViewInvoice, onClose }: Props) => {
 			className="ThankYouModal"
 			visible={visible}
 			footer={null}
-			onCancel={close}
+			onCancel={onClose}
 			centered
 			closable
 			destroyOnClose
