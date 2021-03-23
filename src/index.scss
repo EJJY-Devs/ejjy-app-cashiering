@@ -15,9 +15,9 @@ body {
 
 	@include flex(center, center);
 
-	*:focus {
-		background-color: yellow !important;
-	}
+	// *:focus {
+	// 	background-color: yellow !important;
+	// }
 }
 
 #root {
@@ -67,6 +67,14 @@ body {
 					margin-right: 20px;
 				}
 			}
+		}
+	}
+}
+
+.ant-message {
+	.ant-message-custom-content {
+		span {
+			font-size: 20px;
 		}
 	}
 }

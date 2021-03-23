@@ -2,8 +2,10 @@ import { call, put, takeLatest } from 'redux-saga/effects';
 import { actions as currentTransactionActions } from '../ducks/current-transaction';
 import { actions, types } from '../ducks/transactions';
 import { MAX_PAGE_SIZE } from '../global/constants';
-import { request } from '../global/types';
+import { request, userTypes } from '../global/types';
 import { service } from '../services/transactions';
+import { service as authService } from '../services/auth';
+import { LOCAL_API_URL } from '../services';
 
 /* WORKERS */
 function* list({ payload }: any) {
@@ -125,14 +127,22 @@ function* update({ payload }: any) {
 }
 
 function* voidTransaction({ payload }: any) {
-	const { callback, transactionId } = payload;
+	const { transactionId, login, password, callback } = payload;
 	callback({ status: request.REQUESTING });
 
 	try {
-		const response = yield call(service.void, transactionId);
-		yield put(currentTransactionActions.transactionVoided({ transaction: response.data }));
+		const loginResponse = yield call(authService.login, { login, password }, LOCAL_API_URL);
 
-		callback({ status: request.SUCCESS, transaction: response.data });
+		if (loginResponse.data.user_type === userTypes.BRANCH_MANAGER) {
+			const response = yield call(service.void, transactionId);
+			yield put(currentTransactionActions.transactionVoided({ transaction: response.data }));
+			callback({ status: request.SUCCESS, transaction: response.data });
+		} else {
+			callback({
+				status: request.ERROR,
+				errors: 'Only the branch manager can generate a report.',
+			});
+		}
 	} catch (e) {
 		callback({ status: request.ERROR, errors: e.errors });
 	}

@@ -157,7 +157,7 @@ export const BarcodeScanner = ({ setLoading }: Props) => {
 		// Scan weighing
 		branchProduct = scanWeighing(data);
 		if (branchProduct) {
-			const value = data.substr(-6);
+			const value = data.substr(-5);
 			const whole = value.substr(0, 2);
 			const decimal = value.substr(2, 3);
 			const quantity = Number(`${whole}.${decimal}`);

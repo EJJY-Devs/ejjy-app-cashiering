@@ -8,7 +8,7 @@ import KeyboardEventHandler from 'react-keyboard-event-handler';
 import { ControlledInput } from '../../../../components/elements';
 import { NO_INDEX_SELECTED } from '../../../../global/constants';
 import { searchShortcutKeys } from '../../../../global/options';
-import { branchProductStatus } from '../../../../global/types';
+import { branchProductStatus, transactionStatusTypes } from '../../../../global/types';
 import { useBranchProducts } from '../../../../hooks/useBranchProducts';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import {
@@ -39,7 +39,7 @@ export const ProductSearch = () => {
 
 	// CUSTOM HOOKS
 	const { branchProducts } = useBranchProducts();
-	const { transactionProducts } = useCurrentTransaction();
+	const { transactionProducts, isTransactionSearched, transactionStatus } = useCurrentTransaction();
 	const { isModalVisible, setModalVisible, setSearchSuggestionVisible } = useUI();
 
 	// METHODS
@@ -109,6 +109,15 @@ export const ProductSearch = () => {
 	const debounceSearchedChange = useCallback(
 		debounce((keyword) => onSearch(keyword, searchableProducts), SEARCH_DEBOUNCE_TIME),
 		[searchableProducts],
+	);
+
+	const isProductSearchDisabled = useCallback(
+		() =>
+			isTransactionSearched &&
+			[transactionStatusTypes.VOID_EDITED, transactionStatusTypes.VOID_CANCELLED].includes(
+				transactionStatus,
+			),
+		[isTransactionSearched, transactionStatus],
 	);
 
 	const handleHover = (index) => {
@@ -198,6 +207,7 @@ export const ProductSearch = () => {
 						debounceSearchedChange(value);
 					}}
 					placeholder="Search by name, barcode, textcode or description"
+					disabled={isProductSearchDisabled()}
 				/>
 
 				{!!searchedKey.length && (

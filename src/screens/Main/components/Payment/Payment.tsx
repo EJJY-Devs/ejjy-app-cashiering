@@ -27,6 +27,7 @@ export const Payment = () => {
 		transactionStatus,
 		previousChange,
 		overallDiscount,
+		isTransactionSearched,
 	} = useCurrentTransaction();
 	const { listBranchProducts } = useBranchProducts();
 	const { isModalVisible, setModalVisible } = useUI();
@@ -55,13 +56,20 @@ export const Payment = () => {
 		[transactionProducts],
 	);
 
-	const isPaymentDisabled = useCallback(
-		() =>
-			[transactionStatusTypes.FULLY_PAID, transactionStatusTypes.VOID_EDITED].includes(
+	const isPaymentDisabled = useCallback(() => {
+		const isSearchedVoidedTransaction =
+			isTransactionSearched &&
+			[transactionStatusTypes.VOID_EDITED, transactionStatusTypes.VOID_CANCELLED].includes(
 				transactionStatus,
-			),
-		[transactionStatus],
-	);
+			);
+
+		const isFullyPaidTransaction = [
+			transactionStatusTypes.FULLY_PAID,
+			transactionStatusTypes.VOID_EDITED,
+		].includes(transactionStatus);
+
+		return isFullyPaidTransaction || isSearchedVoidedTransaction;
+	}, [transactionStatus, isTransactionSearched]);
 
 	const onPaymentSuccess = (transaction) => {
 		listBranchProducts();
@@ -128,7 +136,7 @@ export const Payment = () => {
 					variant="primary"
 					onClick={onPay}
 					disabled={isPaymentDisabled()}
-					tabIndex={isPaymentDisabled() ? -1 : 0}
+					tabIndex={-1}
 					hasShortcutKey
 				/>
 			</div>

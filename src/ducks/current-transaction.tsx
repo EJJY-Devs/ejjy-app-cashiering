@@ -34,6 +34,7 @@ const initialState = {
 	previousVoidedTransactionId: null,
 	client: null,
 	overallDiscount: 0,
+	isTransactionSearched: false,
 
 	pageNumber: 1,
 	previousChange: null,
@@ -98,7 +99,7 @@ const reducer = handleActions(
 		},
 
 		[types.SET_CURRENT_TRANSACTION]: (state, { payload }: any) => {
-			const { transaction, branchProducts } = payload;
+			const { transaction, branchProducts, isTransactionSearched = false } = payload;
 
 			// NOTE: Setting of product
 			const products = transaction.products.map((item) => {
@@ -130,6 +131,7 @@ const reducer = handleActions(
 						? transaction.id
 						: transaction.previous_voided_transaction_id,
 				products,
+				isTransactionSearched,
 				pageNumber: 1,
 			};
 
@@ -228,6 +230,8 @@ export const selectors = {
 		createSelector(selectState, (state) => state.previousVoidedTransactionId),
 	selectPageNumber: () => createSelector(selectState, (state) => state.pageNumber),
 	selectPreviousChange: () => createSelector(selectState, (state) => state.previousChange),
+	selectIsTransactionSearched: () =>
+		createSelector(selectState, (state) => state.isTransactionSearched),
 };
 
 export default reducer;

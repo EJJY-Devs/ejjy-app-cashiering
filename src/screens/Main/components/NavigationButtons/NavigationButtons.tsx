@@ -25,6 +25,7 @@ export const NavigationButtons = () => {
 		pageNumber,
 		previousChange,
 		client,
+		isTransactionSearched,
 		navigateProduct,
 	} = useCurrentTransaction();
 	const { isModalVisible, setModalVisible } = useUI();
@@ -64,22 +65,26 @@ export const NavigationButtons = () => {
 			<div className="details">
 				<div className="item">
 					<p className="label">Client ID:</p>
-					<p className="value">
-						{client && client?.name && client?.tin ? (
-							<div className="client-details-wrapper">
-								<span className="client-text">{`${client.name}, ${client.tin}`}</span>
+					{isTransactionSearched ? (
+						EMPTY_CELL
+					) : (
+						<p className="value">
+							{client && client?.name && client?.tin ? (
+								<div className="client-details-wrapper">
+									<span className="client-text">{`${client.name}, ${client.tin}`}</span>
+									<EditButtonIcon
+										tooltip="Edit client details"
+										onClick={() => setClientDetailsModalVisible(true)}
+									/>
+								</div>
+							) : (
 								<EditButtonIcon
 									tooltip="Edit client details"
 									onClick={() => setClientDetailsModalVisible(true)}
 								/>
-							</div>
-						) : (
-							<EditButtonIcon
-								tooltip="Edit client details"
-								onClick={() => setClientDetailsModalVisible(true)}
-							/>
-						)}
-					</p>
+							)}
+						</p>
+					)}
 				</div>
 				<div className="item">
 					<p className="label">Transaction No:</p>

@@ -9,6 +9,7 @@ import { getBranchMachineCount, getBranchMachineId } from '../../utils/function'
 import { ILoginValues, LoginForm } from './components/LoginForm';
 import { RegisterModal } from './components/RegisterModal';
 import './style.scss';
+import ButtonClose from './components/ButtonClose';
 
 const Login = () => {
 	const { startSession, status, errors } = useSession();
@@ -36,6 +37,8 @@ const Login = () => {
 
 	return (
 		<section className="Login">
+			<ButtonClose onClick={() => window.close()} />
+
 			<Box className="container">
 				<img src={require('../../assets/images/logo.jpg')} alt="logo" className="logo" />
 

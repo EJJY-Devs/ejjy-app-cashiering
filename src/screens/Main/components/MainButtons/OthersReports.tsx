@@ -1,12 +1,17 @@
 import { message } from 'antd';
 import React, { useState } from 'react';
+import KeyboardEventHandler from 'react-keyboard-event-handler';
 import { reportTypes } from '../../../../global/types';
 import { getBranchMachineId } from '../../../../utils/function';
 import { ReportAccessModal } from '../../../_Reports/components/ReportAccessModal';
 import { ViewXreadReportModal } from '../../../_Reports/components/ViewXreadReportModal';
 import { ViewZreadReportModal } from '../../../_Reports/components/ViewZreadReportModal';
 
-export const OthersReports = () => {
+interface Props {
+	visible: any;
+}
+
+export const OthersReports = ({ visible }: Props) => {
 	// STATES
 	const [selectedReportType, setSelectedReportType] = useState(null);
 	const [reportAccessModalVisible, setReportAccessModalVisible] = useState(false);
@@ -38,10 +43,29 @@ export const OthersReports = () => {
 		}
 	};
 
+	const handleKeyPress = (key, event) => {
+		event.preventDefault();
+		event.stopPropagation();
+
+		if (key === 'f9') {
+			onGenerateReadReport(reportTypes.XREAD);
+		} else if (key === 'f10') {
+			onGenerateReadReport(reportTypes.ZREAD);
+		}
+	};
+
 	return (
 		<section className="OthersReports">
+			<KeyboardEventHandler
+				handleKeys={['f9', 'f10']}
+				onKeyEvent={handleKeyPress}
+				handleFocusableElements
+				isDisabled={!visible}
+			/>
+
 			<button className="other-button" onClick={() => onGenerateReadReport(reportTypes.XREAD)}>
 				Generate XRead Report
+				<span className="shortcut-key position-right text-lg">[F9]</span>
 			</button>
 
 			<button
@@ -49,6 +73,7 @@ export const OthersReports = () => {
 				onClick={() => onGenerateReadReport(reportTypes.ZREAD)}
 			>
 				Generate ZRead Report
+				<span className="shortcut-key position-right text-lg">[F10]</span>
 			</button>
 
 			<ViewXreadReportModal
