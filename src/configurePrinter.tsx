@@ -73,13 +73,12 @@ const configurePrinter = (callback = null) => {
 		qz.security.setSignaturePromise(function(toSign) {
 			return function(resolve, reject) {
 				try {
-					var pk = KEYUTIL.getKey(privateKey);
-					var sig = new KJUR.crypto.Signature({"alg": "SHA512withRSA"});  // Use "SHA1withRSA" for QZ Tray 2.0 and older
+					var pk = eval("KEYUTIL.getKey(privateKey);");
+					var sig = eval('new KJUR.crypto.Signature({"alg": "SHA512withRSA"});');
 					sig.init(pk); 
 					sig.updateString(toSign);
 					var hex = sig.sign();
-					console.log("DEBUG: \n\n" + stob64(hextorstr(hex)));
-					resolve(stob64(hextorstr(hex)));
+					resolve(eval("stob64(hextorstr(hex))"));
 				} catch (err) {
 					console.error(err);
 					reject(err);
