@@ -44,6 +44,7 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 	const { session } = useSession();
 	const {
 		transactionId,
+		transactionStatus,
 		transactionProducts,
 		previousVoidedTransactionId,
 		transactionStatus: currentTransactionStatus,
@@ -102,6 +103,8 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 			].includes(currentTransactionStatus),
 		[currentTransactionStatus],
 	);
+
+	const isQueueDisabled = useCallback(() => transactionStatus !== null, [transactionStatus]);
 
 	const onCashCollectionModified = () => {
 		onCashCollection();
@@ -269,6 +272,7 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 						</>
 					}
 					onClick={() => setQueueModalVisible(true)}
+					disabled={isQueueDisabled()}
 					tabIndex={-1}
 				/>
 
