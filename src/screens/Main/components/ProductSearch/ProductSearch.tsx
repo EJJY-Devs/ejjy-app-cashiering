@@ -154,7 +154,12 @@ export const ProductSearch = () => {
 		const key = getKeyDownCombination(event);
 
 		if (searchShortcutKeys.includes(key)) {
-			inputRef?.current?.focus();
+			if (inputRef?.current !== document.activeElement) {
+				inputRef?.current?.focus();
+			} else {
+				inputRef?.current?.blur();
+				setSearchedKey('');
+			}
 		}
 	};
 

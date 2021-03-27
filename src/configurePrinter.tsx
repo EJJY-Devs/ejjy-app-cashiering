@@ -1,3 +1,4 @@
+/* eslint-disable no-eval */
 import { message } from 'antd';
 import dayjs from 'dayjs';
 import qz from 'qz-tray';
@@ -40,6 +41,7 @@ const configurePrinter = (callback = null) => {
 				"-----END CERTIFICATE-----");
 		});
 	
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		var privateKey = "-----BEGIN PRIVATE KEY-----\n" + 
 			"MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDl8JPChLBfKjHa\n" + 
 			"Kqw1rWxQKR/31aXikR+ZCUkVOhP+N9BqMLskizWAnFIIq5iTI0ErYO6D2d+Rrn+S\n" + 
@@ -77,6 +79,7 @@ const configurePrinter = (callback = null) => {
 					var sig = eval('new KJUR.crypto.Signature({"alg": "SHA512withRSA"});');
 					sig.init(pk); 
 					sig.updateString(toSign);
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					var hex = sig.sign();
 					resolve(eval("stob64(hextorstr(hex))"));
 				} catch (err) {
