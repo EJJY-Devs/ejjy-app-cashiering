@@ -159,6 +159,7 @@ export const ProductSearch = () => {
 			} else {
 				inputRef?.current?.blur();
 				setSearchedKey('');
+				setSearchSuggestionVisible(false);
 			}
 		}
 	};

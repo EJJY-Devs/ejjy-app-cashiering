@@ -132,37 +132,7 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 
 	const onReset = () => {
 		setResetModalVisible(false);
-
-		if (previousVoidedTransactionId) {
-			setMainLoading(true);
-			setMainLoadingText('Cancelling voided transaction...');
-
-			const products = transactionProducts.map((product) => ({
-				product_id: product.productId,
-				quantity: product.quantity,
-				price_per_piece: product.pricePerPiece,
-			}));
-
-			cancelVoidedTransaction(
-				{
-					branchId: session?.branch_machine?.branch_id,
-					transactionId: previousVoidedTransactionId,
-					status: transactionStatusTypes.VOID_CANCELLED,
-					products,
-				},
-				({ status, errors }) => {
-					if (status === request.ERROR) {
-						message.error(errors);
-					}
-
-					setMainLoading(false);
-					setMainLoadingText(null);
-					resetTransaction();
-				},
-			);
-		} else {
-			resetTransaction();
-		}
+		resetTransaction();
 	};
 
 	const onVoid = (formData) => {
