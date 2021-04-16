@@ -137,20 +137,28 @@ export const BarcodeScanner = ({ setLoading }: Props) => {
 	};
 
 	const addTransactionProducts = (products) => {
-		products.forEach = (item) => {
+		products.forEach((item) => {
 			const branchProduct = branchProducts.find(
 				({ product }) => product?.barcode === item?.product?.barcode,
 			);
 
+			const existingProduct = transactionProducts.find(
+				(product) => product.id === branchProduct.id,
+			);
+			if (existingProduct) {
+				message.warning(`${branchProduct.product.name} is already in the list.`);
+				return;
+			}
+
 			if (branchProduct) {
 				addBarcodeProduct(
 					branchProduct,
-					item.quantity,
-					item.price_per_piece,
-					item.discount_per_piece,
+					Number(item.quantity),
+					Number(item.price_per_piece),
+					Number(item.discount_per_piece),
 				);
 			}
-		};
+		});
 	};
 
 	const scanWeighing = (data) => {
@@ -201,19 +209,13 @@ export const BarcodeScanner = ({ setLoading }: Props) => {
 		}
 
 		// Check if transaction and scan
-		const transaction = data.split('_');
-		if (transaction.length) {
-			const id = transaction?.[1] || 0;
-			getTransaction(id, ({ status, transaction }) => {
-				if (status === request.SUCCESS) {
-					addTransactionProducts(transaction?.products || []);
-				} else if (status === request.ERROR) {
-					message.error('Cannot find transaction.');
-				}
-			});
-		} else {
-			message.error(`Cannot find the scanned product: ${data}`);
-		}
+		getTransaction(data, ({ status, transaction }) => {
+			if (status === request.SUCCESS) {
+				addTransactionProducts(transaction?.products || []);
+			} else if (status === request.ERROR) {
+				message.error(`Cannot find the scanned product: ${data}`);
+			}
+		});
 	};
 
 	const handleError = (err) => console.error(err);
