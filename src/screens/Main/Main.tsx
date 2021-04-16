@@ -82,7 +82,7 @@ const Main = () => {
 				if (response) {
 					listCashBreakdown(session?.id);
 					listBranchProducts();
-					getSiteSettings();
+					// getSiteSettings();
 				} else {
 					invalidSession();
 				}

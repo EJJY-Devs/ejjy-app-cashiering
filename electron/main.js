@@ -11,7 +11,7 @@ function createWindow() {
 		height: 600,
 		show: false,
 		// frame: false,
-		fullscreen: !isDev, // Auto full screen only in production
+		// fullscreen: !isDev, // Auto full screen only in production
 	});
 
 	const startURL = isDev

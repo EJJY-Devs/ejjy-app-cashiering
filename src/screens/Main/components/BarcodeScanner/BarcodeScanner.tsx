@@ -26,7 +26,7 @@ export const BarcodeScanner = ({ setLoading }: Props) => {
 		setCurrentTransaction,
 	} = useCurrentTransaction();
 	const { getTransaction, updateTransaction } = useTransactions();
-
+	
 	// METHODS
 	const addBarcodeProduct = (
 		branchProduct,
@@ -140,13 +140,13 @@ export const BarcodeScanner = ({ setLoading }: Props) => {
 		products.forEach((item) => {
 			const branchProduct = branchProducts.find(
 				({ product }) => product?.barcode === item?.product?.barcode,
-			);
+			);	
 
 			const existingProduct = transactionProducts.find(
 				(product) => product.id === branchProduct.id,
 			);
 			if (existingProduct) {
-				message.warning(`${branchProduct.product.name} is already in the list.`);
+				editBarcodeProduct(branchProduct, existingProduct, Number(item.quantity));
 				return;
 			}
 
@@ -209,20 +209,24 @@ export const BarcodeScanner = ({ setLoading }: Props) => {
 		}
 
 		// Check if transaction and scan
-		console.log('data', data);
-		console.log('data', data.split('_'));
-		getTransaction(data.split('_')?.[1], ({ status, transaction }) => {
-			if (status === request.SUCCESS) {
-				addTransactionProducts(transaction?.products || []);
-			} else if (status === request.ERROR) {
-				message.error(`Cannot find the scanned product: ${data}`);
-			}
-		});
+		if(data.includes("_")) {
+			getTransaction(data.split('_')?.[1], ({ status, transaction }) => {
+				if (status === request.SUCCESS) {
+					addTransactionProducts(transaction?.products || []);
+				} else if (status === request.ERROR) {
+					message.error(`Cannot find the scanned transaction: ${data}`);
+				}
+			});
+
+			return;
+		}
+		
+		message.error(`Cannot find the scanned product: ${data}`);
 	};
 
-	const handleError = (err) => console.error(err);
+	const handleError = (err, msg) => console.error(err, msg);
 
 	return barcodeScanningEnabled ? (
-		<BarcodeReader onError={handleError} onScan={handleScan} />
+		<BarcodeReader minLength={3} onError={handleError} onScan={handleScan} />
 	) : null;
 };
