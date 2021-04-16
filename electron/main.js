@@ -31,14 +31,14 @@ function createWindow() {
 	// Remove menu
 	const menu = new Menu();
 
-	if (isDev) {
-		menu.append(
-			new MenuItem({
-				label: 'Dev',
-				submenu: [{ role: 'toggleDevTools' }, { role: 'forceReload' }],
-			}),
-		);
-	}
+	// if (isDev) {
+	menu.append(
+		new MenuItem({
+			label: 'Dev',
+			submenu: [{ role: 'toggleDevTools' }, { role: 'forceReload' }],
+		}),
+	);
+	// }
 
 	Menu.setApplicationMenu(menu);
 }
