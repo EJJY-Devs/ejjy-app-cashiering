@@ -25,16 +25,23 @@ export const BarcodeScanner = ({ setLoading }: Props) => {
 		editProduct,
 		setCurrentTransaction,
 	} = useCurrentTransaction();
-	const { updateTransaction } = useTransactions();
+	const { getTransaction, updateTransaction } = useTransactions();
 
 	// METHODS
-	const addBarcodeProduct = (branchProduct, quantity) => {
+	const addBarcodeProduct = (
+		branchProduct,
+		quantity,
+		pricePerPiece = undefined,
+		discountPerPiece = undefined,
+	) => {
 		setLoading(true);
 
 		const callback = () => {
 			setLoading(false);
 			message.success(`${branchProduct.product.name} sucessfully added.`);
 		};
+
+		const productPricePerPiece = pricePerPiece || branchProduct.price_per_piece;
 
 		if (transactionId) {
 			updateTransaction(
@@ -49,8 +56,9 @@ export const BarcodeScanner = ({ setLoading }: Props) => {
 						})),
 						{
 							product_id: branchProduct.product.id,
-							price_per_piece: branchProduct.price_per_piece,
+							price_per_piece: productPricePerPiece,
 							quantity,
+							discount_per_piece: discountPerPiece,
 						},
 					],
 				},
@@ -68,8 +76,9 @@ export const BarcodeScanner = ({ setLoading }: Props) => {
 					data: branchProduct.product,
 					id: branchProduct.id,
 					productId: branchProduct.product.id,
-					pricePerPiece: branchProduct.price_per_piece,
+					pricePerPiece: productPricePerPiece,
 					quantity,
+					discountPerPiece,
 				},
 			});
 			callback();
@@ -127,6 +136,23 @@ export const BarcodeScanner = ({ setLoading }: Props) => {
 		}
 	};
 
+	const addTransactionProducts = (products) => {
+		products.forEach = (item) => {
+			const branchProduct = branchProducts.find(
+				({ product }) => product?.barcode === item?.product?.barcode,
+			);
+
+			if (branchProduct) {
+				addBarcodeProduct(
+					branchProduct,
+					item.quantity,
+					item.price_per_piece,
+					item.discount_per_piece,
+				);
+			}
+		};
+	};
+
 	const scanWeighing = (data) => {
 		const barcode = data.substr(0, 7);
 		const scannedBarcode = barcode?.toLowerCase() || '';
@@ -174,7 +200,20 @@ export const BarcodeScanner = ({ setLoading }: Props) => {
 			return;
 		}
 
-		message.error(`Cannot find the scanned product: ${data}`);
+		// Check if transaction and scan
+		const transaction = data.split('_');
+		if (transaction.length) {
+			const id = transaction?.[1] || 0;
+			getTransaction(id, ({ status, transaction }) => {
+				if (status === request.SUCCESS) {
+					addTransactionProducts(transaction?.products || []);
+				} else if (status === request.ERROR) {
+					message.error('Cannot find transaction.');
+				}
+			});
+		} else {
+			message.error(`Cannot find the scanned product: ${data}`);
+		}
 	};
 
 	const handleError = (err) => console.error(err);

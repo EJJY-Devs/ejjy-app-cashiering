@@ -85,7 +85,7 @@ export const confirmPassword = ({ title = 'Input Password', onSuccess }: Confirm
 	Modal.confirm({
 		title,
 		centered: true,
-		className: 'ConfirmPassword',
+		className: 'EJJYModal ConfirmPassword',
 		okText: 'Submit',
 		content: <UncontrolledInput type="password" onChange={(value) => (password = value)} />,
 		onOk: (close) => {

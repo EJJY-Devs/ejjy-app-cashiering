@@ -13,7 +13,7 @@ interface Props {
 export const VoidAuthModal = ({ onConfirm, isLoading, visible, onClose }: Props) => {
 	return (
 		<Modal
-			title="Manager's Approval"
+			title="Manager's Approval for Voiding Transaction"
 			visible={visible}
 			footer={null}
 			onCancel={onClose}

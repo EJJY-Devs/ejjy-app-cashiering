@@ -120,6 +120,7 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 		setResetModalVisible(true);
 
 		Modal.confirm({
+			className: 'EJJYModal',
 			title: 'Reset Confirmation',
 			icon: <ExclamationCircleOutlined />,
 			content: 'Are you sure you want to reset the transaction?',

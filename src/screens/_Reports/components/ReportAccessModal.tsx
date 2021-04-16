@@ -35,7 +35,7 @@ export const ReportAccessModal = ({ reportType, onSuccess, visible, onClose }: P
 
 	return (
 		<Modal
-			title="Manager's Approval"
+			title="Manager's Approval for Report Access"
 			visible={visible}
 			footer={null}
 			onCancel={onClose}

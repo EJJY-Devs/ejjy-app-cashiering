@@ -153,6 +153,7 @@ export const ProductTable = ({ isLoading }: Props) => {
 
 	const onRemoveProductConfirmation = (product) => {
 		Modal.confirm({
+			className: 'EJJYModal',
 			title: 'Delete Confirmation',
 			icon: <ExclamationCircleOutlined />,
 			content: `Are you sure you want to delete ${product.data.name}?`,
