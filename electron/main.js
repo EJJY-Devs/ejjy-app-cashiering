@@ -2,7 +2,7 @@ const { app, BrowserWindow } = require('electron');
 const path = require('path');
 const { Menu, MenuItem } = require('electron');
 
-const isDev = true;
+const isDev = false;
 let mainWindow;
 
 function createWindow() {
