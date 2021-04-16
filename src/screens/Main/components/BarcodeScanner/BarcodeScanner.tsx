@@ -209,7 +209,7 @@ export const BarcodeScanner = ({ setLoading }: Props) => {
 		}
 
 		// Check if transaction and scan
-		getTransaction(data, ({ status, transaction }) => {
+		getTransaction(data.split('_')?.[1], ({ status, transaction }) => {
 			if (status === request.SUCCESS) {
 				addTransactionProducts(transaction?.products || []);
 			} else if (status === request.ERROR) {
