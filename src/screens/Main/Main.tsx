@@ -21,6 +21,7 @@ import { NavigationButtons } from './components/NavigationButtons/NavigationButt
 import { Payment } from './components/Payment/Payment';
 import { ProductSearch } from './components/ProductSearch/ProductSearch';
 import { ProductTable } from './components/ProductTable/ProductTable';
+import { SettingUrlModal } from './components/SettingUrl/SettingUrlModal';
 import './style.scss';
 
 const voidTransactionStatus = [
@@ -34,6 +35,7 @@ const Main = () => {
 	const [cashBreakdownModalVisible, setCashBreakdownModalVisible] = useState(false);
 	const [cashBreakdownType, setCashBreakdownType] = useState(null);
 	const [barcodeScanLoading, setBarcodeScanLoading] = useState(false);
+	const [urlModalVisible, setUrlModalVisible] = useState(false);
 
 	// CUSTOM HOOKS
 	const {
@@ -238,8 +240,14 @@ const Main = () => {
 						<MainButtons onEndSession={onEndSession} onCashCollection={onCashCollection} />
 					</div>
 				</div>
+				<div className="footer">
+					<h2 className="set-url" onClick={() => setUrlModalVisible(true)}>
+						Set Local URL
+					</h2>
+					<h1 className="store-title">EJ &amp; JY WET MARKET AND ENTERPRISES</h1>
+				</div>
 
-				<h1 className="store-title">EJ &amp; JY WET MARKET AND ENTERPRISES</h1>
+				<SettingUrlModal visible={urlModalVisible} onClose={() => setUrlModalVisible(false)} />
 
 				<CashBreakdownModal
 					sessionId={session?.id}

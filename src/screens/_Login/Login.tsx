@@ -3,20 +3,27 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Box, Button } from '../../components/elements';
 import { request } from '../../global/types';
+import { useAuth } from '../../hooks/useAuth';
 import { useCurrentTransaction } from '../../hooks/useCurrentTransaction';
 import { useSession } from '../../hooks/useSession';
 import { getBranchMachineCount, getBranchMachineId } from '../../utils/function';
+import ButtonClose from './components/ButtonClose';
 import { ILoginValues, LoginForm } from './components/LoginForm';
 import { RegisterModal } from './components/RegisterModal';
 import './style.scss';
-import ButtonClose from './components/ButtonClose';
+import { SetUrlModal } from './components/SetUrlModal';
 
 const Login = () => {
+	// STATES
+	const [registerModalVisible, setRegisterModalVisible] = useState(false);
+	const [setUrlModalVisible, setSetUrlModalVisible] = useState(false);
+
+	// CUSTOM HOOKS
+	const { localIpAddress } = useAuth();
 	const { startSession, status, errors } = useSession();
 	const { setPreviousChange } = useCurrentTransaction();
 
-	const [registerModalVisible, setRegisterModalVisible] = useState(false);
-
+	// METHODS
 	const onStartSession = (data: ILoginValues) => {
 		const branchMachineId = getBranchMachineId();
 		const branchMachineCount = getBranchMachineCount();
@@ -51,19 +58,32 @@ const Login = () => {
 
 				<Divider />
 
-				{!getBranchMachineId() && (
+				<div className="setup-buttons">
 					<Button
-						text="Register Machine"
+						classNames="btn-set-api-url"
+						text="1. Set API URL"
 						variant="dark-gray"
-						onClick={() => setRegisterModalVisible(true)}
+						onClick={() => setSetUrlModalVisible(true)}
+						disabled={!!getBranchMachineId() || localIpAddress}
 						block
 					/>
-				)}
+
+					<Button
+						classNames="btn-register-machine"
+						text="2. Register Machine"
+						variant="dark-gray"
+						onClick={() => setRegisterModalVisible(true)}
+						disabled={!localIpAddress || !!getBranchMachineId()}
+						block
+					/>
+				</div>
 
 				<Link to="/reports" className="btn-reports">
 					<Button text="Reports" variant="dark-gray" block />
 				</Link>
 			</Box>
+
+			<SetUrlModal visible={setUrlModalVisible} onClose={() => setSetUrlModalVisible(false)} />
 
 			<RegisterModal
 				visible={registerModalVisible}

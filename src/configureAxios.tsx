@@ -1,10 +1,9 @@
 import axios from 'axios';
 import { flatten, values } from 'lodash';
 import { key as AUTH_KEY } from './ducks/auth';
-import { API_TIMEOUT, LOCAL_API_URL, NO_VERIFICATION_NEEDED } from './services';
+import { API_TIMEOUT, NO_VERIFICATION_NEEDED } from './services';
 
 export default function configureAxios(store) {
-	axios.defaults.baseURL = LOCAL_API_URL;
 	axios.defaults.timeout = API_TIMEOUT;
 
 	// add a request interceptor to all the axios requests
@@ -21,9 +20,11 @@ export default function configureAxios(store) {
 
 			// since there's no `connect` HOC, this is how we
 			// access the store (or reducer)
-			const state = store.getState();
-			const { accessToken } = state[AUTH_KEY];
+			const { accessToken, localIpAddress } = store.getState()?.[AUTH_KEY];
 
+			if (!config.baseURL) {
+				config.baseURL = localIpAddress;
+			}
 			// Get access token from store for every api request
 			config.headers.authorization = accessToken ? `Bearer ${accessToken}` : null;
 

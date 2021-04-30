@@ -25,14 +25,24 @@ $spacing: 25px;
 		}
 	}
 
-	.store-title {
+	.footer {
+		@include flex(center, center);
 		margin-top: 20px;
-		margin-bottom: 0;
 
-		font-size: 30px;
-		font-weight: bold;
-		text-align: center;
-		color: $color-dark-gray;
+		.set-url {
+			position: absolute;
+			left: 15px;
+			color: $color-dark-gray;
+			margin-bottom: 0;
+		}
+
+		.store-title {
+			font-size: 30px;
+			font-weight: bold;
+			text-align: center;
+			color: $color-dark-gray;
+			margin-bottom: 0;
+		}
 	}
 }
 

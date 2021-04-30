@@ -5,7 +5,6 @@ import { MAX_PAGE_SIZE } from '../global/constants';
 import { request, userTypes } from '../global/types';
 import { service } from '../services/transactions';
 import { service as authService } from '../services/auth';
-import { LOCAL_API_URL } from '../services';
 
 /* WORKERS */
 function* list({ payload }: any) {
@@ -131,7 +130,7 @@ function* voidTransaction({ payload }: any) {
 	callback({ status: request.REQUESTING });
 
 	try {
-		const loginResponse = yield call(authService.login, { login, password }, LOCAL_API_URL);
+		const loginResponse = yield call(authService.login, { login, password }, null);
 
 		if (loginResponse.data.user_type === userTypes.BRANCH_MANAGER) {
 			const response = yield call(service.void, transactionId);

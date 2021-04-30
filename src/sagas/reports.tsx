@@ -2,7 +2,6 @@ import { call, put, takeLatest } from 'redux-saga/effects';
 import { actions as authActions } from '../ducks/auth';
 import { types } from '../ducks/reports';
 import { request, userTypes } from '../global/types';
-import { LOCAL_API_URL } from '../services';
 import { service as authService } from '../services/auth';
 import { service as reportsService } from '../services/reports';
 
@@ -12,7 +11,7 @@ function* createXreadReport({ payload }: any) {
 	callback({ status: request.REQUESTING });
 
 	try {
-		const loginResponse = yield call(authService.login, { login, password }, LOCAL_API_URL);
+		const loginResponse = yield call(authService.login, { login, password }, null);
 
 		if (loginResponse.data.user_type === userTypes.BRANCH_MANAGER) {
 			const tokenResponse = yield call(authService.acquireToken, {
@@ -50,7 +49,7 @@ function* createZreadReport({ payload }: any) {
 	callback({ status: request.REQUESTING });
 
 	try {
-		const loginResponse = yield call(authService.login, { login, password }, LOCAL_API_URL);
+		const loginResponse = yield call(authService.login, { login, password }, null);
 
 		if (loginResponse.data.user_type === userTypes.BRANCH_MANAGER) {
 			const tokenResponse = yield call(authService.acquireToken, {

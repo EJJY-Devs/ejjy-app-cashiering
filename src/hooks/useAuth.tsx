@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { actions, types } from '../ducks/auth';
+import { useSelector } from 'react-redux';
+import { actions, types, selectors } from '../ducks/auth';
 import { request } from '../global/types';
 import { modifiedExtraCallback } from '../utils/function';
 import { useActionDispatch } from './useActionDispatch';
@@ -9,7 +10,11 @@ export const useAuth = () => {
 	const [errors, setErrors] = useState<any>([]);
 	const [recentRequest, setRecentRequest] = useState<any>();
 
+	const localIpAddress = useSelector(selectors.selectLocalIpAddress());
+
+	const saveAction = useActionDispatch(actions.save);
 	const validateUser = useActionDispatch(actions.validateUser);
+	const loginBranchManagerAction = useActionDispatch(actions.loginBranchManager);
 
 	const reset = () => {
 		resetError();
@@ -25,13 +30,24 @@ export const useAuth = () => {
 		validateUser({ ...data, callback: modifiedExtraCallback(callback, extraCallback) });
 	};
 
+	const loginBranchManager = (data) => {
+		loginBranchManagerAction({ ...data, callback });
+	};
+
+	const updateLocalIpAddress = (newLocalIpAddress) => {
+		saveAction({ localIpAddress: newLocalIpAddress });
+	};
+
 	const callback = ({ status, errors = [] }) => {
 		setStatus(status);
 		setErrors(errors);
 	};
 
 	return {
+		localIpAddress,
 		validateUser: validateUserRequest,
+		updateLocalIpAddress,
+		loginBranchManager,
 		status,
 		errors,
 		recentRequest,

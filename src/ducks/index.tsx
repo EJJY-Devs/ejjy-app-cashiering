@@ -31,8 +31,11 @@ const appReducer = combineReducers({
 const RESET_TYPES = [types.INVALID_SESSION, types.END_SESSION];
 export default (state, action) => {
 	if (RESET_TYPES.includes(action.type)) {
-		storage.removeItem(APP_KEY);
-		state = undefined;
+		const newValue = { [AUTH_KEY]: state[AUTH_KEY] };
+		storage.setItem(APP_KEY, JSON.stringify(newValue));
+
+		state = newValue;
 	}
+
 	return appReducer(state, action);
 };

@@ -6,8 +6,25 @@
 	position: relative;
 	@include flex(center, center);
 
+	.setup-buttons {
+		@include flex(stretch, center);
+		width: 100%;
+
+		.Button {
+			flex: 1;
+
+			&.btn-set-api-url {
+				margin-right: 5px;
+			}
+
+			&.btn-register-machine {
+				margin-left: 5px;
+			}
+		}
+	}
+
 	.container {
-		width: 400px;
+		width: 450px;
 		padding: 50px 40px;
 		@include flex(center, center, column);
 
