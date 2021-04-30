@@ -19,6 +19,7 @@ export const SetUrlModal = ({ visible, onClose }: Props) => {
 	useEffect(() => {
 		if (status === request.SUCCESS) {
 			message.success('Successfully updated the Local API URL');
+			close();
 		}
 	}, [status]);
 
@@ -27,6 +28,7 @@ export const SetUrlModal = ({ visible, onClose }: Props) => {
 	};
 
 	const close = () => {
+		onClose();
 		reset();
 	};
 
