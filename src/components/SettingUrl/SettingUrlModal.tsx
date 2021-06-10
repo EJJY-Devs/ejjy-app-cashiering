@@ -1,6 +1,6 @@
-import { Modal, message } from 'antd';
+import { message, Modal } from 'antd';
 import React from 'react';
-import { useAuth } from '../../../../hooks/useAuth';
+import { useAuth } from '../../hooks/useAuth';
 import { SettingUrlForm } from './SettingUrlForm';
 import './style.scss';
 

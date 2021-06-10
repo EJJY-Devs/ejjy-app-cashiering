@@ -4,7 +4,6 @@ import storage from 'redux-persist/lib/storage';
 import { APP_KEY } from '../global/constants';
 import history from '../utils/history';
 import authReducer, { key as AUTH_KEY } from './auth';
-import branchMachinesReducer, { key as BRANCH_MACHINES_KEY } from './branch-machines';
 import branchProductsReducer, { key as BRANCH_PRODUCTS_KEY } from './branch-products';
 import cashBreakdownsReducer, { key as CASH_BREAKDOWN_KEY } from './cash-breakdowns';
 import currentTransactionReducer, { key as CURRENT_TRANSACTION_KEY } from './current-transaction';
@@ -24,7 +23,6 @@ const appReducer = combineReducers({
 	[CURRENT_TRANSACTION_KEY]: currentTransactionReducer,
 	[SITE_SETTINGS_KEY]: siteSettingsReducer,
 	[TRANSACTIONS_KEY]: transactionsReducer,
-	[BRANCH_MACHINES_KEY]: branchMachinesReducer,
 	[UI_KEY]: uiReducer,
 });
 

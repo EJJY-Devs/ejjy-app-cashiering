@@ -2,6 +2,7 @@ import { Divider, message } from 'antd';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Box, Button } from '../../components/elements';
+import { SettingUrlModal } from '../../components/SettingUrl/SettingUrlModal';
 import { request } from '../../global/types';
 import { useAuth } from '../../hooks/useAuth';
 import { useCurrentTransaction } from '../../hooks/useCurrentTransaction';
@@ -11,12 +12,11 @@ import ButtonClose from './components/ButtonClose';
 import { ILoginValues, LoginForm } from './components/LoginForm';
 import { RegisterModal } from './components/RegisterModal';
 import './style.scss';
-import { SetUrlModal } from './components/SetUrlModal';
 
 const Login = () => {
 	// STATES
 	const [registerModalVisible, setRegisterModalVisible] = useState(false);
-	const [setUrlModalVisible, setSetUrlModalVisible] = useState(false);
+	const [urlModalVisible, setUrlModalVisible] = useState(false);
 
 	// CUSTOM HOOKS
 	const { localIpAddress } = useAuth();
@@ -63,8 +63,7 @@ const Login = () => {
 						classNames="btn-set-api-url"
 						text="1. Set API URL"
 						variant="dark-gray"
-						onClick={() => setSetUrlModalVisible(true)}
-						disabled={!!getBranchMachineId() || localIpAddress}
+						onClick={() => setUrlModalVisible(true)}
 						block
 					/>
 
@@ -73,7 +72,6 @@ const Login = () => {
 						text="2. Register Machine"
 						variant="dark-gray"
 						onClick={() => setRegisterModalVisible(true)}
-						disabled={!localIpAddress || !!getBranchMachineId()}
 						block
 					/>
 				</div>
@@ -83,7 +81,7 @@ const Login = () => {
 				</Link>
 			</Box>
 
-			<SetUrlModal visible={setUrlModalVisible} onClose={() => setSetUrlModalVisible(false)} />
+			<SettingUrlModal visible={urlModalVisible} onClose={() => setUrlModalVisible(false)} />
 
 			<RegisterModal
 				visible={registerModalVisible}

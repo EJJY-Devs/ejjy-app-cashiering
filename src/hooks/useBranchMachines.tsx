@@ -1,55 +1,53 @@
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { actions, selectors, types } from '../ducks/branch-machines';
+import { actions, types } from '../ducks/branch-machines';
 import { request } from '../global/types';
-import { modifiedExtraCallback } from '../utils/function';
+import { onCallback } from '../utils/function';
 import { useActionDispatch } from './useActionDispatch';
 
 export const useBranchMachines = () => {
+	// STATES
 	const [status, setStatus] = useState<any>(request.NONE);
 	const [errors, setErrors] = useState<any>([]);
 	const [recentRequest, setRecentRequest] = useState<any>();
 
-	const branchMachines = useSelector(selectors.selectBranchMachines());
+	// ACTIONS
+	const getBranchMachinesAction = useActionDispatch(actions.getBranchMachines);
+	const registerBranchMachineAction = useActionDispatch(actions.registerBranchMachine);
 
-	const getBranchMachines = useActionDispatch(actions.getBranchMachines);
-	const getBranchMachine = useActionDispatch(actions.getBranchMachine);
-	const registerBranchMachine = useActionDispatch(actions.registerBranchMachine);
+	// GENERAL METHODS
+	const resetError = () => setErrors([]);
+
+	const resetStatus = () => setStatus(request.NONE);
 
 	const reset = () => {
 		resetError();
 		resetStatus();
 	};
 
-	const resetError = () => setErrors([]);
-
-	const resetStatus = () => setStatus(request.NONE);
-
-	const getBranchMachineRequest = (data) => {
-		setRecentRequest(types.GET_BRANCH_MACHINE);
-		getBranchMachine({ ...data, callback });
+	const requestCallback = ({ status: requestStatus, errors: requestErrors = [] }) => {
+		setStatus(requestStatus);
+		setErrors(requestErrors);
 	};
 
-	const getBranchMachinesRequest = (data = {}) => {
-		setRecentRequest(types.GET_BRANCH_MACHINES);
-		getBranchMachines({ ...data, callback });
+	const executeRequest = (data, callback, action, type) => {
+		setRecentRequest(type);
+		action({
+			...data,
+			callback: onCallback(requestCallback, callback?.onSuccess, callback?.onError),
+		});
 	};
 
-	const registerBranchMachineRequest = (data, extraCallback = null) => {
-		setRecentRequest(types.REGISTER_BRANCH_MACHINE);
-		registerBranchMachine({ ...data, callback: modifiedExtraCallback(callback, extraCallback) });
+	const getBranchMachines = (callback = {}) => {
+		executeRequest({}, callback, getBranchMachinesAction, types.GET_BRANCH_MACHINES);
 	};
 
-	const callback = ({ status, errors = [] }) => {
-		setStatus(status);
-		setErrors(errors);
+	const registerBranchMachine = (data, callback = {}) => {
+		executeRequest(data, callback, registerBranchMachineAction, types.REGISTER_BRANCH_MACHINE);
 	};
 
 	return {
-		branchMachines,
-		getBranchMachines: getBranchMachinesRequest,
-		getBranchMachine: getBranchMachineRequest,
-		registerBranchMachine: registerBranchMachineRequest,
+		getBranchMachines,
+		registerBranchMachine,
 		status,
 		errors,
 		recentRequest,

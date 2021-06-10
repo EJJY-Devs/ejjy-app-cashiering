@@ -2,6 +2,7 @@
 import { Alert, Button, Space } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Container } from '../../components';
+import { SettingUrlModal } from '../../components/SettingUrl/SettingUrlModal';
 import { printSalesInvoice } from '../../configurePrinter';
 import { types as cashBreakdownsRequestTypes } from '../../ducks/cash-breakdowns';
 import { types as sessionTypes } from '../../ducks/sessions';
@@ -21,7 +22,6 @@ import { NavigationButtons } from './components/NavigationButtons/NavigationButt
 import { Payment } from './components/Payment/Payment';
 import { ProductSearch } from './components/ProductSearch/ProductSearch';
 import { ProductTable } from './components/ProductTable/ProductTable';
-import { SettingUrlModal } from './components/SettingUrl/SettingUrlModal';
 import './style.scss';
 
 const voidTransactionStatus = [

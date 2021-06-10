@@ -7,7 +7,7 @@ import {
 	ColoredText,
 	coloredTextType,
 	OutOfStocksBadgePill,
-	ReorderBadgePill,
+	ReorderBadgePill
 } from '../components';
 import { UncontrolledInput } from '../components/elements';
 import { MACHINE_COUNT_KEY, MACHINE_ID_KEY, ROW_HEIGHT } from '../global/constants';
@@ -16,7 +16,7 @@ import {
 	cashBreakdownTypes,
 	request,
 	unitOfMeasurementTypes,
-	userTypes,
+	userTypes
 } from '../global/types';
 
 export const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -129,6 +129,20 @@ export const modifiedExtraCallback = (callback, extraCallback = null) => {
 		}
 	};
 };
+
+export const onCallback =
+	(callback, onSuccess = null, onError = null) =>
+	(response) => {
+		callback(response);
+
+		if (onSuccess && response?.status === request.SUCCESS) {
+			onSuccess(response);
+		}
+
+		if (onError && response?.status === request.ERROR) {
+			onError(response);
+		}
+	};
 
 export const getColoredText = memoize((key, isDefault, x, y, isOverOnlyIfDefault = false) => {
 	let text = `${x}/${y}`;
