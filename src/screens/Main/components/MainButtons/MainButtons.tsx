@@ -309,7 +309,7 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 				visible={voidModalVisible}
 				isLoading={mainLoading}
 				onConfirm={onVoid}
-				onClose={() => setOthersModalVisible(false)}
+				onClose={() => setVoidModalVisible(false)}
 			/>
 
 			<KeyboardShortcutsModal

@@ -23,20 +23,30 @@ export const OthersModal = ({
 }: Props) => {
 	// REFS
 	const inputRef = useRef(null);
+	const isVisibleInputRef = useRef(null);
+
+	
 
 	// METHODS
 	useEffect(() => {
+		isVisibleInputRef.current = visible;
+	}, [visible]);
+
+	useEffect(() => {
 		if (inputRef && inputRef.current) {
 			setTimeout(() => {
-				const input = inputRef.current;
-				input.focus();
-			}, 500);
+				inputRef.current?.focus();
+			}, 1000);
 		}
 	}, [visible, inputRef]);
 
 	const handleKeyPress = (key, event) => {
 		event.preventDefault();
 		event.stopPropagation();
+
+		if(!isVisibleInputRef.current) {
+			return;
+		}
 
 		if (key === 'f1') {
 			onKeyboardShortcuts();
@@ -61,7 +71,6 @@ export const OthersModal = ({
 				handleKeys={['f1', 'f11', 'f12']}
 				onKeyEvent={handleKeyPress}
 				handleFocusableElements
-				isDisabled={!visible}
 			/>
 
 			<SearchTransaction inputRef={inputRef} visible={visible} closeModal={onClose} />
@@ -78,7 +87,9 @@ export const OthersModal = ({
 
 			<Divider />
 
-			<OthersReports visible={visible} />
+			{
+				visible && <OthersReports visible={visible} />
+			}
 
 			<Divider />
 

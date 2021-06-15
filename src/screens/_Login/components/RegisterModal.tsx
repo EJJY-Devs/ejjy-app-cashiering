@@ -56,8 +56,6 @@ export const RegisterModal = ({ visible, onClose }: Props) => {
 		);
 	};
 
-	// console.log('errors', errors);
-
 	return (
 		<Modal
 			title="Machine Registration"
