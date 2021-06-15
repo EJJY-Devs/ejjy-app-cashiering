@@ -1,5 +1,5 @@
 import { Divider, message } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Box, Button } from '../../components/elements';
 import { SettingUrlModal } from '../../components/SettingUrl/SettingUrlModal';
@@ -7,7 +7,11 @@ import { request } from '../../global/types';
 import { useAuth } from '../../hooks/useAuth';
 import { useCurrentTransaction } from '../../hooks/useCurrentTransaction';
 import { useSession } from '../../hooks/useSession';
-import { getBranchMachineCount, getBranchMachineId } from '../../utils/function';
+import {
+	getBranchMachineCount,
+	getBranchMachineId,
+	getKeyDownCombination,
+} from '../../utils/function';
 import ButtonClose from './components/ButtonClose';
 import { ILoginValues, LoginForm } from './components/LoginForm';
 import { RegisterModal } from './components/RegisterModal';
@@ -17,13 +21,27 @@ const Login = () => {
 	// STATES
 	const [registerModalVisible, setRegisterModalVisible] = useState(false);
 	const [urlModalVisible, setUrlModalVisible] = useState(false);
+	const [areSetupButtonsVisible, setSetupButtonsVisible] = useState(false);
 
 	// CUSTOM HOOKS
-	const { localIpAddress } = useAuth();
 	const { startSession, status, errors } = useSession();
+	const { localIpAddress } = useAuth();
 	const { setPreviousChange } = useCurrentTransaction();
 
 	// METHODS
+	useEffect(() => {
+		document.addEventListener('keydown', handleKeyDown);
+
+		return () => {
+			document.removeEventListener('keydown', handleKeyDown);
+		};
+	});
+
+	useEffect(() => {
+		const branchMachineId = getBranchMachineId();
+		setSetupButtonsVisible(!(branchMachineId && localIpAddress));
+	}, [localIpAddress]);
+
 	const onStartSession = (data: ILoginValues) => {
 		const branchMachineId = getBranchMachineId();
 		const branchMachineCount = getBranchMachineCount();
@@ -42,6 +60,14 @@ const Login = () => {
 		setPreviousChange(null);
 	};
 
+	const handleKeyDown = (event) => {
+		const key = getKeyDownCombination(event);
+		
+		if (key === 'meta+s') {
+			setSetupButtonsVisible((value) => !value);
+		}
+	};
+
 	return (
 		<section className="Login">
 			<ButtonClose onClick={() => window.close()} />
@@ -58,23 +84,25 @@ const Login = () => {
 
 				<Divider />
 
-				<div className="setup-buttons">
-					<Button
-						classNames="btn-set-api-url"
-						text="1. Set API URL"
-						variant="dark-gray"
-						onClick={() => setUrlModalVisible(true)}
-						block
-					/>
+				{areSetupButtonsVisible && (
+					<div className="setup-buttons">
+						<Button
+							classNames="btn-set-api-url"
+							text="1. Set API URL"
+							variant="dark-gray"
+							onClick={() => setUrlModalVisible(true)}
+							block
+						/>
 
-					<Button
-						classNames="btn-register-machine"
-						text="2. Register Machine"
-						variant="dark-gray"
-						onClick={() => setRegisterModalVisible(true)}
-						block
-					/>
-				</div>
+						<Button
+							classNames="btn-register-machine"
+							text="2. Register Machine"
+							variant="dark-gray"
+							onClick={() => setRegisterModalVisible(true)}
+							block
+						/>
+					</div>
+				)}
 
 				<Link to="/reports" className="btn-reports">
 					<Button text="Reports" variant="dark-gray" block />
