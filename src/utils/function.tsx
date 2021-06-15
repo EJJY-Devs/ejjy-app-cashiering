@@ -221,9 +221,9 @@ export const getCashBreakdownTotal = (cashBreakdown) => {
 
 export const getProductQuantity = (quantity, unitOfMeasurementType) => {
 	if (unitOfMeasurementType === unitOfMeasurementTypes.WEIGHING) {
-		return quantity.toFixed(3);
+		return Number(quantity).toFixed(3);
 	} else if (unitOfMeasurementType === unitOfMeasurementTypes.NON_WEIGHING) {
-		return quantity.toFixed(0);
+		return Number(quantity).toFixed(0);
 	}
 
 	return 0;
