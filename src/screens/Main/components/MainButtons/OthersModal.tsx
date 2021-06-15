@@ -23,30 +23,19 @@ export const OthersModal = ({
 }: Props) => {
 	// REFS
 	const inputRef = useRef(null);
-	const isVisibleInputRef = useRef(null);
-
-	
 
 	// METHODS
 	useEffect(() => {
-		isVisibleInputRef.current = visible;
-	}, [visible]);
-
-	useEffect(() => {
-		if (inputRef && inputRef.current) {
+		if (inputRef.current) {
 			setTimeout(() => {
 				inputRef.current?.focus();
 			}, 1000);
 		}
-	}, [visible, inputRef]);
+	}, [inputRef]);
 
 	const handleKeyPress = (key, event) => {
 		event.preventDefault();
 		event.stopPropagation();
-
-		if(!isVisibleInputRef.current) {
-			return;
-		}
 
 		if (key === 'f1') {
 			onKeyboardShortcuts();
@@ -66,6 +55,7 @@ export const OthersModal = ({
 			onCancel={onClose}
 			centered
 			closable
+			destroyOnClose
 		>
 			<KeyboardEventHandler
 				handleKeys={['f1', 'f11', 'f12']}
@@ -87,9 +77,7 @@ export const OthersModal = ({
 
 			<Divider />
 
-			{
-				visible && <OthersReports visible={visible} />
-			}
+			<OthersReports visible={visible} />
 
 			<Divider />
 

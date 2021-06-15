@@ -1,5 +1,5 @@
 import { message } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import KeyboardEventHandler from 'react-keyboard-event-handler';
 import { reportTypes } from '../../../../global/types';
 import { getBranchMachineId } from '../../../../utils/function';
