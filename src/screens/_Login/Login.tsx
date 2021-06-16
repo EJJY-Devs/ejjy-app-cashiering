@@ -62,8 +62,8 @@ const Login = () => {
 
 	const handleKeyDown = (event) => {
 		const key = getKeyDownCombination(event);
-		
-		if (key === 'meta+s') {
+
+		if (['meta+s', 'ctrl+s'].includes(key)) {
 			setSetupButtonsVisible((value) => !value);
 		}
 	};
