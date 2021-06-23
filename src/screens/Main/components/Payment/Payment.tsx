@@ -28,6 +28,7 @@ export const Payment = () => {
 		previousChange,
 		overallDiscount,
 		isTransactionSearched,
+		resetTransaction,
 	} = useCurrentTransaction();
 	const { listBranchProducts } = useBranchProducts();
 	const { isModalVisible, setModalVisible } = useUI();
@@ -152,16 +153,19 @@ export const Payment = () => {
 				onClose={() => setPaymentModalVisible(false)}
 			/>
 
-			<ThankYouModal
-				onViewInvoice={onViewInvoice}
-				visible={thankYouModalVisible}
-				onClose={() => setThankYouModalVisible(false)}
-			/>
-
 			<InvoiceModal
 				visible={invoiceModalVisible}
 				transaction={transaction}
 				onClose={() => setInvoiceModalVisible(false)}
+			/>
+
+			<ThankYouModal
+				onViewInvoice={onViewInvoice}
+				visible={thankYouModalVisible}
+				onClose={() => {
+					resetTransaction();
+					setThankYouModalVisible(false);
+				}}
 			/>
 		</div>
 	);

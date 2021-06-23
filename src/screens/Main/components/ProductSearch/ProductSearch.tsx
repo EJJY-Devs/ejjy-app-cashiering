@@ -112,11 +112,11 @@ export const ProductSearch = () => {
 	);
 
 	const isProductSearchDisabled = useCallback(
-		() =>
-			isTransactionSearched &&
-			[transactionStatusTypes.VOID_EDITED, transactionStatusTypes.VOID_CANCELLED].includes(
-				transactionStatus,
-			),
+		() => isTransactionSearched,
+		// &&
+		// [transactionStatusTypes.VOID_EDITED, transactionStatusTypes.VOID_CANCELLED].includes(
+		// 	transactionStatus,
+		// )
 		[isTransactionSearched, transactionStatus],
 	);
 
@@ -126,6 +126,11 @@ export const ProductSearch = () => {
 
 	const onSelectProduct = () => {
 		const product = products?.[activeIndex];
+
+		if (searchedSpin) {
+			message.error("Please wait as we're still searching for products.");
+			return;
+		}
 
 		if (!product) {
 			message.error('Please select a product first.');
@@ -212,7 +217,9 @@ export const ProductSearch = () => {
 						setSearchedKey(value);
 						debounceSearchedChange(value);
 					}}
-					placeholder="Search by name, barcode, textcode or description"
+					placeholder={
+						isProductSearchDisabled() ? '' : 'Search by name, barcode, textcode or description'
+					}
 					disabled={isProductSearchDisabled()}
 				/>
 
