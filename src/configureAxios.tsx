@@ -13,11 +13,6 @@ export default function configureAxios(store) {
 	axios.interceptors.request.use(
 		// eslint-disable-next-line func-names
 		function (config) {
-			// if there's no verification needed, just exit immediately
-			if (NO_VERIFICATION_NEEDED === config.params) {
-				return config;
-			}
-
 			// since there's no `connect` HOC, this is how we
 			// access the store (or reducer)
 			const { accessToken, localIpAddress } = store.getState()?.[AUTH_KEY];
@@ -25,6 +20,12 @@ export default function configureAxios(store) {
 			if (!config.baseURL) {
 				config.baseURL = localIpAddress;
 			}
+
+			// if there's no verification needed, just exit immediately
+			if (NO_VERIFICATION_NEEDED === config.params) {
+				return config;
+			}
+
 			// Get access token from store for every api request
 			config.headers.authorization = accessToken ? `Bearer ${accessToken}` : null;
 
