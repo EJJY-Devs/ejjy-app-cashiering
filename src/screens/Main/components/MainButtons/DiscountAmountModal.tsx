@@ -1,10 +1,11 @@
 import { message, Modal, Spin } from 'antd';
 import React, { useCallback, useEffect, useRef } from 'react';
 import KeyboardEventHandler from 'react-keyboard-event-handler';
-import FieldError from '../../../../components/elements/FieldError/FieldError';
+import { RequestErrors } from '../../../../components/RequestErrors/RequestErrors';
 import { request } from '../../../../global/types';
 import { useAuth } from '../../../../hooks/useAuth';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
+import { convertIntoArray } from '../../../../utils/function';
 import { DiscountAmountForm } from './DiscountAmountForm';
 import './style.scss';
 
@@ -38,7 +39,7 @@ export const DiscountAmountModal = ({ visible, onClose }: Props) => {
 		() =>
 			Number(
 				Object.values(transactionProducts).reduce(
-					(prev: number, { quantity, pricePerPiece }) => quantity * pricePerPiece + prev,
+					(prev: number, { quantity, price_per_piece }) => quantity * price_per_piece + prev,
 					0,
 				),
 			),
@@ -100,7 +101,7 @@ export const DiscountAmountModal = ({ visible, onClose }: Props) => {
 			/>
 
 			<Spin size="large" spinning={status === request.REQUESTING}>
-				{!!errors.length && errors.map((error) => <FieldError error={error} />)}
+				<RequestErrors errors={convertIntoArray(errors)} withSpaceBottom />
 				<DiscountAmountForm
 					currentPrice={getTotal()}
 					overallDiscount={overallDiscount}

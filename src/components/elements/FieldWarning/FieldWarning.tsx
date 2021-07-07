@@ -1,4 +1,4 @@
-import { CloseCircleOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 import cn from 'classnames';
 import { FormikErrors } from 'formik';
 import * as React from 'react';
@@ -9,11 +9,11 @@ interface Props {
 	classNames?: string;
 }
 
-const FieldError = ({ error, classNames }: Props) => (
-	<div className={cn('FieldError', classNames)}>
-		<CloseCircleOutlined className="icon" />
+const FieldWarning = ({ error, classNames }: Props) => (
+	<div className={cn('FieldWarning', classNames)}>
+		<ExclamationCircleOutlined className="icon" />
 		<span className="text">{error}</span>
 	</div>
 );
 
-export default FieldError;
+export default FieldWarning;

@@ -22,22 +22,25 @@ const columns = [
 ];
 
 export const InvoiceModal = ({ visible, transaction, onClose }: Props) => {
-	// CUSTOM HOOKS
-	const { transactionProducts } = useCurrentTransaction();
+	// STATE
 	const [data, setData] = useState([]);
 
-	// METHODS
-	// Effect: Format product data
-	useEffect(() => {
-		const formattedProducts = transactionProducts.map((item) => [
-			item.data.name,
-			getProductQuantity(item.quantity, item.data.unit_of_measurement),
-			`₱${item.pricePerPiece.toFixed(2)}`,
-			`₱${(item.quantity * item.pricePerPiece).toFixed(2)}`,
-		]);
+	// CUSTOM HOOKS
+	const { transactionProducts } = useCurrentTransaction();
 
-		setData(formattedProducts);
-	}, [transactionProducts]);
+	// METHODS
+	useEffect(() => {
+		if (visible) {
+			setData(
+				transactionProducts.map((item) => [
+					item.product.name,
+					getProductQuantity(item.quantity, item.product.unit_of_measurement),
+					`₱${item.price_per_piece.toFixed(2)}`,
+					`₱${(item.quantity * item.price_per_piece).toFixed(2)}`,
+				]),
+			);
+		}
+	}, [visible, transactionProducts]);
 
 	return (
 		<Modal

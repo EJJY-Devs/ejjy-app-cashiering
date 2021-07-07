@@ -8,7 +8,6 @@ import FieldInfo from '../../../../components/elements/FieldInfo/FieldInfo';
 import { TableQueue } from '../../../../components/TableQueue/TableQueue';
 import { NO_INDEX_SELECTED } from '../../../../global/constants';
 import { request, transactionStatusTypes } from '../../../../global/types';
-import { useBranchProducts } from '../../../../hooks/useBranchProducts';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import { useSession } from '../../../../hooks/useSession';
 import { useTransactions } from '../../../../hooks/useTransactions';
@@ -40,7 +39,6 @@ export const QueueModal = ({ visible, onClose }: Props) => {
 		requestStatus: transactionsRequestStatus,
 	} = useCurrentTransaction();
 	const { transactions, listTransactions, status: transactionsStatus } = useTransactions();
-	const { branchProducts } = useBranchProducts();
 	const { setMainLoading, setMainLoadingText } = useUI();
 
 	// METHODS
@@ -102,7 +100,7 @@ export const QueueModal = ({ visible, onClose }: Props) => {
 	};
 
 	const onViewTransaction = (transaction) => {
-		setCurrentTransaction({ transaction, branchProducts });
+		setCurrentTransaction({ transaction });
 	};
 
 	const onQueue = () => {
@@ -154,8 +152,8 @@ export const QueueModal = ({ visible, onClose }: Props) => {
 
 	const onRowClick = (index) => {
 		if (filteredTransactions?.[activeIndex]) {
-			checkCurrentTransaction(filteredTransactions[activeIndex]);
 			setActiveIndex(index);
+			checkCurrentTransaction(filteredTransactions[index]);
 		} else {
 			message.error('Cannot find selected queued item.');
 		}

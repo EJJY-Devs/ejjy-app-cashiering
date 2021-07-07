@@ -5,7 +5,6 @@ import { Button } from '../../../../components/elements';
 import { printSalesInvoice } from '../../../../configurePrinter';
 import { tenderShortcutKeys } from '../../../../global/options';
 import { transactionStatusTypes } from '../../../../global/types';
-import { useBranchProducts } from '../../../../hooks/useBranchProducts';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import { useUI } from '../../../../hooks/useUI';
 import { getKeyDownCombination, numberWithCommas } from '../../../../utils/function';
@@ -30,7 +29,6 @@ export const Payment = () => {
 		isTransactionSearched,
 		resetTransaction,
 	} = useCurrentTransaction();
-	const { listBranchProducts } = useBranchProducts();
 	const { isModalVisible, setModalVisible } = useUI();
 
 	//METHODS
@@ -50,7 +48,7 @@ export const Payment = () => {
 		() =>
 			Number(
 				Object.values(transactionProducts).reduce(
-					(prev: number, { quantity, pricePerPiece }) => quantity * pricePerPiece + prev,
+					(prev: number, { quantity, price_per_piece }) => quantity * price_per_piece + prev,
 					0,
 				),
 			),
@@ -73,7 +71,6 @@ export const Payment = () => {
 	}, [transactionStatus, isTransactionSearched]);
 
 	const onPaymentSuccess = (transaction) => {
-		listBranchProducts();
 		setPaymentModalVisible(false);
 		setThankYouModalVisible(true);
 		setTransaction(transaction);
@@ -87,12 +84,6 @@ export const Payment = () => {
 		}
 
 		setPaymentModalVisible(true);
-	};
-
-	const onViewInvoice = () => {
-		if (transaction) {
-			setInvoiceModalVisible(true);
-		}
 	};
 
 	const handleKeyDown = (event) => {
@@ -160,7 +151,11 @@ export const Payment = () => {
 			/>
 
 			<ThankYouModal
-				onViewInvoice={onViewInvoice}
+				onViewInvoice={() => {
+					if (transaction) {
+						setInvoiceModalVisible(true);
+					}
+				}}
 				visible={thankYouModalVisible}
 				onClose={() => {
 					resetTransaction();

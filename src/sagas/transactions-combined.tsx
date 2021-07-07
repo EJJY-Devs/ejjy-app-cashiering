@@ -5,7 +5,7 @@ import {
 } from '../ducks/branch-products';
 import { actions as currentTransactionActions } from '../ducks/current-transaction';
 import { types } from '../ducks/transactions';
-import { MAX_PAGE_SIZE, MAX_RETRY, RETRY_INTERVAL_MS } from '../global/constants';
+import { BRANCH_PRODUCTS_PAGE_SIZE, MAX_RETRY, RETRY_INTERVAL_MS } from '../global/constants';
 import { request } from '../global/types';
 import { service as branchProductService } from '../services/branch-products';
 import { service } from '../services/transactions';
@@ -36,15 +36,10 @@ function* firstTimePayment({ payload }: any) {
 		yield put(currentTransactionActions.updateTransaction({ transaction: response.data }));
 
 		if (shouldUpdateBranchProducts) {
-			const response = yield retry(
-				MAX_RETRY,
-				RETRY_INTERVAL_MS,
-				branchProductService.listByBranch,
-				{
-					page: 1,
-					page_size: MAX_PAGE_SIZE,
-				},
-			);
+			const response = yield retry(MAX_RETRY, RETRY_INTERVAL_MS, branchProductService.list, {
+				page: 1,
+				page_size: BRANCH_PRODUCTS_PAGE_SIZE,
+			});
 
 			yield put(
 				branchProductActions.save({
@@ -73,15 +68,10 @@ function* cancelVoidedTransaction({ payload }: any) {
 		});
 
 		if (shouldUpdateBranchProducts) {
-			const response = yield retry(
-				MAX_RETRY,
-				RETRY_INTERVAL_MS,
-				branchProductService.listByBranch,
-				{
-					page: 1,
-					page_size: MAX_PAGE_SIZE,
-				},
-			);
+			const response = yield retry(MAX_RETRY, RETRY_INTERVAL_MS, branchProductService.list, {
+				page: 1,
+				page_size: BRANCH_PRODUCTS_PAGE_SIZE,
+			});
 
 			yield put(
 				branchProductActions.save({

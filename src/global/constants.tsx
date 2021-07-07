@@ -8,6 +8,8 @@ export const APP_TITLE = process.env.REACT_APP_TITLE;
 
 export const MAX_PAGE_SIZE = 100;
 
+export const BRANCH_PRODUCTS_PAGE_SIZE = 3000;
+
 export const MAX_RETRY = 1;
 
 export const RETRY_INTERVAL_MS = 100;

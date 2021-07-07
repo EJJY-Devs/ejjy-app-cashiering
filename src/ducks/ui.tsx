@@ -18,7 +18,7 @@ const initialState = {
 	mainLoading: false,
 	mainLoadingText: null,
 	isBarcodeScanningEnabled: true,
-	isSearchSuggestionVisible: true,
+	isSearchSuggestionVisible: false,
 	isModalVisible: true,
 };
 

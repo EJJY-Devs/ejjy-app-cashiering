@@ -8,29 +8,24 @@ import KeyboardEventHandler from 'react-keyboard-event-handler';
 import { ControlledInput } from '../../../../components/elements';
 import { NO_INDEX_SELECTED } from '../../../../global/constants';
 import { searchShortcutKeys } from '../../../../global/options';
-import { branchProductStatus, transactionStatusTypes } from '../../../../global/types';
+import { branchProductStatus, request } from '../../../../global/types';
 import { useBranchProducts } from '../../../../hooks/useBranchProducts';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
-import {
-	getBranchProductStatus,
-	getKeyDownCombination,
-	searchProductInfo,
-} from '../../../../utils/function';
+import { useUI } from '../../../../hooks/useUI';
+import { getBranchProductStatus, getKeyDownCombination } from '../../../../utils/function';
 import { AddProductModal } from './AddProductModal';
 import './style.scss';
-import { useUI } from '../../../../hooks/useUI';
 
 const SEARCH_DEBOUNCE_TIME = 500;
 const PRODUCT_LIST_HEIGHT = 450;
 
 export const ProductSearch = () => {
 	// STATES
-	const [searchableProducts, setSearchableProducts] = useState([]);
 	const [activeIndex, setActiveIndex] = useState(NO_INDEX_SELECTED);
-	const [products, setProducts] = useState([]);
+	const [branchProducts, setBranchProducts] = useState([]);
 	const [searchedKey, setSearchedKey] = useState('');
-	const [searchedSpin, setSearchedSpin] = useState(false);
 	const [addProductModalVisible, setAddProductModalVisible] = useState(false);
+	const [productIdsInTable, setProductIdsInTable] = useState([]);
 
 	// REFS
 	const itemRefs = useRef([]);
@@ -38,8 +33,8 @@ export const ProductSearch = () => {
 	const scrollbarRef = useRef(null);
 
 	// CUSTOM HOOKS
-	const { branchProducts } = useBranchProducts();
-	const { transactionProducts, isTransactionSearched, transactionStatus } = useCurrentTransaction();
+	const { listBranchProducts, status } = useBranchProducts();
+	const { transactionProducts, isTransactionSearched } = useCurrentTransaction();
 	const { isModalVisible, setModalVisible, setSearchSuggestionVisible } = useUI();
 
 	// METHODS
@@ -55,7 +50,10 @@ export const ProductSearch = () => {
 		setModalVisible(addProductModalVisible);
 	}, [addProductModalVisible]);
 
-	// Effect: Set list of searchable products
+	useEffect(() => {
+		setProductIdsInTable(transactionProducts.map((item) => item.product.id));
+	}, [transactionProducts]);
+
 	useEffect(() => {
 		if (inputRef && inputRef.current) {
 			setTimeout(() => {
@@ -63,11 +61,6 @@ export const ProductSearch = () => {
 			}, 500);
 		}
 	}, [inputRef]);
-
-	useEffect(() => {
-		const ids = transactionProducts.map((item) => item.id);
-		setSearchableProducts(branchProducts.filter((item) => !ids.includes(item.id)));
-	}, [transactionProducts, branchProducts]);
 
 	// Effect: Focus active item
 	useEffect(() => {
@@ -82,73 +75,52 @@ export const ProductSearch = () => {
 		}
 	}, [activeIndex, scrollbarRef]);
 
-	const onSearch = (value, searchableProducts) => {
-		let filteredProducts = [];
+	const onSearch = (search) => {
+		listBranchProducts(
+			{ search },
+			{
+				onSuccess: ({ response }) => {
+					const searchableProducts = response.results.filter(
+						({ product }) => !productIdsInTable.includes(product.id),
+					);
 
-		if (value.length) {
-			filteredProducts = searchableProducts.filter(({ product }) =>
-				searchProductInfo(value, product),
-			);
-		}
-
-		if (value.length && !filteredProducts.length) {
-			message.warning('Code not recognized.');
-		}
-
-		setProducts(filteredProducts);
-		setActiveIndex(0);
-		setSearchedSpin(false);
-
-		setSearchSuggestionVisible(!!filteredProducts.length);
-	};
-
-	const onFocus = () => {
-		onSearch(searchedKey, searchableProducts);
+					setActiveIndex(0);
+					setBranchProducts(searchableProducts);
+					setSearchSuggestionVisible(searchableProducts.length > 0);
+				},
+				onError: () => {
+					message.warning('Code not recognized.');
+				},
+			},
+		);
 	};
 
 	const debounceSearchedChange = useCallback(
-		debounce((keyword) => onSearch(keyword, searchableProducts), SEARCH_DEBOUNCE_TIME),
-		[searchableProducts],
+		debounce((keyword) => onSearch(keyword), SEARCH_DEBOUNCE_TIME),
+		[productIdsInTable],
 	);
 
-	const isProductSearchDisabled = useCallback(
-		() => isTransactionSearched,
-		// &&
-		// [transactionStatusTypes.VOID_EDITED, transactionStatusTypes.VOID_CANCELLED].includes(
-		// 	transactionStatus,
-		// )
-		[isTransactionSearched, transactionStatus],
-	);
-
-	const handleHover = (index) => {
-		setActiveIndex(index);
-	};
+	const isProductSearchDisabled = useCallback(() => isTransactionSearched, [isTransactionSearched]);
 
 	const onSelectProduct = () => {
-		const product = products?.[activeIndex];
+		const branchProduct = branchProducts?.[activeIndex];
 
-		if (searchedSpin) {
+		if (status === request.REQUESTING) {
 			message.error("Please wait as we're still searching for products.");
 			return;
 		}
 
-		if (!product) {
+		if (!branchProduct) {
 			message.error('Please select a product first.');
 			return;
 		}
 
-		if (product?.product_status === branchProductStatus.OUT_OF_STOCK) {
+		if (branchProduct?.product_status === branchProductStatus.OUT_OF_STOCK) {
 			message.error('Product is already out of stock.');
 			return;
 		}
 
 		setAddProductModalVisible(true);
-	};
-
-	const onAddProductSuccess = () => {
-		setSearchedKey('');
-		setProducts([]);
-		setSearchSuggestionVisible(false);
 	};
 
 	const handleKeyDown = (event) => {
@@ -157,7 +129,7 @@ export const ProductSearch = () => {
 		}
 
 		const key = getKeyDownCombination(event);
-
+		
 		if (searchShortcutKeys.includes(key)) {
 			if (inputRef?.current !== document.activeElement) {
 				inputRef?.current?.focus();
@@ -184,8 +156,8 @@ export const ProductSearch = () => {
 
 		if (key === 'down') {
 			setActiveIndex((value) => {
-				if (products?.length > 0) {
-					return value < products.length - 1 ? value + 1 : value;
+				if (branchProducts?.length > 0) {
+					return value < branchProducts.length - 1 ? value + 1 : value;
 				}
 				return value;
 			});
@@ -205,15 +177,18 @@ export const ProductSearch = () => {
 			<KeyboardEventHandler
 				handleKeys={['up', 'down', 'enter', 'esc']}
 				onKeyEvent={handleKeyPress}
-				isDisabled={!products.length}
+				isDisabled={!branchProducts.length}
 			>
 				<ControlledInput
 					ref={inputRef}
 					classNames="product-search-input"
 					value={searchedKey}
-					onFocus={onFocus}
+					onFocus={() => {
+						
+						onSearch(searchedKey);
+					}}
 					onChange={(value) => {
-						setSearchedSpin(true);
+						setBranchProducts([]);
 						setSearchedKey(value);
 						debounceSearchedChange(value);
 					}}
@@ -223,9 +198,9 @@ export const ProductSearch = () => {
 					disabled={isProductSearchDisabled()}
 				/>
 
-				{!!searchedKey.length && (
+				{searchedKey.length > 0 && (
 					<div className="product-search-suggestion">
-						<Spin size="large" spinning={searchedSpin}>
+						<Spin size="large" spinning={status === request.REQUESTING}>
 							<Scrollbars
 								ref={scrollbarRef}
 								autoHeight
@@ -233,12 +208,14 @@ export const ProductSearch = () => {
 								autoHeightMax={PRODUCT_LIST_HEIGHT}
 								style={{ height: '100%', paddingBottom: 10 }}
 							>
-								{products.map((item, index) => (
+								{branchProducts.map((item, index) => (
 									<div
 										ref={(el) => (itemRefs.current[index] = el)}
 										key={index}
 										className={cn('item', { active: activeIndex === index })}
-										onMouseEnter={() => handleHover(index)}
+										onMouseEnter={() => (index) => {
+											setActiveIndex(index);
+										}}
 										onClick={onSelectProduct}
 									>
 										<div className="name-wrapper">
@@ -258,9 +235,13 @@ export const ProductSearch = () => {
 			</KeyboardEventHandler>
 
 			<AddProductModal
-				product={products?.[activeIndex]}
+				branchProduct={branchProducts?.[activeIndex]}
 				visible={addProductModalVisible}
-				onSuccess={onAddProductSuccess}
+				onSuccess={() => {
+					setSearchedKey('');
+					setBranchProducts([]);
+					setSearchSuggestionVisible(false);
+				}}
 				onClose={() => setAddProductModalVisible(false)}
 			/>
 		</div>

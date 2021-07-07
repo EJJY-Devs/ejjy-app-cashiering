@@ -8,7 +8,6 @@ import { types as cashBreakdownsRequestTypes } from '../../ducks/cash-breakdowns
 import { types as sessionTypes } from '../../ducks/sessions';
 import { reprintInvoiceShortcutKeys } from '../../global/options';
 import { cashBreakdownTypes, request, transactionStatusTypes } from '../../global/types';
-import { useBranchProducts } from '../../hooks/useBranchProducts';
 import { useCashBreakdown } from '../../hooks/useCashBreakdown';
 import { useCurrentTransaction } from '../../hooks/useCurrentTransaction';
 import { useSession } from '../../hooks/useSession';
@@ -60,8 +59,7 @@ const Main = () => {
 		status: cashBreakdownStatus,
 		recentRequest: cashBreakdownRecentRequest,
 	} = useCashBreakdown();
-	const { listBranchProducts, status: branchProductsStatus } = useBranchProducts();
-	const { getSiteSettings, status: siteSettingsStatus } = useSiteSettings();
+	const { status: siteSettingsStatus } = useSiteSettings();
 	const { isModalVisible, setModalVisible, mainLoading, mainLoadingText } = useUI();
 
 	// METHODS
@@ -83,8 +81,6 @@ const Main = () => {
 			if (status === request.SUCCESS) {
 				if (response) {
 					listCashBreakdown(session?.id);
-					listBranchProducts();
-					// getSiteSettings();
 				} else {
 					invalidSession();
 				}
@@ -115,13 +111,11 @@ const Main = () => {
 	const isLoading = useCallback(
 		() =>
 			mainLoading ||
-			[cashBreakdownStatus, branchProductsStatus, sessionStatus, siteSettingsStatus].includes(
-				request.REQUESTING,
-			),
+			[cashBreakdownStatus, sessionStatus, siteSettingsStatus].includes(request.REQUESTING),
 		[
 			cashBreakdownStatus,
 			cashBreakdownRecentRequest,
-			branchProductsStatus,
+
 			siteSettingsStatus,
 			sessionStatus,
 			mainLoading,
@@ -139,9 +133,7 @@ const Main = () => {
 			}
 		}
 
-		if (
-			[cashBreakdownStatus, branchProductsStatus, siteSettingsStatus].includes(request.REQUESTING)
-		) {
+		if ([cashBreakdownStatus, siteSettingsStatus].includes(request.REQUESTING)) {
 			return 'Fetching data...';
 		}
 
@@ -150,7 +142,6 @@ const Main = () => {
 		}
 	}, [
 		siteSettingsStatus,
-		branchProductsStatus,
 		cashBreakdownStatus,
 		cashBreakdownRecentRequest,
 

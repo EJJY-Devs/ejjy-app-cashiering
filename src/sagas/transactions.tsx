@@ -83,28 +83,6 @@ function* create({ payload }: any) {
 		});
 		yield put(actions.save({ type: types.CREATE_TRANSACTION, transaction: response.data }));
 
-		// TODO: TEST IF NEEDED PA NI
-		// if (shouldUpdateBranchProducts && branchId) {
-		// 	const response = yield retry(
-		// 		MAX_RETRY,
-		// 		RETRY_INTERVAL_MS,
-		// 		branchProductService.listByBranch,
-		// 		{
-		// 			page: 1,
-		// 			page_size: MAX_PAGE_SIZE,
-		// 			branch_id: branchId,
-		// 			fields: 'id,product,price_per_piece,product_status',
-		// 		},
-		// 	);
-
-		// 	yield put(
-		// 		branchProductActions.save({
-		// 			type: branchProductTypes.LIST_BRANCH_PRODUCTS,
-		// 			branchProducts: response.data,
-		// 		}),
-		// 	);
-		// }
-
 		callback({ status: request.SUCCESS, response: response.data });
 	} catch (e) {
 		callback({ status: request.ERROR, errors: e.errors });

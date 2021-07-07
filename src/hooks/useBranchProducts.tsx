@@ -1,44 +1,34 @@
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { actions, selectors, types } from '../ducks/branch-products';
+import { actions } from '../ducks/branch-products';
 import { request } from '../global/types';
+import { onCallback } from '../utils/function';
 import { useActionDispatch } from './useActionDispatch';
 
 export const useBranchProducts = () => {
 	const [status, setStatus] = useState<any>(request.NONE);
 	const [errors, setErrors] = useState<any>([]);
-	const [recentRequest, setRecentRequest] = useState<any>();
 
-	const branchProducts = useSelector(selectors.selectBranchProducts());
-	const listBranchProducts = useActionDispatch(actions.listBranchProducts);
+	const listBranchProductsAction = useActionDispatch(actions.listBranchProducts);
 
-	const reset = () => {
-		resetError();
-		resetStatus();
+	const requestCallback = ({ status: requestStatus, errors: requestErrors = [] }) => {
+		setStatus(requestStatus);
+		setErrors(requestErrors);
 	};
 
-	const resetError = () => setErrors([]);
-
-	const resetStatus = () => setStatus(request.NONE);
-
-	const listBranchProductsRequest = () => {
-		setRecentRequest(types.LIST_BRANCH_PRODUCTS);
-		listBranchProducts({ callback });
+	const executeRequest = (data, callback, action) => {
+		action({
+			...data,
+			callback: onCallback(requestCallback, callback?.onSuccess, callback?.onError),
+		});
 	};
 
-	const callback = ({ status, errors = [] }) => {
-		setStatus(status);
-		setErrors(errors);
+	const listBranchProducts = (data, callback = {}) => {
+		executeRequest(data, callback, listBranchProductsAction);
 	};
 
 	return {
-		branchProducts,
-		listBranchProducts: listBranchProductsRequest,
+		listBranchProducts,
 		status,
 		errors,
-		recentRequest,
-		reset,
-		resetStatus,
-		resetError,
 	};
 };

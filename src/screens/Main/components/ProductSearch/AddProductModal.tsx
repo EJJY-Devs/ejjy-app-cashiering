@@ -1,32 +1,26 @@
 import { message, Modal, Spin } from 'antd';
 import React, { useEffect, useRef } from 'react';
 import { request } from '../../../../global/types';
-import { useBranchProducts } from '../../../../hooks/useBranchProducts';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import { useTransactions } from '../../../../hooks/useTransactions';
 import { AddProductForm } from './AddProductForm';
 import './style.scss';
 
 interface Props {
-	product: any;
+	branchProduct: any;
 	visible: boolean;
 	onSuccess: any;
 	onClose: any;
 }
 
-export const AddProductModal = ({ product, visible, onClose, onSuccess }: Props) => {
+export const AddProductModal = ({ branchProduct, visible, onClose, onSuccess }: Props) => {
 	// REFS
 	const inputRef = useRef(null);
 
 	// CUSTOM HOOKS
-	const { branchProducts } = useBranchProducts();
 	const { updateTransaction, status } = useTransactions();
-	const {
-		transactionId,
-		transactionProducts,
-		addProduct,
-		setCurrentTransaction,
-	} = useCurrentTransaction();
+	const { transactionId, transactionProducts, addProduct, setCurrentTransaction } =
+		useCurrentTransaction();
 
 	// METHODS
 	useEffect(() => {
@@ -52,20 +46,20 @@ export const AddProductModal = ({ product, visible, onClose, onSuccess }: Props)
 					products: [
 						...transactionProducts.map((item) => ({
 							transaction_product_id: item.transactionProductId,
-							product_id: item.productId,
+							product_id: item.product.id,
 							quantity: item.quantity,
-							price_per_piece: item.pricePerPiece,
+							price_per_piece: item.price_per_piece,
 						})),
 						{
-							product_id: product.product.id,
-							price_per_piece: product.price_per_piece,
+							product_id: branchProduct.product.id,
+							price_per_piece: branchProduct.price_per_piece,
 							quantity: data.quantity,
 						},
 					],
 				},
 				({ status, transaction }) => {
 					if (status === request.SUCCESS) {
-						setCurrentTransaction({ transaction, branchProducts });
+						setCurrentTransaction({ transaction });
 						callback();
 					}
 				},
@@ -74,10 +68,7 @@ export const AddProductModal = ({ product, visible, onClose, onSuccess }: Props)
 			// NOTE: Setting of product
 			addProduct({
 				product: {
-					data: product.product,
-					id: product.id,
-					productId: product.product.id,
-					pricePerPiece: product.price_per_piece,
+					...branchProduct,
 					quantity: data.quantity,
 				},
 			});
@@ -98,8 +89,8 @@ export const AddProductModal = ({ product, visible, onClose, onSuccess }: Props)
 			<Spin size="large" spinning={status === request.REQUESTING}>
 				<AddProductForm
 					inputRef={(el) => (inputRef.current = el)}
-					maxQuantity={product?.current_balance}
-					unitOfMeasurementType={product?.product?.unit_of_measurement}
+					maxQuantity={branchProduct?.current_balance}
+					unitOfMeasurementType={branchProduct?.product?.unit_of_measurement}
 					onSubmit={onSubmit}
 					onClose={onClose}
 				/>

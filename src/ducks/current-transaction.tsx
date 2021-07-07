@@ -70,7 +70,7 @@ const reducer = handleActions(
 
 			state.products.forEach((item) => {
 				const foundProduct = transaction.products.find(
-					({ product }) => product.id === item.productId,
+					({ product }) => product.id === item.product.id,
 				);
 
 				if (foundProduct) {
@@ -99,19 +99,16 @@ const reducer = handleActions(
 		},
 
 		[types.SET_CURRENT_TRANSACTION]: (state, { payload }: any) => {
-			const { transaction, branchProducts, isTransactionSearched = false } = payload;
+			const { transaction, isTransactionSearched = false } = payload;
 
 			// NOTE: Setting of product
 			const products = transaction.products.map((item) => {
-				const branchProduct = branchProducts.find(({ product }) => product?.id === item.product.id);
-
 				return {
-					data: item.product,
+					...item.branch_product,
 					transactionProductId: item.id,
-					id: branchProduct?.id,
-					productId: item.product.id,
-					pricePerPiece: Number(item.price_per_piece),
-					discountPerPiece: Number(item.discount_per_piece),
+					id: item.branch_product.product.id,
+					price_per_piece: Number(item.price_per_piece),
+					discount_per_piece: Number(item.discount_per_piece),
 					quantity: item.quantity,
 				};
 			});
@@ -125,12 +122,11 @@ const reducer = handleActions(
 				totalPaidAmount: transaction.total_paid_amount,
 				status: transaction.status,
 				overallDiscount: transaction.overall_discount,
-				// TODO:: CHECK IF WORKING
 				previousVoidedTransactionId:
 					transaction.status === transactionStatusTypes.VOID_CANCELLED
 						? transaction.id
 						: transaction.previous_voided_transaction_id,
-				products,
+				products: products, // NOTE: Setting of product
 				isTransactionSearched,
 				pageNumber: 1,
 			};

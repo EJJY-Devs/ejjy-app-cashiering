@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import KeyboardEventHandler from 'react-keyboard-event-handler';
 import { ControlledInput } from '../../../../components/elements';
 import { request } from '../../../../global/types';
-import { useBranchProducts } from '../../../../hooks/useBranchProducts';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import { useTransactions } from '../../../../hooks/useTransactions';
 import './style.scss';
@@ -15,12 +14,14 @@ interface Props {
 }
 
 export const SearchTransaction = ({ inputRef, visible, closeModal }: Props) => {
-	const { getTransaction, status: transactionsStatus } = useTransactions();
-	const { setCurrentTransaction } = useCurrentTransaction();
-	const { branchProducts } = useBranchProducts();
-
+	// STATES
 	const [searchedKey, setSearchedKey] = useState('');
 
+	// CUSTOM HOOKS
+	const { getTransaction, status: transactionsStatus } = useTransactions();
+	const { setCurrentTransaction } = useCurrentTransaction();
+
+	// METHODS
 	useEffect(() => {
 		setSearchedKey('');
 	}, [visible]);
@@ -33,7 +34,7 @@ export const SearchTransaction = ({ inputRef, visible, closeModal }: Props) => {
 
 		getTransaction(searchedKey, ({ status, transaction }) => {
 			if (status === request.SUCCESS) {
-				setCurrentTransaction({ transaction, branchProducts, isTransactionSearched: true });
+				setCurrentTransaction({ transaction, isTransactionSearched: true });
 				closeModal();
 			} else if (status === request.ERROR) {
 				message.error('Cannot find transaction.');

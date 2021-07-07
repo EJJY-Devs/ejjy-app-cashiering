@@ -44,11 +44,11 @@ export const useCurrentTransaction = () => {
 			tellerId: session.user.id,
 			client,
 			previousVoidedTransactionId: previousVoidedTransactionId || undefined,
-			products: transactionProducts.map((product) => ({
-				product_id: product.productId,
-				quantity: product.quantity,
-				price_per_piece: product.pricePerPiece,
-				discount_per_piece: product?.discountPerPiece || undefined,
+			products: transactionProducts.map((item) => ({
+				product_id: item.product.id,
+				quantity: item.quantity,
+				price_per_piece: item.price_per_piece,
+				discount_per_piece: item?.discount_per_piece || undefined,
 			})),
 			overallDiscount,
 			status,

@@ -16,7 +16,6 @@ import {
 	transactionStatusTypes,
 	vatTypes,
 } from '../../../../global/types';
-import { useBranchProducts } from '../../../../hooks/useBranchProducts';
 import { useCurrentTransaction } from '../../../../hooks/useCurrentTransaction';
 import { useTransactions } from '../../../../hooks/useTransactions';
 import { useUI } from '../../../../hooks/useUI';
@@ -68,7 +67,6 @@ export const ProductTable = ({ isLoading }: Props) => {
 		removeProduct,
 		setCurrentTransaction,
 	} = useCurrentTransaction();
-	const { branchProducts } = useBranchProducts();
 	const { updateTransaction, status } = useTransactions();
 	const { isModalVisible, isSearchSuggestionVisible, setModalVisible } = useUI();
 
@@ -93,24 +91,26 @@ export const ProductTable = ({ isLoading }: Props) => {
 				uneditableStatus.includes(currentTransactionStatus) || isTransactionSearched ? null : (
 					<CancelButtonIcon tooltip="Remove" onClick={() => onRemoveProductConfirmation(item)} />
 				),
-				<Tooltip placement="top" title={item.data.description}>
-					{item.data.name}
+				<Tooltip placement="top" title={item.product.description}>
+					{item.product.name}
 				</Tooltip>,
-				getProductQuantity(item.quantity, item.data.unit_of_measurement),
+				getProductQuantity(item.quantity, item.product.unit_of_measurement),
 				<div onClick={() => onDiscountProduct(item)}>
-					{item?.discountPerPiece > 0 ? (
+					{item?.discount_per_piece > 0 ? (
 						<>
-							{`₱${numberWithCommas(item.pricePerPiece.toFixed(2))}`}
+							{`₱${numberWithCommas(item.price_per_piece.toFixed(2))}`}
 							<span className="original-price">
-								{`₱${numberWithCommas((item.pricePerPiece + item.discountPerPiece).toFixed(2))}`}
+								{`₱${numberWithCommas(
+									(item.price_per_piece + item.discount_per_piece).toFixed(2),
+								)}`}
 							</span>
 						</>
 					) : (
-						`₱${numberWithCommas(item.pricePerPiece.toFixed(2))}`
+						`₱${numberWithCommas(item.price_per_piece.toFixed(2))}`
 					)}
 				</div>,
-				item.data.is_vat_exempted ? vatTypes.VATABLE : vatTypes.VAT_EMPTY,
-				`₱${numberWithCommas((item.quantity * item.pricePerPiece).toFixed(2))}`,
+				item.product.is_vat_exempted ? vatTypes.VATABLE : vatTypes.VAT_EMPTY,
+				`₱${numberWithCommas((item.quantity * item.price_per_piece).toFixed(2))}`,
 			]);
 
 		setData(formattedProducts);
@@ -136,13 +136,14 @@ export const ProductTable = ({ isLoading }: Props) => {
 						.filter((item) => item.id !== id)
 						.map((item) => ({
 							transaction_product_id: item.transactionProductId,
-							product_id: item.productId,
+							product_id: item.product.id,
+							price_per_piece: item.price_per_piece,
 							quantity: item.quantity,
 						})),
 				},
 				({ status, transaction }) => {
 					if (status === request.SUCCESS) {
-						setCurrentTransaction({ transaction, branchProducts });
+						setCurrentTransaction({ transaction });
 					}
 				},
 			);
@@ -156,7 +157,7 @@ export const ProductTable = ({ isLoading }: Props) => {
 			className: 'EJJYModal',
 			title: 'Delete Confirmation',
 			icon: <ExclamationCircleOutlined />,
-			content: `Are you sure you want to delete ${product.data.name}?`,
+			content: `Are you sure you want to delete ${product.product.name}?`,
 			okText: 'Delete',
 			cancelText: 'Cancel',
 			onOk: () => onRemoveProduct(product.id),
@@ -269,13 +270,13 @@ export const ProductTable = ({ isLoading }: Props) => {
 			/>
 
 			<EditProductModal
-				product={transactionProducts?.[selectedProductIndex]}
+				branchProduct={transactionProducts?.[selectedProductIndex]}
 				visible={editProductModalVisible}
 				onClose={() => setEditProductModalVisible(false)}
 			/>
 
 			<DiscountModal
-				product={selectedDiscountProduct}
+				branchProduct={selectedDiscountProduct}
 				visible={discountModalVisible}
 				onClose={() => setDiscountModalVisible(false)}
 			/>

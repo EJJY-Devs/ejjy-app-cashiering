@@ -1,10 +1,12 @@
-import { Divider, message } from 'antd';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { Divider, message, Typography } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Box, Button } from '../../components/elements';
 import { SettingUrlModal } from '../../components/SettingUrl/SettingUrlModal';
 import { request } from '../../global/types';
 import { useAuth } from '../../hooks/useAuth';
+import { useBranchMachines } from '../../hooks/useBranchMachines';
 import { useCurrentTransaction } from '../../hooks/useCurrentTransaction';
 import { useSession } from '../../hooks/useSession';
 import {
@@ -17,15 +19,19 @@ import { ILoginValues, LoginForm } from './components/LoginForm';
 import { RegisterModal } from './components/RegisterModal';
 import './style.scss';
 
+const { Title } = Typography;
+
 const Login = () => {
 	// STATES
 	const [registerModalVisible, setRegisterModalVisible] = useState(false);
 	const [urlModalVisible, setUrlModalVisible] = useState(false);
+	const [branchMachineName, setBranchMachineName] = useState('');
 	const [areSetupButtonsVisible, setSetupButtonsVisible] = useState(false);
 
 	// CUSTOM HOOKS
-	const { startSession, status, errors } = useSession();
 	const { localIpAddress } = useAuth();
+	const { startSession, status, errors } = useSession();
+	const { getBranchMachines } = useBranchMachines();
 	const { setPreviousChange } = useCurrentTransaction();
 
 	// METHODS
@@ -36,6 +42,18 @@ const Login = () => {
 			document.removeEventListener('keydown', handleKeyDown);
 		};
 	});
+
+	useEffect(() => {
+		const branchMachineId = getBranchMachineId();
+		if (branchMachineId) {
+			getBranchMachines({
+				onSuccess: ({ response: { results } }) => {
+					// eslint-disable-next-line eqeqeq
+					setBranchMachineName(results.find(({ id }) => id == branchMachineId)?.name);
+				},
+			});
+		}
+	}, []);
 
 	useEffect(() => {
 		const branchMachineId = getBranchMachineId();
@@ -72,8 +90,14 @@ const Login = () => {
 		<section className="Login">
 			<ButtonClose onClick={() => window.close()} />
 
-			<Box className="container">
+			<Box className="Login_container">
 				<img src={require('../../assets/images/logo.jpg')} alt="logo" className="logo" />
+
+				{!!branchMachineName.length && (
+					<Title className="Login_machineName" level={2}>
+						{branchMachineName}
+					</Title>
+				)}
 
 				<LoginForm
 					onSubmit={onStartSession}
@@ -85,9 +109,9 @@ const Login = () => {
 				<Divider />
 
 				{areSetupButtonsVisible && (
-					<div className="setup-buttons">
+					<div className="Login_container_setupButtons">
 						<Button
-							classNames="btn-set-api-url"
+							classNames="Login_container_setupButtons_btnSetApiUrl"
 							text="1. Set API URL"
 							variant="dark-gray"
 							onClick={() => setUrlModalVisible(true)}
@@ -95,7 +119,7 @@ const Login = () => {
 						/>
 
 						<Button
-							classNames="btn-register-machine"
+							classNames="Login_container_setupButtons_btnRegisterMachine"
 							text="2. Register Machine"
 							variant="dark-gray"
 							onClick={() => setRegisterModalVisible(true)}

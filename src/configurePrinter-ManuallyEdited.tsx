@@ -105,12 +105,12 @@ export const printSalesInvoice = (transaction, transactionProducts, change, isRe
 						<table style="width: 100%; font-size: 12px; line-height: 12px">
 							${transactionProducts.map((item) => (
 									`<tr>
-										<td colspan="2">${item.data.name}</td>
+										<td colspan="2">${item.product.name}</td>
 									</tr>
 									<tr>
-										<td style="padding-left: 30px">${getProductQuantity(item.quantity, item.data.unit_of_measurement)} @ ${`₱${item.pricePerPiece.toFixed(2)}`}</td>
+										<td style="padding-left: 30px">${getProductQuantity(item.quantity, item.product.unit_of_measurement)} @ ${`₱${item.price_per_piece.toFixed(2)}`}</td>
 										<td style="text-align: right">
-											${`₱${(item.quantity * item.pricePerPiece).toFixed(2)}`} V
+											${`₱${(item.quantity * item.price_per_piece).toFixed(2)}`} V
 										</td>
 									</tr>`
 								)).join('')	

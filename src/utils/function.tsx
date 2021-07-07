@@ -7,7 +7,7 @@ import {
 	ColoredText,
 	coloredTextType,
 	OutOfStocksBadgePill,
-	ReorderBadgePill
+	ReorderBadgePill,
 } from '../components';
 import { UncontrolledInput } from '../components/elements';
 import { MACHINE_COUNT_KEY, MACHINE_ID_KEY, ROW_HEIGHT } from '../global/constants';
@@ -16,7 +16,7 @@ import {
 	cashBreakdownTypes,
 	request,
 	unitOfMeasurementTypes,
-	userTypes
+	userTypes,
 } from '../global/types';
 
 export const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -249,4 +249,15 @@ export const getKeyDownCombination = (keyboardEvent) => {
 	}
 
 	return firstKey + keyboardEvent?.key;
+};
+
+export const convertIntoArray = (errors, prefixMessage = null) => {
+	const prefix = prefixMessage ? `${prefixMessage}: ` : '';
+	if (isString(errors)) {
+		return [prefix + errors];
+	} else if (isArray(errors)) {
+		return errors.map((error) => prefix + error);
+	}
+
+	return [];
 };

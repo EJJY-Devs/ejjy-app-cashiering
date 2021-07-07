@@ -6,24 +6,11 @@
 	position: relative;
 	@include flex(center, center);
 
-	.setup-buttons {
-		@include flex(stretch, center);
-		width: 100%;
-
-		.Button {
-			flex: 1;
-
-			&.btn-set-api-url {
-				margin-right: 5px;
-			}
-
-			&.btn-register-machine {
-				margin-left: 5px;
-			}
-		}
+	&_machineName {
+		margin: 0 0 20px 0;
 	}
 
-	.container {
+	&_container {
 		width: 500px;
 		padding: 50px 40px;
 		@include flex(center, center, column);
@@ -44,6 +31,21 @@
 		.btn-reports {
 			width: 100%;
 			margin-top: 10px;
+		}
+
+		&_setupButtons {
+			@include flex(stretch, center);
+			width: 100%;
+
+			&_btnSetApiUrl {
+				margin-right: 5px;
+				flex: 1;
+			}
+
+			&_btnRegisterMachine {
+				margin-left: 5px;
+				flex: 1;
+			}
 		}
 	}
 

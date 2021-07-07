@@ -1,7 +1,10 @@
 import axios from 'axios';
 import { IGetRequest } from '.';
 
+interface IListBranchProducts extends IGetRequest {
+	search?: string;
+}
+
 export const service = {
-	listByBranch: async (params: IGetRequest) =>
-		axios.get('branches-products/with-branch-manager-details/', { params }),
+	list: async (params: IListBranchProducts) => axios.get('branches-products/', { params }),
 };

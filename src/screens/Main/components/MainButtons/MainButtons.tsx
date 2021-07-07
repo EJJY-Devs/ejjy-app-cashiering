@@ -104,6 +104,11 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 		[currentTransactionStatus],
 	);
 
+	const isOthersDisabled = useCallback(
+		() => isTransactionSearched,
+		[isTransactionSearched],
+	)
+
 	const isQueueDisabled = useCallback(() => transactionStatus !== null, [transactionStatus]);
 
 	const onCashCollectionModified = () => {
@@ -178,25 +183,25 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 		const key = getKeyDownCombination(event);
 
 		// Queue and Resume
-		if (queueResumeShortcutKeys.includes(key)) {
+		if (queueResumeShortcutKeys.includes(key) && !isQueueDisabled()) {
 			setQueueModalVisible(true);
 			return;
 		}
 
 		// Others
-		if (othersShortcutKeys.includes(key)) {
+		if (othersShortcutKeys.includes(key) && !isOthersDisabled()) {
 			setOthersModalVisible(true);
 			return;
 		}
 
 		// End Session
-		if (endSessionShortcutKeys.includes(key)) {
+		if (endSessionShortcutKeys.includes(key) && !isOthersDisabled()) {
 			onEndSessionModified();
 			return;
 		}
 
 		// Cash Collection
-		if (cashCollectionShortcutKeys.includes(key)) {
+		if (cashCollectionShortcutKeys.includes(key) && !isOthersDisabled()) {
 			onCashCollectionModified();
 			return;
 		}
@@ -292,7 +297,7 @@ export const MainButtons = ({ onCashCollection, onEndSession }: Props) => {
 					}
 					classNames="btn-others"
 					onClick={() => setOthersModalVisible(true)}
-					disabled={isTransactionSearched}
+					disabled={isOthersDisabled()}
 					tabIndex={-1}
 				/>
 			</div>
